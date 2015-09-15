@@ -12,5 +12,18 @@ var elixir = require('laravel-elixir');
  */
 
 elixir(function(mix) {
-    mix.sass('app.scss');
+  mix.less('main.less')
+    .version('css/main.css');
+});
+
+elixir(function(mix) {
+  mix.scripts([
+    'querystring.js',
+    '../bower_components/lodash/lodash.js',
+    '../bower_components/jquery-filedrop/jquery.filedrop.js',
+    '../bower_components/cmd/src/js/CmdStack.js',
+    '../bower_components/cmd/src/js/Cmd.js',
+    'chimpcom.js',
+    'main.js'
+  ], 'public/js/main.js');
 });

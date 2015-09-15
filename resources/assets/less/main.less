@@ -1,0 +1,71 @@
+/**
+ * Think you're clever, do you? Pulling apart the pieces.
+ */
+
+@import '../bower_components/cmd/src/less/main.less';
+
+body,
+html,
+#chimpcom {
+  height: 100%;
+}
+
+#chimpcom {
+  background-color: @background-color;
+
+  &.inverted {
+    background-color: @background-color-inverted;
+  }
+}
+
+a {
+  border-bottom: 1px solid darken(@text-color, 40%);
+  
+  .inverted& {
+    border-bottom-color: lighten(@background-color, 40%);
+
+    &:hover {
+      border-bottom-color: @background-color;
+    }
+  }
+}
+
+span.inverted {
+  color: @background-color;
+  background-color: @text-color;
+
+  .inverted& { // .inverted span.inverted??? This is getting confusing
+    background-color: @background-color;
+    color: @text-color;    
+  }
+}
+
+@import "tetris.less";
+@import "cards.less";
+@import "countdown_clock.less";
+@import "reddit.less";
+
+#dropzone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 99%;
+  width: 99%;
+  background-color:rgba(270,0,0,0.6);
+  border: 1px solid red;
+  display: none;
+}
+
+.autofill {
+  cursor: pointer;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-size: @font-size-default;
+  
+  @media (max-screen-width: 600px) {
+    font-size: 10px;
+  }
+}

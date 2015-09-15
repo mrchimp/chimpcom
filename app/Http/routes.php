@@ -12,5 +12,13 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+  return View::make('index');
 });
+
+Route::get('ajax/respond/json', [
+  'uses' => 'ChimpcomController@respond'
+]);
+
+Route::post('ajax/respond/json', [
+  'uses' => 'ChimpcomController@respond'
+]);

@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "mrchimp/chimpcom",
+    "description": "Command line website.",
+    "keywords": ["command line", "terminal"],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -19,7 +19,8 @@
             "database"
         ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Mrchimp\\": "app/Mrchimp"
         }
     },
     "autoload-dev": {
