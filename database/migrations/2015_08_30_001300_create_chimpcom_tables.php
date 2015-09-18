@@ -55,7 +55,7 @@ class CreateChimpcomTables extends Migration
             $table->increments('id');
             $table->string('name', 32);
             $table->string('content', 255);
-            $table->integer('user');
+            $table->integer('user_id');
             $table->boolean('public', 255);
             $table->timestamps();
         });

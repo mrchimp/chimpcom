@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Model;
 class Message extends Model
 {
 
-
+  public function tags() {
+    return $this->morphToMany('Mrchimp\Chimpcom\Models\Tag', 'taggable');
+  }
 
 }

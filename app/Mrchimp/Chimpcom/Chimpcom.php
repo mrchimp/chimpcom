@@ -105,10 +105,10 @@ class Chimpcom
     'save',
     // 'scale',
     // 'setpublic',
-    // 'show',
+    'show',
     // 'shortcuts',
     // 'stats',
-    // 'styles',
+    'styles',
     // 'tea',
     // 'tetris',
     // 'thing',
@@ -231,5 +231,13 @@ class Chimpcom
   protected function setAction($str = 'normal') {
     Session::set('action', $str);
   }
- 
+
+  // Convert integer ID to front-facing id
+  static function encodeId($id) {
+    return dechex($id);
+  }
+
+  static function decodeId($id) {
+    return hexdec($id);
+  }
 }

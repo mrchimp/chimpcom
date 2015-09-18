@@ -2,8 +2,9 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use App\User as User;
 
-class DatabaseSeeder extends Seeder
+class UserTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +15,11 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        $this->call(UserTableSeeder::class);
+        User::create([
+            'email' => 'admin@deviouschimp.co.uk',
+            'password' => Hash::make('password'),
+            'name' => 'root'
+        ]);
 
         Model::reguard();
     }

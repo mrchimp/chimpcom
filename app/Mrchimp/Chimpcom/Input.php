@@ -24,31 +24,37 @@ class Input
    * Array of all input split by spaces
    * @var array
    */
-  private $input_array = array();
+  private $input_array = [];
 
   /**
    * Input_array minus first element
    * @var array
    */
-  private $param_array = array();
+  private $param_array = [];
 
   /**
    * "--flag / -f" from input_array
    * @var array
    */
-  private $flag_array  = array();
+  private $flag_array = [];
 
   /**
    * "@names" from input_array
    * @var array
    */
-  private $name_array  = array();
+  private $name_array = [];
 
   /**
    * "#tags" from input_array
    * @var array
    */
-  private $word_array  = array(); // everything left over from input_array
+  private $tag_array = [];
+
+  /**
+   * "#tags" from input_array
+   * @var array
+   */
+  private $word_array  = []; // everything left over from input_array
 
   /**
    * The command name. Essentially the first word of cmd_in, lowercased.
@@ -82,7 +88,7 @@ class Input
       } else if (substr($value, 0, 1) == '@' && $value != '@') {
         array_push($this->name_array, substr($value, 1));
       } else if (substr($value, 0, 1) == '#' && $value != '#') {
-        array_push($this->tag_array, substr($value, -1));
+        array_push($this->tag_array, substr($value, 1));
       } else {
         array_push($this->word_array, $value);
       }
@@ -183,5 +189,13 @@ class Input
    */
   public function getInput() {
     return $this->cmd_in;
+  }
+
+  /**
+   * Get tags from input
+   * @return array Array of tags
+   */
+  public function getTags() {
+    return $this->tag_array;
   }
 }

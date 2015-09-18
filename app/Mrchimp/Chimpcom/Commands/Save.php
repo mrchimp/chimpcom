@@ -6,7 +6,8 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
-use Mrchimp\Chimpcom\Memories;
+use Mrchimp\Chimpcom\Models\Memory;
+use Mrchimp\Chimpcom\Models\Tag;
 
 /**
  * Create a memory item
@@ -18,6 +19,7 @@ class Save extends LoggedInCommand
    * Run the command
    */
   public function process() {
+
     $num_params = count($this->input->getParamArray());
 
     if ($num_params < 2) {
@@ -29,8 +31,8 @@ class Save extends LoggedInCommand
     $name = $this->input->get(1);
     $content = implode(' ', array_slice($this->input->getParamArray(), 1));
 
-    $this->response->say('name: ' . $name . '<br>');
-    $this->response->say('content: ' . $content . '<br>');
+    $this->response->say('Name: ' . e($name) . '<br>');
+    $this->response->say('Content: ' . e($content) . '<br>');
 
     $is_public = $this->input->isFlagSet(['--public', '-p']);
     $user = Auth::user();
@@ -41,11 +43,17 @@ class Save extends LoggedInCommand
     $memory->user_id = $user->id;
     $memory->public = $is_public;
 
-    if ($id = $memory->save()) {
-      $this->reponse->alert("Memory saved. Id: $id");
-    } else {
+    if (!$memory->save()) {
       $this->response->error('Could not save memory. Try again.');
     }
+
+    foreach ($this->input->getTags() as $tag_word) {
+      $tag = new Tag();
+      $tag->tag = $tag_word;
+      $memory->tags()->save($tag);
+    }
+
+    $this->response->alert('Memory saved. Id: ' . $memory->id);
   }
 
 }
