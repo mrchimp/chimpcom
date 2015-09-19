@@ -8,9 +8,10 @@ namespace Mrchimp\Chimpcom\Commands;
 use Mrchimp\Chimpcom\Input;
 use Mrchimp\Chimpcom\Response;
 use Mrchimp\Chimpcom\Format;
+use App;
 use Auth;
 use Session;
-use App;
+use Validator;
 
 /**
  * Basis for all Chimpcom commands
@@ -144,5 +145,30 @@ abstract class AbstractCommand
    * @return ChimpcomResponse           
    */
   abstract public function process();
+
+  /**
+   * Validate some input. If fails, reset everything.
+   * @action normal
+   * @param  array $data   The data to validate
+   * @param  array $errors The rules to validate against
+   */
+  public function validateOrDie($data, $rules) {
+    $validator = Validator::make($data, $rules);
+
+    if ($validator->fails()) {
+      $messages = $validator->errors();
+
+      foreach ($messages->all() as $error) {
+        $this->response->error($error);
+      }
+
+      $this->setAction('normal');
+      $this->response->usePasswordInput(false);
+
+      return false;
+    } else {
+      return true;
+    }
+  }
 
 }

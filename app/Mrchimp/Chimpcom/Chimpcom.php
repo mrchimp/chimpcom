@@ -54,7 +54,7 @@ class Chimpcom
    */
   private static $available_commands = array(
     // '8ball',
-    // 'addshortcut',
+    'addshortcut',
     // 'alias',
     // 'are',
     // 'ascii',
@@ -168,16 +168,22 @@ class Chimpcom
     }
 
     // Check for shortcuts?
-    $shortcut = Shortcut::where('name', $this->input->get(0))->get();
+    $shortcut = Shortcut::where('name', $this->input->get(0))->take(1)->first();
     
     if (count($shortcut) > 0) {
       $url = str_replace('%PARAM', urlencode($this->input->get(1)), $shortcut->url);
-      if ($this->isFlagSet(array('--blank', '-b'))) {
-        $this->openWindow($url);
+
+      $response = new Response();
+
+      if ($this->input->isFlagSet(array('--blank', '-b'))) {
+        $response->openWindow($url);
       } else {
-        $this->redirect($url);
+        $response->redirect($url);
       }
-      return $this->cmdBypass($this->cmd_in, 'Ok.');
+
+      $response->alert('Redirecting...');
+
+      return $response;
     }
     
     // Do we have a witty oneliner?
@@ -190,6 +196,7 @@ class Chimpcom
       $response = new Response;
       $response->say($this->input->getInput());
       $response->setCmdOut($oneliner->response);
+
       return $response;
     }
     

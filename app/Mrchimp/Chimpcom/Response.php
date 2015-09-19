@@ -6,6 +6,7 @@
 namespace Mrchimp\Chimpcom;
 
 use Auth;
+use Validator;
 
 /**
  * Chimpcom command response
@@ -148,4 +149,20 @@ class Response
       $this->out['user']['name'] = 'Guest';
     }
   }
+
+  /**
+   * Redirect the browser
+   */
+  public function redirect($url) {
+    $this->out['redirect'] = $url;
+  }
+
+  /**
+   * Open a new browser window
+   */
+  public function openWindow($url, $specs = ''){
+    $this->out['openWindow'] = $url;
+    $this->out['openWindowSpecs'] = $specs;
+  }
+
 }
