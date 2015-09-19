@@ -56,7 +56,7 @@ class Chimpcom
   private static $available_commands = array(
     'addshortcut',
     'alias',
-    // 'are',
+    'are',
     // 'ascii',
     // 'base64decode',
     // 'base64encode',
