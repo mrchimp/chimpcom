@@ -54,7 +54,6 @@ class Chimpcom
    * @var array
    */
   private static $available_commands = array(
-    // '8ball',
     'addshortcut',
     'alias',
     // 'are',
@@ -92,6 +91,7 @@ class Chimpcom
     'login',
     'logout',
     // 'look',
+    'magiceightball',
     // 'mail',
     // 'man',
     // 'message',
