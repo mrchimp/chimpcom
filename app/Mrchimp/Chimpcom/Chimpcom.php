@@ -119,7 +119,7 @@ class Chimpcom
     // 'users',
     // 'version',
     // 'weather',
-    // 'whoami',
+    'whoami',
     'who'
   );
 
