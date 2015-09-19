@@ -6,7 +6,7 @@
 namespace Mrchimp\Chimpcom;
 
 use Illuminate\Http\Request;
-use Mrchimp\Chimpcom\Models\Alias;
+use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 
 /**
  * Chimpcom command input
@@ -82,12 +82,16 @@ class Input
 
     $parts[0] = $this->getAlias($parts[0]);
 
+    $this->cmd_in = implode(' ', $parts);
+
     foreach ($parts as $key => $value) {
-      if (substr($value, 0, 1) == '-' && $value != '-' && $value != '--') {
+      $first_char = substr($value, 0, 1);
+
+      if ($first_char == '-' && $value != '-' && $value != '--') {
         array_push($this->flag_array, $value);
-      } else if (substr($value, 0, 1) == '@' && $value != '@') {
+      } else if ($first_char == '@' && $value != '@') {
         array_push($this->name_array, substr($value, 1));
-      } else if (substr($value, 0, 1) == '#' && $value != '#') {
+      } else if ($first_char == '#' && $value != '#') {
         array_push($this->tag_array, substr($value, 1));
       } else {
         array_push($this->word_array, $value);
@@ -96,7 +100,7 @@ class Input
     }
 
     $this->param_array = array_slice($this->input_array, 1);
-    $this->command = htmlspecialchars(strtolower(explode(' ', $input)[0]));
+    $this->command = e(strtolower($parts[0]));
   }
   
   /**
@@ -122,7 +126,6 @@ class Input
       default:
         return $this->cmd_in;
     }
-
   }
 
   /**
@@ -179,8 +182,9 @@ class Input
    * Look up a command alias
    */
   private function getAlias($cmd) {
-    $alias = Alias::where('name', $cmd)->get();
-    return (count($alias) > 0 ? $alias->alias : $cmd);
+    $alias = ChimpcomAlias::where('name', $cmd)->take(1)->first();
+
+    return ($alias ? $alias->alias : $cmd);
   }
 
   /**

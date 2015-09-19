@@ -5,29 +5,50 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Auth;
+use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
+
 /**
  * Add a command alias
  */
-class Alias extends AbstractCommand
+class Alias extends LoggedInCommand
 {
 
   /**
    * Run the command
    */
   public function process() {
+    $user = Auth::user();
+
+    if (!$user->is_admin) {
+      $this->error('No.');
+      return;
+    }
+
+    $data = [
+      'name' => $this->input->get(1),
+      'alias' => implode(' ', array_slice($this->input->getParamArray(), 1))
+    ];
+
+    $rules = [
+      'name'  => 'required|unique:aliases,name',
+      'alias' => 'required'
+    ];
+
+    if (!$this->validateOrDie($data, $rules)) {
+      return;
+    }
+
+    $alias = new ChimpcomAlias();
+    $alias->name  = $data['name'];
+    $alias->alias = $data['alias'];
+
+    if ($alias->save()) {
+      $this->response->alert('Ok.');
+    } else {
+      $this->response->error('There was a problem. Try again.');
+    }
     
-    $this->response->say('Not yet.');
-    // if (!$this->user->isAdmin()) {
-    //   $this->error('No.');
-    //   return false;
-    // }
-    
-    // $alias = \R::dispense('alias');
-    // $alias->name  = $this->inputArray(1);
-    // $alias->alias = implode(' ', array_slice($this->input_array, 2));
-    // \R::store($alias);
-    
-    // $this->alert('Ok.');
   }
 
 }
