@@ -45,7 +45,8 @@ class Chimpcom
     'password',
     // 'project_rm',
     'register',
-    'register2'
+    'register2',
+    'register3'
   );
 
   /**

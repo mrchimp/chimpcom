@@ -7,7 +7,6 @@ namespace Mrchimp\Chimpcom\Actions;
 
 use Auth;
 use Session;
-use Validator;
 use App\User;
 use Mrchimp\Chimpcom\Commands\AbstractCommand;
 
@@ -22,8 +21,8 @@ class Register2 extends AbstractCommand
      * Run the command
      */
     public function process() {
-        $username = session('register_username');
-        $password = session('register_password');
+        $username = Session::get('register_username');
+        $password = Session::get('register_password');
         $password2 = $this->input->get(0);
 
         if (!$username || !$password) {
@@ -35,63 +34,16 @@ class Register2 extends AbstractCommand
             return;
         }
 
-        $user_data = [
-            'name' => $username,
-            'email' => '',
-            'password' => $password,
-            'password_confirmation' => $password2
-        ];
-
-        $validator = $this->validator($user_data);
-
-        if ($validator->fails()) {
-
-            $errors = $validator->errors();
-
-            foreach ($errors->all() as $error) {
-                $this->response->error($error);
-            }
-
-            $this->setAction('normal');
-            $this->response->usePasswordInput(false);
+        if (!$password2) {
+            $this->response->error('No password given. Giving up.');
+            $this->resetTerminal();
             return;
         }
 
-        Auth::login($this->create($user_data));
-
-        $this->response->say('Hello, ' . e($user_data['name']) . '! Welcome to Chimpcom.');
-        $this->setAction('normal');
+        Session::set('register_password2', $password2);
+        $this->response->alert('Your email address:');
+        $this->setAction('register3');
         $this->response->usePasswordInput(false);
-    }
-
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'email|max:255|unique:users',
-            'password' => 'required|confirmed|min:6'
-        ]);
-    }
-
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return User
-     */
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
     }
 
 }

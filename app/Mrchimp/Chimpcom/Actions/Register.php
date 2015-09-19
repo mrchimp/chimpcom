@@ -38,10 +38,10 @@ class Register extends AbstractCommand
       return;
     }
 
-    session(['register_password' => $password]);
+    Session::set('register_password', $password);
     $this->response->alert('Enter the same password again:');
     $this->setAction('register2');
-    $this->response->usePasswordInput(false);
+    $this->response->usePasswordInput(true);
   }
 
 }

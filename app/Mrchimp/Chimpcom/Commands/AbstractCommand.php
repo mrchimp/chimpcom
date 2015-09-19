@@ -147,7 +147,7 @@ abstract class AbstractCommand
   abstract public function process();
 
   /**
-   * Validate some input. If fails, reset everything.
+   * Validate some input. If it fails, reset everything.
    * @action normal
    * @param  array $data   The data to validate
    * @param  array $errors The rules to validate against
@@ -162,13 +162,17 @@ abstract class AbstractCommand
         $this->response->error($error);
       }
 
-      $this->setAction('normal');
-      $this->response->usePasswordInput(false);
+      $this->resetTerminal();
 
       return false;
     } else {
       return true;
     }
+  }
+
+  public function resetTerminal() {
+    $this->setAction('normal');
+    $this->response->usePasswordInput(false);
   }
 
 }
