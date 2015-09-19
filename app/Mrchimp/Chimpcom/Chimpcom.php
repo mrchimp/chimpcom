@@ -120,7 +120,7 @@ class Chimpcom
     // 'version',
     // 'weather',
     // 'whoami',
-    // 'who'
+    'who'
   );
 
   /**
