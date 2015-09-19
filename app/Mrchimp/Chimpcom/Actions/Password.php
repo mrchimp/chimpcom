@@ -44,7 +44,7 @@ class Password extends AbstractCommand
     }
 
     if (Auth::attempt([
-      'email' => $username,
+      'name' => $username,
       'password' => $password
     ], false, true)) {
       $this->response->getUserDetails();

@@ -10,7 +10,8 @@ use App\User;
 use Session;
 
 /**
- * Log in to Chimpcom
+ * Accepts a username and asks for a password. Action logging in happens in actions/password
+ * @action password
  */
 class Login extends AbstractCommand
 {
@@ -32,7 +33,7 @@ class Login extends AbstractCommand
       return;
     }
 
-    $user = User::where('email', $username)->get();
+    $user = User::where('name', $username)->get();
 
     // User doesn't exist
     if (count($user) === 0) {

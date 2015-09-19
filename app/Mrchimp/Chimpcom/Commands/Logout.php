@@ -15,18 +15,18 @@ use Session;
 class Logout extends AbstractCommand
 {
 
-  /**
-   * Run the command
-   */
-  public function process() {
-  	if (!Auth::check()) {
-  		$this->response->error('You\'re not logged in.');
-  		return;
-  	}
+    /**
+     * Run the command
+     */
+    public function process() {
+        if (!Auth::check()) {
+            $this->response->error('You\'re not logged in.');
+            return;
+        }
 
-  	Auth::logout();
-  	$this->response->getUserDetails();
-  	$this->response->alert('You are now logged out.');
-  }
+        Auth::logout();
+        $this->response->getUserDetails();
+        $this->response->alert('You are now logged out.');
+    }
 
 }

@@ -44,8 +44,8 @@ class Chimpcom
     // 'new_project',
     'password',
     // 'project_rm',
-    // 'reg_password',
-    // 'reg_username'
+    'register',
+    'register2'
   );
 
   /**
@@ -101,12 +101,12 @@ class Chimpcom
     // 'project',
     // 'projects',
     'reddit',
-    // 'register',
+    'register',
     'save',
     // 'scale',
     // 'setpublic',
     'show',
-    // 'shortcuts',
+    'shortcuts',
     // 'stats',
     'styles',
     // 'tea',

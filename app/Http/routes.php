@@ -22,3 +22,7 @@ Route::get('ajax/respond/json', [
 Route::post('ajax/respond/json', [
   'uses' => 'ChimpcomController@respond'
 ]);
+
+// Password reset routes...
+Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
+Route::post('password/reset', 'Auth\PasswordController@postReset');
