@@ -19,7 +19,6 @@ class Save extends LoggedInCommand
    * Run the command
    */
   public function process() {
-
     $num_params = count($this->input->getParamArray());
 
     if ($num_params < 2) {

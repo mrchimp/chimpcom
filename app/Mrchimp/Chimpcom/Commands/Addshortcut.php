@@ -6,17 +6,10 @@ use Auth;
 use Validator;
 use Mrchimp\Chimpcom\Models\Shortcut;
 
-class Addshortcut extends LoggedInCommand
+class Addshortcut extends AdminCommand
 {
 
     public function process() {
-        $user = Auth::user();
-
-        if (!$user->is_admin) {
-            $this->error('No.');
-            return;
-        }
-
         if ($this->input->get(2) === false) {
             $this->error('Not enough params.');
             return false;

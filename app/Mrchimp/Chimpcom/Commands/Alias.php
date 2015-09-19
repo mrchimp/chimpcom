@@ -11,20 +11,13 @@ use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 /**
  * Add a command alias
  */
-class Alias extends LoggedInCommand
+class Alias extends AdinCommand
 {
 
   /**
    * Run the command
    */
   public function process() {
-    $user = Auth::user();
-
-    if (!$user->is_admin) {
-      $this->error('No.');
-      return;
-    }
-
     $data = [
       'name' => $this->input->get(1),
       'alias' => implode(' ', array_slice($this->input->getParamArray(), 1))
@@ -48,7 +41,6 @@ class Alias extends LoggedInCommand
     } else {
       $this->response->error('There was a problem. Try again.');
     }
-    
   }
 
 }
