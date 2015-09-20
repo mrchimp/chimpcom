@@ -80,7 +80,7 @@ class Chimpcom
         // 'files',
         'find',
         // 'forget',
-        // 'go',
+        'go',
         // 'hash',
         // 'help',
         'hexdec',
