@@ -253,13 +253,23 @@ html,
   background-color: #f0f0f0;
 }
 a {
-  border-bottom: 1px solid #666666;
+  box-shadow: 0px -5px 0px -3px #4d4d4d inset;
+  text-decoration: none;
+  transition: box-shadow linear 0.1s, background-color linear 0.2s;
 }
-.inverteda {
-  border-bottom-color: #767676;
+a:hover {
+  box-shadow: 0px 10px 5px 20px #808080 inset;
+  color: #101010;
+  text-decoration: none;
+  transition: box-shadow linear 0.1s, background-color linear 0.2s;
 }
-.inverteda:hover {
+.inverted a {
+  border-bottom-color: #a9a9a9;
+  color: #000000;
+}
+.inverted a:hover {
   border-bottom-color: #101010;
+  color: #f0f0f0;
 }
 span.inverted {
   color: #101010;
@@ -320,6 +330,7 @@ span.inverted {
   margin: 0;
   padding: 0;
   font-size: 18px;
+  box-sizing: border-box;
 }
 @media (max-screen-width: 600px) {
   * {

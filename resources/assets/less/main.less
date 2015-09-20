@@ -19,13 +19,27 @@ html,
 }
 
 a {
-  border-bottom: 1px solid darken(@text-color, 40%);
-  
-  .inverted& {
-    border-bottom-color: lighten(@background-color, 40%);
+  // border-bottom: 1px solid darken(@text-color, 40%);
+  box-shadow:0px -5px 0px -3px darken(@text-color, 50%) inset;
+  text-decoration: none;
+  transition: box-shadow linear .1s,
+              background-color linear .2s;
+
+  &:hover {
+    box-shadow:0px 10px 5px 20px darken(@text-color, 30%) inset;
+    color: @background-color;
+    text-decoration: none;
+    transition: box-shadow linear .1s,
+                background-color linear .2s;
+  }
+
+  .inverted & {
+    border-bottom-color: lighten(@background-color, 60%);
+    color: @text-color-inverted;
 
     &:hover {
       border-bottom-color: @background-color;
+      color: @background-color-inverted;
     }
   }
 }
@@ -64,6 +78,7 @@ span.inverted {
   margin: 0;
   padding: 0;
   font-size: @font-size-default;
+  box-sizing: border-box;
   
   @media (max-screen-width: 600px) {
     font-size: 10px;
