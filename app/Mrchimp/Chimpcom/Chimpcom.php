@@ -62,7 +62,7 @@ class Chimpcom
     'base64encode',
     'candyman',
     'cd',
-    // 'charmap',
+    'charmap',
     // 'chpass',
     // 'coin',
     // 'config',

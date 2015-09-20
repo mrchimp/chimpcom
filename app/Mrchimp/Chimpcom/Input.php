@@ -117,8 +117,8 @@ class Input
       case 'string':
         break;
       case 'integer':
-        if (!empty($this->input_array[$index])){
-          return $this->input_array[$index];
+        if (!empty($this->word_array[$index])){
+          return $this->word_array[$index];
         } else {
           return false;
         }
