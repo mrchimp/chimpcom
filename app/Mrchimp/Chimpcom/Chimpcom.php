@@ -69,7 +69,7 @@ class Chimpcom
     'date',
     'deal',
     'dechex',
-    // 'does',
+    'does',
     'done',
     // 'echo',
     // 'email',
