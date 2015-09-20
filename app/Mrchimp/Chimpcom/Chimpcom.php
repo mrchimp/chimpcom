@@ -37,7 +37,7 @@ class Chimpcom
    * @var array
    */
   private static $available_actions = array(
-    // 'candyman',
+    'candyman',
     // 'done',
     // 'forget',
     // 'login',
@@ -60,7 +60,7 @@ class Chimpcom
     // 'ascii',
     'base64decode',
     'base64encode',
-    // 'candyman',
+    'candyman',
     // 'cd',
     // 'charmap',
     // 'chpass',
