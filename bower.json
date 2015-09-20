@@ -17,7 +17,7 @@
   "dependencies": {
     "tock": "~1.0.8",
     "jquery-filedrop": "~0.1.0",
-    "cmd": "~1.0.3",
+    "cmd": "~1.0.4",
     "jquery": "~2.1.4",
     "lodash": "~3.10.1"
   }

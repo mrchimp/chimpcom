@@ -1,12 +1,20 @@
 // Get QueryString
-var QueryString = [], hash;
-var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-for(var i = 0; i < hashes.length; i++)
-{
-    hash = hashes[i].split('=');
-    QueryString.push(hash[0]);
-    QueryString[hash[0]] = hash[1];
-}
+var QueryString = (function () {
+    var results = {},
+        hash;
+
+    if (window.location.href.indexOf('?') !== -1) {
+        var querystring = window.location.href.slice(window.location.href.indexOf('?') + 1);
+        var hashes = querystring.split('&');
+
+        for(var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            results[hash[0]] = hash[1];
+        }
+    }
+
+    return results;
+})();
 /**
  * @license
  * lodash 3.10.1 (Custom Build) <https://lodash.com/>
@@ -13626,7 +13634,8 @@ var Cmd = (function ($) {
       invert: invert,
       options: options,
       setPrompt: setPrompt,
-      showInputType: showInputType
+      showInputType: showInputType,
+      handleInput: handleInput
     };
 
     return cmd;
@@ -13787,5 +13796,11 @@ var cmd = Cmd({
 	external_processor: Chimpcom.respond.bind(Chimpcom),
 	timeout_length: 20000
 });
+
+if (typeof QueryString['cmd'] === 'string') {
+	cmd.handleInput(QueryString['cmd']);
+} else {
+	cmd.handleInput('hi');
+}
 
 //# sourceMappingURL=main.js.map

@@ -1,9 +1,17 @@
 // Get QueryString
-var QueryString = [], hash;
-var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-for(var i = 0; i < hashes.length; i++)
-{
-    hash = hashes[i].split('=');
-    QueryString.push(hash[0]);
-    QueryString[hash[0]] = hash[1];
-}
+var QueryString = (function () {
+    var results = {},
+        hash;
+
+    if (window.location.href.indexOf('?') !== -1) {
+        var querystring = window.location.href.slice(window.location.href.indexOf('?') + 1);
+        var hashes = querystring.split('&');
+
+        for(var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            results[hash[0]] = hash[1];
+        }
+    }
+
+    return results;
+})();
