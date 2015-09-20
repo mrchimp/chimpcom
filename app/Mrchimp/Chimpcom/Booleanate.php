@@ -32,7 +32,10 @@ class Booleanate
     'yar',
     'yarr',
     'yarrr',
-    'yeppers'
+    'yeppers',
+    'do it',
+    'fuck yes',
+    'hell yes'
   );
   
   /**
@@ -47,7 +50,9 @@ class Booleanate
     'no',
     'non',
     'nope',
-    'nein'
+    'nein',
+    'fuck no',
+    'hell no'
   );
 
   /**

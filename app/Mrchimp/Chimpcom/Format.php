@@ -233,4 +233,51 @@ class Format
     return preg_replace_callback($pattern, $callback, $text);
   }
 
+  /**
+   * Format todo list tasks
+   * @param  Collection $tasks Tasks to format
+   * @return string            Formatted output           
+   */
+  static function tasks($tasks) {
+    $output = '';
+
+    foreach ($tasks as $task) {
+      $hex_id = Chimpcom::encodeId($task->id);
+      
+      $output .= Format::style(" $hex_id ".($task->completed ? '&#10004;' : ''), '', [
+        'data-type' => 'autofill',
+        'data-autofill' => "done $hex_id"
+      ]);
+
+      if ($task->priority > 10) {
+        $color = '#f00';
+      } elseif ($task->priority > 5) {
+        $color = '#ff0';
+      } elseif ($task->priority < 0) {
+        $color = '#666';
+      } else {
+        $color = '#ccc';
+      }
+
+      $priority = ' <span style="color:'.$color.'">'.$task->priority.'</span> ';
+
+      $output .= Format::style($priority, '', [
+        'data-type' => 'autofill',
+        'data-autofill' => 'priority '.$hex_id
+      ]);
+
+      if ($task->completed) {
+        $output .= Format::grey(' '.e($task->description));
+        $output .= Format::grey(' (Completed: '.$task->time_completed . ')');
+      } else {
+        $output .= ' ' . e($task->description); // @todo - set this a block title instead
+      }
+
+      $output .= Format::grey(' (' . $task->project->name . ')');
+      $output .= '<br>';
+    }
+
+    return $output;
+  }
+
 }
