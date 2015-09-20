@@ -202,4 +202,8 @@ class Input
   public function getTags() {
     return $this->tag_array;
   }
+
+  public function getInputArray() {
+    return $this->input_array();
+  }
 }
