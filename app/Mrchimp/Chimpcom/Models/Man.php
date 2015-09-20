@@ -12,5 +12,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Man extends Model
 { 
-	$table = 'mans';
+	protected $table = 'mans';
 }
