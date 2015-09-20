@@ -71,7 +71,7 @@ class Chimpcom
     'dechex',
     'does',
     'done',
-    // 'echo',
+    'doecho',
     // 'email',
     // 'episode',
     // 'feeds',
