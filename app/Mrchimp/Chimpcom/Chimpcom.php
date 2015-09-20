@@ -64,7 +64,7 @@ class Chimpcom
     'cd',
     'charmap',
     // 'chpass',
-    // 'coin',
+    'coin',
     // 'config',
     // 'credits',
     // 'date',
