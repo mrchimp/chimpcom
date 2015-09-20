@@ -78,7 +78,7 @@ class Chimpcom
         // 'episode',
         // 'feeds',
         // 'files',
-        // 'find',
+        'find',
         // 'forget',
         // 'go',
         // 'hash',
