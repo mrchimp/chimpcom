@@ -109,7 +109,7 @@ class Chimpcom
         'shortcuts',
         // 'stats',
         'styles',
-        // 'tea',
+        'tea',
         // 'tetris',
         // 'thing',
         // 'this',
