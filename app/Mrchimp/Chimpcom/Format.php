@@ -6,6 +6,7 @@
 namespace Mrchimp\Chimpcom;
 
 use Auth;
+use App\User;
 
 /**
  * Wrap strings in spans
@@ -121,7 +122,6 @@ class Format
     $s .= '</table>';
     return $s;
   }
-
 
   /**
    * Output memories
@@ -276,6 +276,34 @@ class Format
       $output .= Format::grey(' (' . $task->project->name . ')');
       $output .= '<br>';
     }
+
+    return $output;
+  }
+
+  /**
+   * Format PMs
+   * @param  Collection $messages
+   * @return string
+   */
+  static function messages($messages) {
+    $output = '<table>
+              <tr>
+                <td>' . Format::title('id') . '</td>
+                <td>' . Format::title('From') . '</td>
+                <td colspan="2">' . Format::title('Message') . '</td>
+              </tr>';
+
+    foreach ($messages as $msg) {
+      $recipient = User::find($msg->author_id);
+      $output .= '<tr>' .
+        '<td style="padding-right: 50px;">'.$msg->id . '</td>' . 
+        '<td style="padding-right: 50px;">'.e($recipient ? $recipient->name : 'Unknown user') . '</td>' . 
+        '<td style="padding-right: 50px;">'.e($msg->message) . '</td>' . 
+        '<td style="padding-right: 50px;">'.($msg->has_been_read ? '&nbsp;' : Format::alert('New')) . '</td>' .
+      '</tr>';
+    }
+
+    $output .= '</table>';
 
     return $output;
   }

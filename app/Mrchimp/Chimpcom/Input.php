@@ -80,7 +80,7 @@ class Input
 
     $parts = explode(' ', trim($input));
 
-    $parts[0] = $this->getAlias($parts[0]);
+    $parts[0] = self::getAlias($parts[0]);
 
     $this->cmd_in = implode(' ', $parts);
 
@@ -145,7 +145,7 @@ class Input
    * Get a string of the input with the first word removed
    */
   public function getParamString() {
-    return implode(' ', array_slice($this->input_array, 1));
+    return implode(' ', array_slice($this->word_array, 1));
   }
 
   /**
@@ -181,7 +181,7 @@ class Input
   /**
    * Look up a command alias
    */
-  private function getAlias($cmd) {
+  public static function getAlias($cmd) {
     $alias = ChimpcomAlias::where('name', $cmd)->take(1)->first();
 
     return ($alias ? $alias->alias : $cmd);
@@ -203,7 +203,11 @@ class Input
     return $this->tag_array;
   }
 
-  public function getInputArray() {
-    return $this->input_array();
+  /**
+   * Get names from input
+   * @return array Array of names
+   */
+  public function getNames() {
+    return $this->name_array;
   }
 }
