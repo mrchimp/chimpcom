@@ -95,7 +95,7 @@ class Chimpcom
         'message',
         // 'monkeys',
         'newtask',
-        // 'oneliner',
+        'oneliner',
         // 'phpinfo',
         // 'priority',
         'project',
@@ -190,8 +190,7 @@ class Chimpcom
         // Do we have a witty oneliner?
         $oneliner = Oneliner::where('command', $this->input->getCommand())
                                     ->orderBy(DB::raw('RAND()'))
-                                    ->take(1)
-                                    ->get();
+                                    ->first();
 
         if (count($oneliner) > 0) {
             $response = new Response;
