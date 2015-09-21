@@ -25,7 +25,7 @@ class Chimpcom
     /**
      * Chimpcom verion number
      */
-    const VERSION = 'v6.0b';
+    const VERSION = 'v7.0b';
 
     /**
      * Command input
@@ -117,7 +117,7 @@ class Chimpcom
         // 'uname',
         'updateman',
         // 'users',
-        // 'version',
+        'version',
         // 'weather',
         'whoami',
         'who'
