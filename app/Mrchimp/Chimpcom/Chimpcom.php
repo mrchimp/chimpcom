@@ -93,7 +93,7 @@ class Chimpcom
         'mail',
         'man',
         'message',
-        // 'monkeys',
+        'monkeys',
         'newtask',
         'oneliner',
         // 'phpinfo',
