@@ -97,7 +97,7 @@ class Chimpcom
         'newtask',
         'oneliner',
         // 'phpinfo',
-        // 'priority',
+        'priority',
         'project',
         'projects',
         'reddit',
@@ -116,12 +116,23 @@ class Chimpcom
         'todo',
         // 'uname',
         'updateman',
-        // 'users',
+        'users',
         'version',
         // 'weather',
         'whoami',
         'who'
     );
+
+    /**
+     * Get an instance of the appropriate command
+     * @param  string $name
+     * @return Command
+     */
+    public function getCommand($name) {
+        $name = ucfirst($name);
+        $command_name = "Mrchimp\Chimpcom\Commands\\".ucfirst($this->input->getCommand());
+        return new $command_name;
+    }
 
     /**
      * Take an input string and return a resopnse array
@@ -203,8 +214,7 @@ class Chimpcom
         // Normal command?
         if (in_array($this->input->getCommand(), self::$available_commands)) {
             try {
-                $command_name = "Mrchimp\Chimpcom\Commands\\".ucfirst($this->input->getCommand());
-                $command = new $command_name;
+                $command = $this->getCommand($this->input->getCommand());
                 return $command->run($this->input);
             } catch (FatalErrorException $e) {
                 $response = new Response;
@@ -275,5 +285,9 @@ class Chimpcom
         
         $output .= '<br>For help type \'<code>?</code>\'';
         return $output;
+    }
+
+    static public function getCommandList() {
+        return self::$available_commands;
     }
 }
