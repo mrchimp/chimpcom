@@ -117,9 +117,13 @@ class Input
       case 'string':
         break;
       case 'integer':
-        $slice = array_slice($this->word_array, $index, 1);
 
-        return $slice[0];
+        $slice = array_slice($this->word_array, $index, 1);
+        if (count($slice) > 0) {
+          return $slice[0];
+        } else {
+          return false;
+        }
 
         break;
       default:
