@@ -128,9 +128,9 @@ class Chimpcom
      * @param  string $name
      * @return Command
      */
-    public function getCommand($name) {
+    static public function getCommand($name) {
         $name = ucfirst($name);
-        $command_name = "Mrchimp\Chimpcom\Commands\\".ucfirst($this->input->getCommand());
+        $command_name = "Mrchimp\Chimpcom\Commands\\".$name;
         return new $command_name;
     }
 

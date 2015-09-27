@@ -1,6 +1,6 @@
 # Chimpcom #
 
-[Chimpcom](http://deviouschimp.co.uk/cmd) is a command line website built on the [Lumen framework](http://lumen.laravel.com/).
+[Chimpcom](http://deviouschimp.co.uk/cmd) is a command line website built on the [Laravel framework](http://laravel.com/).
 
 Chimpcom was originally made in 2009 but this repository is a complete re-write started on 29th August 2015.
 

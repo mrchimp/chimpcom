@@ -103,4 +103,20 @@ class Project extends LoggedInCommand
         $this->response->say('Current project: '.$project->name);
     }
 
+    public function tabcomplete() {
+        $user = Auth::user();
+
+        if ($this->input->get(1) === 'set') {
+            $projects = $user->projects()->select('name')->get();
+
+            foreach ($projects as $project) {
+                if (strrpos($project->name, $this->input->get(2))) {
+                    return 'project set ' . $project->name;
+                }
+            }
+        }
+
+        return '';
+    }
+
 }

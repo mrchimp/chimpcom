@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Mrchimp\Chimpcom\Chimpcom;
+use Mrchimp\Chimpcom\Input as ChimpcomInput;
+use Input;
 
 /**
  * Handle Chimpcom HTTP requests
@@ -25,6 +27,19 @@ class ChimpcomController extends Controller
     } else {
       return $response->getTextOutput();
     }
+  }
+
+  public function commandList() {
+    $commands = Chimpcom::getCommandList();
+    return json_encode($commands);
+  }
+
+  public function tabComplete() {
+    $cmd_in = Input::get('cmd_in');
+    $input = new ChimpcomInput($cmd_in);
+    $command = Chimpcom::getCommand($input->getCommand());
+    $result = $command->runTabcomplete($input);
+    return json_encode($result);
   }
 
 }

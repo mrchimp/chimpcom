@@ -96,6 +96,9 @@ var Chimpcom = {
     if (data.hide_output === true) {
       data.cmd_in = new Array(cmd_in.length + 1).join("*");
     }
+
+    console.log(cmd.showInputType)
+    console.log(cmd.showInputType())
     // Show password/text box
     if (data.show_pass === true) {
       cmd.showInputType('password');

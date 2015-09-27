@@ -117,11 +117,10 @@ class Input
       case 'string':
         break;
       case 'integer':
-        if (!empty($this->word_array[$index])){
-          return $this->word_array[$index];
-        } else {
-          return false;
-        }
+        $slice = array_slice($this->word_array, $index, 1);
+
+        return $slice[0];
+
         break;
       default:
         return $this->cmd_in;

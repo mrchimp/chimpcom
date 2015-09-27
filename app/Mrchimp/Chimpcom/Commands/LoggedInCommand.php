@@ -16,4 +16,12 @@ abstract class LoggedInCommand extends AbstractCommand {
         return $this->response;
     }
 
+    public function runTabcomplete(Input $input) {
+    	if (!Auth::check()) {
+    		return '';
+    	}
+
+    	return parent::runTabcomplete($input);
+    }
+
 }

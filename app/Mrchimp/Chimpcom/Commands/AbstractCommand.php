@@ -170,9 +170,26 @@ abstract class AbstractCommand
     }
   }
 
+  /**
+   * Set normal input and normal action
+   */
   public function resetTerminal() {
     $this->setAction('normal');
     $this->response->usePasswordInput(false);
+  }
+
+  public  function runTabcomplete(Input $input) {
+    $this->input = $input;
+    return $this->tabcomplete();
+  }
+
+  /**
+   * Return first guess at parameter completion
+   * @return String The full completed command input.
+   *                Empty string if nothing found.
+   */
+  public function tabcomplete() {
+    return '';
   }
 
 }
