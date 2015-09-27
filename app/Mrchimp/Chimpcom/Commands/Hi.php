@@ -5,7 +5,6 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Chimpcom;
 
 /**

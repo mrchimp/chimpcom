@@ -18,8 +18,6 @@ class Users extends AdminCommand
    * Run the command
    */
   public function process() {
-    $q = ($this->input->get(1) !== false ? $this->input->get(1) : '');
-
     $users = User::get();
 
     $this->response->say('<table><tr><td>');

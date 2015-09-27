@@ -11,7 +11,7 @@ use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 /**
  * Add a command alias
  */
-class Alias extends AdinCommand
+class Alias extends AdminCommand
 {
 
   /**
