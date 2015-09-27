@@ -51,6 +51,10 @@ class Memory extends Model
     return $query;
   }
 
+  /**
+   * Checks whether the memory belongs to the current user
+   * @return boolean True if memory is users
+   */
   public function isMine() {
     if (!Auth::check()) {
       return false;
@@ -60,6 +64,10 @@ class Memory extends Model
     return $user->id === $this->user->id;
   }
 
+  /**
+   * The owner/creator of this memory
+   * @return App\User
+   */
   public function user() {
     return $this->belongsTo('App\User');
   }

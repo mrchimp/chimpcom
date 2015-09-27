@@ -104,7 +104,7 @@ class Chimpcom
         'register',
         'save',
         'scale',
-        // 'setpublic',
+        'setpublic',
         'show',
         'shortcuts',
         'stats',
@@ -249,15 +249,28 @@ class Chimpcom
         Session::set('action', $str);
     }
 
-    // Convert integer ID to front-facing id
+    /**
+     * Convert integer ID to front-facing id
+     * @param  integer $id Decoded id
+     * @return string      Encoded id
+     */
     static function encodeId($id) {
         return dechex($id);
     }
 
+    /**
+     * Convert front-facing id to integer
+     * @param  string $id Encoded id
+     * @return integer    Decoded id
+     */
     static function decodeId($id) {
         return hexdec($id);
     }
 
+    /**
+     * Render a welcome message
+     * @return string
+     */
     static function welcomeMessage() {
         $output = '';
 
@@ -287,7 +300,12 @@ class Chimpcom
         return $output;
     }
 
+    /**
+     * Return the available_commands array
+     * @return array All command names
+     */
     static public function getCommandList() {
         return self::$available_commands;
     }
+
 }
