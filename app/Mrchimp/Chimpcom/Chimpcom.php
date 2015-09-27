@@ -41,8 +41,7 @@ class Chimpcom
     private static $available_actions = array(
         'candyman',
         'done',
-        // 'forget',
-        // 'login',
+        'forget',
         'newproject',
         'password',
         'project_rm',
@@ -79,7 +78,7 @@ class Chimpcom
         // 'feeds',
         // 'files',
         'find',
-        // 'forget',
+        'forget',
         'go',
         // 'hash',
         // 'help',
