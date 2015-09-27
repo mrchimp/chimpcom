@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Mrchimp\Chimpcom\Models\Memory;
+use Mrchimp\Chimpcom\Models\Feed;
 
 class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
@@ -53,4 +54,9 @@ class User extends Model implements AuthenticatableContract,
     public function tasks() {
         return $this->hasMany('Mrchimp\Chimpcom\Models\Task');
     }
+
+    public function feeds() {
+        return $this->hasMany('Mrchimp\Chimpcom\Models\Feed');
+    }
+
 }

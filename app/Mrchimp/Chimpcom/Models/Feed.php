@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 class Feed extends Model
 {
 
-
+    public function user() {
+        return $this->belongsTo('app\User');
+    }
 
 }

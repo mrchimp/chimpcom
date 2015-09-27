@@ -33,7 +33,7 @@ class CreateChimpcomTables extends Migration
 
         Schema::create('feeds', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user');
+            $table->integer('user_id');
             $table->string('name', 32);
             $table->string('url', 255);
             $table->integer('type');

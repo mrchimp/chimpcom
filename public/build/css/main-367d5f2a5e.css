@@ -281,7 +281,7 @@ span.inverted {
 }
 .tetris {
   line-height: 9px;
-  margin: 5px 0 -16px 5px;
+  margin: 5px;
 }
 .card {
   background: #fff;
