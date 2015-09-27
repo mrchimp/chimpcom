@@ -103,7 +103,7 @@ class Chimpcom
         'reddit',
         'register',
         'save',
-        // 'scale',
+        'scale',
         // 'setpublic',
         'show',
         'shortcuts',
