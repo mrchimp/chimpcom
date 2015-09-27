@@ -114,7 +114,7 @@ class Chimpcom
         // 'thing',
         // 'this',
         'todo',
-        // 'uname',
+        'uname',
         'updateman',
         'users',
         'version',
