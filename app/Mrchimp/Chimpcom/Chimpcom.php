@@ -75,7 +75,7 @@ class Chimpcom
         'doecho',
         // 'email',
         // 'episode',
-        // 'feeds',
+        'feeds',
         // 'files',
         'find',
         'forget',

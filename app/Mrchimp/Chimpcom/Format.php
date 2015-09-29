@@ -146,13 +146,13 @@ class Format
       // Memory ID
       $chunks[] = Format::grey($hexid, [
         'data-type' => 'autofill',
-        'data-autofill' => "forget $hexid"
+        'data-autofill' => e("forget $hexid")
       ]);
 
       if ($memory->isMine()) {
-        $chunks[] = Format::title($memory->user->name, []);
+        $chunks[] = Format::title(e($memory->user->name), []);
       } else {
-        $chunks[] = Format::grey($memory->user->name, []);
+        $chunks[] = Format::grey(e($memory->user->name), []);
       }
 
       // Public
@@ -160,13 +160,13 @@ class Format
         $chunks[] = Format::alert('P', [
           'title' => 'Public: anyone can see this.',
           'data-type' => 'autofill',
-          'data-autofill', "setpublic $hexid --private"
+          'data-autofill', e("setpublic $hexid --private")
         ]);
       } else {
         $chunks[] = Format::grey('p', [
           'title' => 'Private: only you can see this',
           'data-type' => 'autofill',
-          'data-autofill' => "setpublic $hexid"
+          'data-autofill' => e("setpublic $hexid")
         ]);
       }
 
@@ -188,7 +188,7 @@ class Format
       if ($current_user->id == $memory->user->id) {
         $attrs = [
           'data-type' => 'autofill',
-          'data-autofill' => "update $hexid {$memory['content']}"
+          'data-autofill' => e("update $hexid {$memory['content']}")
         ];
       } else {
         $attrs = [];
@@ -304,6 +304,35 @@ class Format
     }
 
     $output .= '</table>';
+
+    return $output;
+  }
+
+  static function feed($feed) {
+    $output = '';
+    $output .= self::alert('<br>' . $feed->get_title()) . '<br><br>';
+    $item_count = $feed->get_item_quantity();
+
+    for ($i = 0; $i < $item_count; $i++) {
+      $item = $feed->get_item($i);
+      $output .= self::feedItem($item);
+    }
+
+    return $output;
+  }
+
+  static function feedItem($item) {
+    $output = self::title(e($item->get_title())) . '<br>';
+    $author = $item->get_author();
+
+    if ($author) {
+      $output .= 'Author: ' . e($author->get_name());
+    }
+
+    $output .= e($item->get_date('Y-m-d H:i:s')) . '<br>';
+    // @todo sanitize output rather than just escaping it
+    $output .= e($item->get_description());
+    $output .= '<br>';
 
     return $output;
   }
