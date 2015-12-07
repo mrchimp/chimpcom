@@ -4,7 +4,7 @@
 var Chimpcom = {
 
   options: {
-    responder: '/ajax/respond/json',
+    responder: 'ajax/respond/json',
     timeout_length: 2000
   },
 
