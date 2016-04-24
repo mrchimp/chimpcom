@@ -31,7 +31,7 @@ class Reddit
    * @var boolean
    */
   public $show_selftext = true;
-  
+
   /**
    * ID of the reddit post
    * @var integer
@@ -50,12 +50,9 @@ class Reddit
    * @return string      JSON response
    */
   private function get_content($url) {
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_URL, $url);
-    $data = curl_exec($ch);
-    curl_close($ch);
-    return $data;
+    $client = new \GuzzleHttp\Client();
+    $res = $client->request('GET', $url);
+    return $res->getBody();
   }
 
   /**
@@ -65,7 +62,7 @@ class Reddit
    *                             reddits, frontpage(default).
    * @param  integer $post_id    Post ID
    * @param  integer $comment_id Comment ID
-   * @return string              
+   * @return string
    */
   public function get($action = 'frontpage', $post_id = null, $comment_id = null) {
     $this->post_id = $post_id;
@@ -108,7 +105,7 @@ class Reddit
     }
 
     $file = json_decode($content, true);
-    
+
     if (isset($file['kind'])) {
       return $this->renderReddit($file);
     } else if (gettype($file) == 'array') {
@@ -145,13 +142,13 @@ class Reddit
     ])->render();
     // switch ($node['kind']) {
     //   case 'Listing':
-    //     // return $this->renderListing($node['data'], $depth); 
+    //     // return $this->renderListing($node['data'], $depth);
     //     return view('reddit.listing', [$node['data'], $depth]);
     //   case 't5': // subreddit
     //     return $this->renderSubreddit($node['data'], $depth);
     //   case 't3': // post
     //     return $this->renderPost($node['data'], $depth);
-    //   case 't1': // comments    
+    //   case 't1': // comments
     //     return $this->renderComment($node['data'], $depth);
     //   case 'more': // more replies
     //     return $this->renderMore($node['data']);
@@ -159,7 +156,7 @@ class Reddit
     //     return 'Ummm...'.$node['kind'].'<br>';
     // }
   }
-  
+
   /**
    * Render a Reddit "more" node.
    * @param  object  $more  The object to render
@@ -170,7 +167,7 @@ class Reddit
   //   $out = "<div data-type=\"autofill\" data-autofill=\"reddit comments " . $this->post_id . " {$more['id']}\">more</div>";
   //   return $out;
   // }
-  
+
   /**
    * Render a Reddit "listing" node
    * @param  object  $node  The node to render
@@ -184,7 +181,7 @@ class Reddit
   //   }
   //   return $out;
   // }
-  
+
   /**
    * Render a Reddit "post" node
    * @param  object  $node  The object to render
@@ -192,9 +189,9 @@ class Reddit
    * @return string         Rendered output
    */
   // function renderPost($node, $depth = 0) {
-  //   $tooltip = "Author: {$node['author']}\n" . 
+  //   $tooltip = "Author: {$node['author']}\n" .
   //              'Click comment title for command';
-    
+
   //   $out = '<div class="reddit-post ' . ($node['ups'] > $node['downs'] ? 'upvoted' : 'downvoted') . '">';
   //   $out .= '<span class="reddit-score">';
   //   $out .= "<span title=\"{$node['ups']} up / {$node['downs']} down\">{$node['score']}</span>|";
@@ -203,15 +200,15 @@ class Reddit
   //   $out .= '</span>';
   //   $out .= $node['over_18'] ? '<span class="reddit-nsfw" title="NSFW!">:O</span> ' : ' ';
   //   $out .= "<span data-type=\"autofill\" data-autofill=\"reddit -c {$node['id']}\" title=\"$tooltip\">{$node['title']}</span> ";
-    
+
   //   if (!empty($node['selftext']) && $this->show_selftext) {
   //     $out .= '<br>' . nl2br($node['selftext']);
   //   }
-    
+
   //   $out .= '</div>';
   //   return $out;
   // }
-  
+
   /**
    * Render a Reddit "comment" node
    * @param  object  $node  The object to render
@@ -225,15 +222,15 @@ class Reddit
   //   $out .= '</span> ';
   //   $out .= "<span data-type=\"autofill\" data-autofill=\"reddit comments {$this->post_id} {$node['id']}\">&para;</span> ";
   //   $out .= $node['body'];
-    
+
   //   if (isset($node['replies']['data']['children'])) {
   //       $out .= $this->renderReddit($node['replies'], $depth+1);
   //   }
-    
+
   //   $out .= '</div>';
   //   return $out;
   // }
-  
+
   /**
    * Render a Reddit "subreddit" node
    * @param  object  $node  The object to render
