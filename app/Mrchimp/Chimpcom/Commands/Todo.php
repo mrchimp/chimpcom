@@ -16,7 +16,7 @@ class Todo extends LoggedInCommand
 {
 
     protected $title = 'Todo';
-    protected $description = 'Lists tasks on the current project.';
+    protected $description = 'Lists tasks on the current project. By default only incomplete tasks from the current project are shown.';
     protected $usage = 'todo [--all|-a] [--allprojects|-p] [--completed|-c]';
     protected $example = 'todo -all';
     protected $see_also = 'project, projects, newtask, done';
@@ -38,7 +38,14 @@ class Todo extends LoggedInCommand
         $show_all_items    = $this->input->isFlagSet(['--all', '-a']);
         $show_all_projects = $this->input->isFlagSet(['--allprojects', '-p']);
         $show_completed    = $this->input->isFlagSet(['--completed', '-c']);
-        $show_completed    = (!$show_completed ? null : true);
+
+        if ($show_all_items) {
+            $completion = null;
+        } else if ($show_completed) {
+            $completion = true;
+        } else {
+            $completion = false;
+        }
 
         if ($show_all_projects) {
             $this->response->say('Showing task from all projects.<br>');
@@ -58,7 +65,7 @@ class Todo extends LoggedInCommand
         }
 
         $tasks = $tasks->search($search_term)
-            ->completed($show_completed)
+            ->completed($completion)
             ->orderBy('priority', 'DESC')
             ->take($count)
             ->get();

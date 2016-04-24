@@ -18,7 +18,7 @@ class Project extends LoggedInCommand
 
     protected $title = 'Project';
     protected $description = 'Sets the active project or shows details of the active project.';
-    protected $usage = 'project<br>project set &lt;project_id&gt;<br>project set &lt;project_name&gt;';
+    protected $usage = 'project<br>project set &lt;project_id&gt;<br>project set &lt;project_name&gt;<br>project new &lt;project_name&gt;';
     protected $example = 'project set chimpcom';
     protected $see_also = 'projects, newtask, todo, done';
 
