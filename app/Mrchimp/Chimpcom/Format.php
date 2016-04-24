@@ -236,14 +236,14 @@ class Format
   /**
    * Format todo list tasks
    * @param  Collection $tasks Tasks to format
-   * @return string            Formatted output           
+   * @return string            Formatted output
    */
   static function tasks($tasks) {
     $output = '';
 
     foreach ($tasks as $task) {
       $hex_id = Chimpcom::encodeId($task->id);
-      
+
       $output .= Format::style(" $hex_id ".($task->completed ? '&#10004;' : ''), '', [
         'data-type' => 'autofill',
         'data-autofill' => "done $hex_id"
@@ -294,11 +294,10 @@ class Format
               </tr>';
 
     foreach ($messages as $msg) {
-      $recipient = User::find($msg->author_id);
       $output .= '<tr>' .
-        '<td style="padding-right: 50px;">'.$msg->id . '</td>' . 
-        '<td style="padding-right: 50px;">'.e($recipient ? $recipient->name : 'Unknown user') . '</td>' . 
-        '<td style="padding-right: 50px;">'.e($msg->message) . '</td>' . 
+        '<td style="padding-right: 50px;">'.$msg->id . '</td>' .
+        '<td style="padding-right: 50px;">'.e($msg->recipient ? $msg->recipient->name : 'Unknown user') . '</td>' .
+        '<td style="padding-right: 50px;">'.e($msg->message) . '</td>' .
         '<td style="padding-right: 50px;">'.($msg->has_been_read ? '&nbsp;' : Format::alert('New')) . '</td>' .
       '</tr>';
     }

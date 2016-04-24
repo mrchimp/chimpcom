@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * View messages sent by other users
  */
@@ -16,40 +16,47 @@ use Mrchimp\Chimpcom\Models\Message as MessageModel;
 class Mail extends LoggedInCommand
 {
 
+    protected $title = 'Mail';
+    protected $description = 'Read messages from other users. Use --sent to show messages that you have sent to others. Messages will be marked as read as soon as they are seen. Use --dont-read to prevent this.';
+    protected $usage = 'mail [--all|-a] [--sent|-s] [--dont-read|-r] [--delete|-d &lt;message_id&gt;]';
+    protected $see_also = 'message';
+
     /**
      * Run the command
      */
     public function process() {
         $user = Auth::user();
 
-        // @todo - allow deleting messages
         // Delete messages
-        // if ($this->isFlagSet(array('--delete', '-d'))) {
-          // if ($this->isFlagSet(array('--all', 'a'))) {
-            // $result = $messenger->deleteMessage('all');      
-          // } else if ($this->inputArray(1) != false) {
-            // $result = $messenger->deleteMessage($this->inputArray(1));
-          // }
-          // if ($result) {
-            // $this->alert('Message(s) deleted.');
-          // } else {
-            // $this->error('There was a problem.');
-          // }
-          // return $result;
-        // }
-        
+        if ($this->input->isFlagSet(['--delete', '-d'])) {
+            $message_ids = array_slice($this->input->getWordArray(), 1);
+            $result = MessageModel::where('recipient_id', $user->id)
+                ->whereIn('id', $message_ids)
+                ->delete();
+
+            if ($result) {
+              $this->response->alert('Message(s) deleted.');
+            } else {
+              $this->response->error('There was a problem.');
+            }
+
+            return;
+        }
+
         $showAll = $this->input->isFlagSet(['--all', '-a']);
         $mailbox = ($this->input->isFlagSet(['--sent', '-s']) ? 'outbox' : 'inbox');
-        
-        $messages = MessageModel::where('recipient_id', $user->id)->get();
-          
+
+        $messages = MessageModel::where('recipient_id', $user->id)
+            ->with('author', 'recipient')
+            ->get();
+
         if (count($messages) === 0) {
             $this->response->say('No messages');
             return;
         }
 
         $this->response->say(Format::messages($messages));
-        
+
         if (!$this->input->isFlagSet(['-r', '--dont-read'])) {
             foreach ($messages as $message) {
                 $message->has_been_read = true;

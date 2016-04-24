@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Send a message to another user
  */
@@ -15,6 +15,11 @@ use Mrchimp\Chimpcom\Models\Message as MessageModel;
  */
 class Message extends LoggedInCommand
 {
+    protected $title = 'Message';
+    protected $description = 'Send a message to other users.';
+    protected $usage = 'message &lt;username[s]&gt; &lt;message&gt;';
+    protected $example = 'message @mrchimp Hey there!';
+    protected $see_also = 'mail';
 
     /**
      * Run the command
@@ -27,8 +32,8 @@ class Message extends LoggedInCommand
         if (empty($recipient_names)) {
             $this->response->error('You need to tell me who to send that to. Begin usernames with an @ symbol - Twitter style.');
             return false;
-        } 
-        
+        }
+
         foreach ($recipient_names as $name) {
             $recipient = User::where('name', $name)->first();
 
@@ -38,7 +43,7 @@ class Message extends LoggedInCommand
                 $message->recipient_id = $recipient->id;
                 $message->author_id = $user->id;
                 $message->save();
-                
+
                 $this->response->say('Sent message to ' . e($name) . '.<br>');
 
                 $success_count++;

@@ -18,4 +18,12 @@ class Message extends Model
     return $this->morphToMany('Mrchimp\Chimpcom\Models\Tag', 'taggable');
   }
 
+  public function author() {
+    return $this->hasOne('App\User', 'id', 'author_id');
+  }
+
+  public function recipient() {
+    return $this->hasOne('App\User', 'id', 'recipient_id');
+  }
+
 }
