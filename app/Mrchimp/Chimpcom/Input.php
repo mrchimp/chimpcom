@@ -102,16 +102,16 @@ class Input
     $this->param_array = array_slice($this->input_array, 1);
     $this->command = e(strtolower($parts[0]));
   }
-  
+
   /**
    * Get the input text as an array split by spaces. Gets different things
    * depending on what is passed as $index.
    *
    * get() // Get whole input string
    * get(1) // Get first (non flag) word
-   * 
+   *
    * @return string or false
-   */ 
+   */
   public function get($index = null){
     switch (gettype($index)) {
       case 'string':
@@ -132,16 +132,20 @@ class Input
   }
 
   /**
-   * Get the *words* from input separated by spaces 
-   * 
+   * Get the *words* from input separated by spaces
+   *
    * @return string or false
-   */ 
+   */
   public function getWord($index){
     if (!empty($this->word_array[$index])){
       return $this->word_array[$index];
     } else {
       return false;
     }
+  }
+
+  public function getWordArray() {
+      return $this->word_array;
   }
 
   /**

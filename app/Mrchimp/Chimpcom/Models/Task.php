@@ -44,4 +44,12 @@ class Task extends Model
         return $query->where('completed', $value);
     }
 
+    public function scopeProject($query, $value = null) {
+        if (is_null($value)) {
+            return $query;
+        }
+
+        return $query->where('project_id', $value);
+    }
+
 }

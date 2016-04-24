@@ -5,6 +5,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use DB;
 use Auth;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Task;
@@ -47,13 +48,12 @@ class Todo extends LoggedInCommand
             $completion = false;
         }
 
+        $tasks = Task::where('user_id', $user->id);
+
         if ($show_all_projects) {
             $this->response->say('Showing task from all projects.<br>');
-            $tasks = Task::where('user_id', $user->id);
         } else {
             $this->response->say('Current project: ' . e($project->name) . '<br>');
-            $tasks = Task::where('user_id', $user->id)
-                         ->where('project_id', $user->activeProject->id);
         }
 
         $count = 10;
@@ -61,12 +61,15 @@ class Todo extends LoggedInCommand
 
         if (is_numeric($this->input->get(1))) {
             $count = (int)$this->input->get(1);
-            $search_term = implode(' ', array_slice($this->input->getParamString(), 1));
+            $search_term = implode(' ', array_slice($this->input->getWordArray(), 2));
         }
 
         $tasks = $tasks->search($search_term)
+            ->project($show_all_projects ? null : $user->activeProject->id)
             ->completed($completion)
+            ->orderBy('completed', 'ASC')
             ->orderBy('priority', 'DESC')
+            ->orderBy('created_at', 'DESC')
             ->take($count)
             ->get();
 
