@@ -1,6 +1,6 @@
-<?php 
+<?php
 /**
- * Your basic common or garden Chimpcom function
+ * Find a memory by its name
  */
 
 namespace Mrchimp\Chimpcom\Commands;
@@ -11,10 +11,16 @@ use Mrchimp\Chimpcom\Chimpcom;
 use Mrchimp\Chimpcom\Models\Memory;
 
 /**
- * Your basic common or garden Chimpcom function
+ * Find a memory by its name or description
  */
 class Find extends LoggedInCommand
 {
+
+    protected $title = 'Find';
+    protected $description = 'Find a memory by its name or description.';
+    protected $usage = 'find &lt;search_term&gt;';
+    protected $example = 'find chimpcom';
+    protected $see_also = 'save, show, forget, setpublic';
 
     /**
      * Run the command

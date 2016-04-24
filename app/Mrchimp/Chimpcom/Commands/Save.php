@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Create a memory item
  */
@@ -14,6 +14,12 @@ use Mrchimp\Chimpcom\Models\Tag;
  */
 class Save extends LoggedInCommand
 {
+
+  protected $title = 'Save';
+  protected $description = 'Save a memory. Each memory consists of a name a description. The name must be a single word. The description can be a whole paragraph. By default the memory will only be visible by you. To make it visible to other users add the --public or -p flag or after saving, use the SETPUBLIC command.<br><br>Once the memory has been saved you can search for it using FIND or SHOW and delete it with FORGET.';
+  protected $usage = 'save &lt;name&gt; &lt;description&gt; [--public|-p]';
+  protected $example = 'save chimpcom A command line website.';
+  protected $see_also = 'forget, show, find, setpublic';
 
   /**
    * Run the command

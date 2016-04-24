@@ -11,6 +11,12 @@ use DB;
 class Show extends LoggedInCommand
 {
 
+  protected $title = 'Show';
+  protected $description = 'Find a memory by its name.';
+  protected $usage = 'show &lt;memory_name&gt; [--distinct|-w] [--public|-p] [--mine|-m]';
+  protected $example = 'show chimpcom';
+  protected $see_also = 'save, find, forget, setpublic';
+
   public function process() {
     $user = Auth::user();
     $distinct   = $this->input->isFlagSet(['--distinct', '-w']);
@@ -40,7 +46,10 @@ class Show extends LoggedInCommand
       $item_type = 'both';
     }
 
-    $memories = Memory::visibility($item_type)->orderBy('name')->orderBy('id')->with('user');
+    $memories = Memory::visibility($item_type)
+        ->orderBy('name')
+        ->orderBy('id')
+        ->with('user');
 
     if (is_numeric($this->input->get(1))) {
       $memory_id = $this->input->get(1);

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Make memories public/private
  */
@@ -14,6 +14,12 @@ use Mrchimp\Chimpcom\Chimpcom;
  */
 class Setpublic extends LoggedInCommand
 {
+
+    protected $title = 'Set Public';
+    protected $description = 'Sets a memory to be visible to other users.';
+    protected $usage = 'setpublic &lt;memory_id&gt; [--private]';
+    protected $example = 'setpublic 12';
+    protected $see_also = 'save, show, find, forget';
 
     /**
      * Run the command

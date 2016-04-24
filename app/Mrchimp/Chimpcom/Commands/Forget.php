@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Triggers action_forget
  */
@@ -16,6 +16,13 @@ use Mrchimp\Chimpcom\Models\Memory;
  */
 class Forget extends LoggedInCommand
 {
+
+  protected $title = 'Forget';
+  protected $description = 'Deletes a memory.';
+  protected $usage = 'forget &lt;memory_id&gt;';
+  protected $example = 'forget 12';
+  protected $see_also = 'save, show, find, setpublic';
+
 
   /**
    * Run the command
@@ -46,11 +53,11 @@ class Forget extends LoggedInCommand
                       ->whereIn('id', $ids)->get();
 
     // $memories = \R::find(
-    //   'memory', 
+    //   'memory',
     //   'id IN (' . implode(',', array_fill(0,count($ids),'?')) . ') AND user = ?',
     //   $data
     // );
-    
+
     if (empty($memories)) {
       $this->response->error('Couldn\'t find that memory or it\'s not yours to forget.');
       return;
@@ -64,7 +71,7 @@ class Forget extends LoggedInCommand
 
     $this->response->title('Are you sure you want to forget these memories?<br>');
     $this->response->say($output);
-    
+
     Session::set('forget_id', $ids);
     $this->setAction('forget');
   }
