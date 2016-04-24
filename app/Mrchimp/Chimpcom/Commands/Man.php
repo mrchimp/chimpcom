@@ -17,8 +17,8 @@ class Man extends AbstractCommand
 {
 
     protected $title = 'Man';
-    protected $description = 'Gets help.';
-    protected $usage = 'man &lt;command_name&gt;';
+    protected $description = 'Gets help on a given command. Use --commands to get a list of available commands.';
+    protected $usage = 'man [&lt;command_name&gt;|--commands|-c]';
     protected $example = 'man projects';
     protected $see_also = '';
 
@@ -26,6 +26,12 @@ class Man extends AbstractCommand
      * Run the command
      */
     public function process() {
+        if ($this->input->isFlagSet(['--commands', '-c'])) {
+            $commands = Chimpcom::getCommandList();
+            $this->response->say(Format::listToTable($commands, 3, true));
+            return;
+        }
+
         if ($this->input->get(1) === false) {
             $this->response->say('This is how you get help. Type <code>man man</code> for more help on the help.');
             return;
