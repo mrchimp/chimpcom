@@ -52,6 +52,8 @@ class Chimpcom
 
     /**
      * Available Chimpcom commands. Used to compare input against for security.
+     * @todo rather than comparing to array, should probably use something like
+      *      have 'cmd' => Cmd::class
      * @var array
      */
     private static $available_commands = array(
@@ -180,7 +182,7 @@ class Chimpcom
 
         // Check for shortcuts?
         $shortcut = Shortcut::where('name', $this->input->get(0))->take(1)->first();
-        
+
         if (count($shortcut) > 0) {
             $url = str_replace('%PARAM', urlencode($this->input->get(1)), $shortcut->url);
 
@@ -196,7 +198,7 @@ class Chimpcom
 
             return $response;
         }
-        
+
         // Do we have a witty oneliner?
         $oneliner = Oneliner::where('command', $this->input->getCommand())
                                     ->orderBy(DB::raw('RAND()'))
@@ -209,7 +211,7 @@ class Chimpcom
 
             return $response;
         }
-        
+
         // Normal command?
         if (in_array($this->input->getCommand(), self::$available_commands)) {
             try {
@@ -237,11 +239,11 @@ class Chimpcom
     private function getAction() {
         return Session::get('action', 'normal');
     }
-    
+
     /**
      * Sets the action - i.e. what to expect from the next command.
      * If they've just entered a username, we're gonna expect a password.
-     * 
+     *
      * @param string $str the name of the action to expect
      */
     protected function setAction($str = 'normal') {
@@ -276,14 +278,14 @@ class Chimpcom
         if (Auth::check()) {
             $user = Auth::user();
             $output .= Format::title('Welcome back, '.e($user->name).'.');
-            
+
             $messages = Message::where('recipient_id', $user->id)
                                ->where('has_been_read', false)
                                ->get();
 
             if (count($messages) > 0) {
                 $output .= '<br>You have ' . count($messages) . ' new message' .
-                            (count($messages) > 1 ? 's' : '') . 
+                            (count($messages) > 1 ? 's' : '') .
                             '. Type <code>mail</code> to read. ';
 
                 if (count($messages) > 10) {
@@ -294,7 +296,7 @@ class Chimpcom
             $output .= Format::title('Chimpcom ' . self::VERSION) . '<br>';
             $output .= 'Hello, stranger! Don\'t be afraid. It\'s just text.';
         }
-        
+
         $output .= '<br>For help type \'<code>?</code>\'';
         return $output;
     }
