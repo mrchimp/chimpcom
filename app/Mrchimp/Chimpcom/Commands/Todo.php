@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Current user's todo list
  */
@@ -14,6 +14,12 @@ use Mrchimp\Chimpcom\Models\Task;
  */
 class Todo extends LoggedInCommand
 {
+
+    protected $title = 'Todo';
+    protected $description = 'Lists tasks on the current project.';
+    protected $usage = 'todo [--all|-a] [--allprojects|-p] [--completed|-c]';
+    protected $example = 'todo -all';
+    protected $see_also = 'project, projects, newtask, done';
 
     /**
      * Run the command
@@ -42,7 +48,7 @@ class Todo extends LoggedInCommand
             $tasks = Task::where('user_id', $user->id)
                          ->where('project_id', $user->activeProject->id);
         }
-        
+
         $count = 10;
         $search_term = $this->input->getParamString();
 
@@ -56,12 +62,12 @@ class Todo extends LoggedInCommand
             ->orderBy('priority', 'DESC')
             ->take($count)
             ->get();
-        
+
         if (!$tasks) {
             $this->alert('Nothing to do!');
             return false;
         }
-        
+
         $this->response->say(Format::tasks($tasks));
         $this->response->say('<br>' . count($tasks) . ' tasks.');
     }

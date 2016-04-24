@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Give credit where it's due
  */
@@ -12,10 +12,16 @@ use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Task;
 
 /**
- * Give credit where it's due
+ * Mark a task as done
  */
 class Done extends LoggedInCommand
 {
+
+    protected $title = 'Done';
+    protected $description = 'Marks a task as completed.';
+    protected $usage = 'done &lt;task_id&gt;';
+    protected $example = 'done 12';
+    protected $see_also = 'project, projects, newtask, todo';
 
     /**
      * Run the command

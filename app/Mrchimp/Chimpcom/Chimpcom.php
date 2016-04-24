@@ -130,6 +130,10 @@ class Chimpcom
      * @return Command
      */
     static public function getCommand($name) {
+        if (!in_array($name, self::$available_commands)) {
+          return null;
+        }
+
         $name = ucfirst($name);
         $command_name = "Mrchimp\Chimpcom\Commands\\".$name;
         return new $command_name;

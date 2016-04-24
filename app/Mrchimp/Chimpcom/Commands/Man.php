@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Read the manual
  */
@@ -7,6 +7,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Chimpcom\Chimpcom;
 use Mrchimp\Chimpcom\Input;
+use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Man as ManPage;
 
 /**
@@ -14,6 +15,12 @@ use Mrchimp\Chimpcom\Models\Man as ManPage;
  */
 class Man extends AbstractCommand
 {
+
+    protected $title = 'Man';
+    protected $description = 'Gets help.';
+    protected $usage = 'man &lt;command_name&gt;';
+    protected $example = 'man projects';
+    protected $see_also = '';
 
     /**
      * Run the command
@@ -24,37 +31,17 @@ class Man extends AbstractCommand
             return;
         }
 
-        // View a man page
         $page_name = Input::getAlias($this->input->get(1));
-        $man = ManPage::where('command', $page_name)->first();
+        $command = Chimpcom::getCommand($page_name);
 
-        if (!$man) {
-            $this->response->error('Man page does not exist.');
-            return;
+        if (!$command) {
+          $this->response->error('No man page found');
+          return;
         }
 
-        $this->response->title($man->command.'<br>');
-        $this->response->say($man->description);
-
-        if ($man->usage) {
-            $this->response->title('<br><br>Usage<br>');
-            $this->response->say($man->usage);
-        }
-
-        if ($man->example) {
-            $this->response->title('<br><br>Example<br>');
-            $this->response->say($man->example);
-        }
-
-        if ($man->see_also) {
-            $this->response->title('<br><br>See also<br>');
-            $this->response->say($man->see_also);
-        }
-
-        if ($man->aliases) {
-            $this->response->title('<br><br>Aliases<br>');
-            $this->response->say($man->aliases);
-        }
+        $text = $command->man();
+        $this->response->say($text);
+        return;
     }
 
 }

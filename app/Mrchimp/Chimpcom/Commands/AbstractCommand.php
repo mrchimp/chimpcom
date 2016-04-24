@@ -19,6 +19,42 @@ use Validator;
 abstract class AbstractCommand
 {
 
+    protected $title = '';
+    protected $description = '';
+    protected $usage = '';
+    protected $example = '';
+    protected $see_also = '';
+    protected $aliases = '';
+
+    public function man() {
+      $out = '';
+
+      $out .= Format::title($this->title) . '<br>';
+      $out .= $this->description . '<br><br>';
+
+      if ($this->usage) {
+        $out .= Format::title('Usage') . '<br>';
+        $out .= $this->usage . '<br><br>';
+      }
+
+      if ($this->example) {
+        $out .= Format::title('Example') . '<br>';
+        $out .= '<code>' . $this->example . '</code><br><br>';
+      }
+
+      if ($this->see_also) {
+        $out .= Format::title('See Also') . '<br>';
+        $out .= $this->see_also . '<br><br>';
+      }
+
+      if ($this->aliases) {
+        $out .= Format::title('Aliases') . '<br>';
+        $out .= $this->aliases . '<br><br>';
+      }
+
+      return $out;
+    }
+
   /**
    * Chimpcom response object
    * @var ChimpcomResponse
@@ -32,7 +68,7 @@ abstract class AbstractCommand
   protected $unknown = false;
 
   /**
-   * Set to true if we want to log the command. Used to hide sensitive 
+   * Set to true if we want to log the command. Used to hide sensitive
    * information from log files.
    * @var boolean
    */
@@ -43,7 +79,7 @@ abstract class AbstractCommand
    * @var string
    */
   private $log_file;
- 
+
   /**
    * Command input
    * @var Input
@@ -103,7 +139,7 @@ abstract class AbstractCommand
     $this->process();
     return $this->response;
   }
- 
+
   /**
    * Saves a string to the log file
    * @param  string $msg The message to log
@@ -131,7 +167,7 @@ abstract class AbstractCommand
   /**
    * Sets the action - i.e. what to expect from the next command.
    * If they've just entered a username, we're gonna expect a password.
-   * 
+   *
    * @param string $str the name of the action to expect
    */
   protected function setAction($str = 'normal'){
@@ -142,7 +178,7 @@ abstract class AbstractCommand
    * Do the meat of the process.
    * @param  string $command Command input.
    * @param  string $output  Command output (for forcing the output)
-   * @return ChimpcomResponse           
+   * @return ChimpcomResponse
    */
   abstract public function process();
 

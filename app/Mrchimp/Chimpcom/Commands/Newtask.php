@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Create a new task on the current project
  */
@@ -16,6 +16,13 @@ use Mrchimp\Chimpcom\Models\Task;
 class Newtask extends LoggedInCommand
 {
 
+    protected $title = 'Do';
+    protected $description = 'Add a new task to the current project.';
+    protected $usage = 'do &lt;task_description&gt;';
+    protected $example = 'do Test some stuff.';
+    protected $see_also = 'project, projects, todo, done';
+    protected $aliases = 'do';
+
     /**
      * Run the command
      */
@@ -23,7 +30,7 @@ class Newtask extends LoggedInCommand
         $user = Auth::user();
 
         if ($this->input->get(1) === false) {
-            $this->error('Do what?');
+            $this->response->error('Do what?');
             return;
         }
 

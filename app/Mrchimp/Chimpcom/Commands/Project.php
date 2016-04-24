@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Manage projects
  */
@@ -15,6 +15,12 @@ use Mrchimp\Chimpcom\Models\Project as ProjectModel;
  */
 class Project extends LoggedInCommand
 {
+
+    protected $title = 'Project';
+    protected $description = 'Sets the active project or shows details of the active project.';
+    protected $usage = 'project<br>project set &lt;project_id&gt;<br>project set &lt;project_name&gt;';
+    protected $example = 'project set chimpcom';
+    protected $see_also = 'projects, newtask, todo, done';
 
     /**
      * Run the command
@@ -46,7 +52,7 @@ class Project extends LoggedInCommand
 
             return;
         }
-        
+
         // Set current project
         if ($this->input->get(1) === 'set') {
             $project_id = $this->input->get(2);

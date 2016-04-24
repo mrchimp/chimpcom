@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * List available projects
  */
@@ -14,6 +14,12 @@ use Mrchimp\Chimpcom\Models\Project;
  */
 class Projects extends LoggedInCommand
 {
+
+    protected $title = 'Projects';
+    protected $description = 'Lists projects.';
+    protected $usage = 'projects';
+    protected $example = 'projects';
+    protected $see_also = 'project, newtask, todo, done';
 
     /**
      * Run the command
