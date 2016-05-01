@@ -19,7 +19,6 @@ class Response
    * @var array
    */
   private $out = array(
-    'cmd_in'      => '',
     'cmd_out'     => '',
     'show_pass'   => false,
     'cmd_fill'    => '',
@@ -107,15 +106,6 @@ class Response
    */
   public function log($str) {
   	$this->out['log'] .= $str;
-  }
-
-  /**
-   * Set the cmd_in (the command as given by the user). 
-   * You probably don't need to call this.
-   * @param string $str The new cmd_in
-   */
-  public function setCmdIn($str) {
-    $this->out['cmd_in'] = htmlspecialchars($str);
   }
 
   /**

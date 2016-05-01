@@ -134,7 +134,6 @@ abstract class AbstractCommand
    * @return Mrchimp\Chimpcom\Response        the command response
    */
   public function run(Input $input) {
-    $this->response->setCmdIn($input->get());
     $this->input = $input;
     $this->process();
     return $this->response;

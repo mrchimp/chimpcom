@@ -20,7 +20,7 @@ var Chimpcom = {
         if (!$('#bash').length) {
           $('body').prepend('<img src="assets/img/bash.png" id="bash" style="position:fixed;">');
         }
-        displayOutput('bash', 'Ow! I hope you\'re going to fix that!');
+        return 'Ow! I hope you\'re going to fix that!';
         break;
       case 'alert':
       case 'alarm':
@@ -29,25 +29,25 @@ var Chimpcom = {
           'chimpcom_timer',
           'height=90,width=350,left=100,top=100,menubar=no,location=no,scrollbars=no,status=no,toolbar=no,titlebar=no');
 
-        displayOutput(cmd_in, 'Clock has opened in new window.');
+        return 'Clock has opened in new window.';
         break;
       case 'fix':
         $('#bash').remove();
-        displayOutput('fix', 'Good as new.');
+        return 'Good as new.';
         break;
       case 'pwd':
-        displayOutput('pwd', document.location.href);
+        return document.location.href;
         break;
       case 'popup':
       case 'detach':
         openChimpcomPopup();
-        displayOutput(cmd_in, 'If nothing happened, try disabling your popup blocker.<br><br>To create popup bookmarklet, bookmark <a href="javascript:window.open(\'http://cmd.deviouschimp.co.uk/\',\'_blank\',\'height=388,width=669,left=100,top=100,menubar=no,location=no,scrollbars=yes,status=no,toolbar=no,titlebar=no\');">this link.</a>');
+        return 'If nothing happened, try disabling your popup blocker.<br><br>To create popup bookmarklet, bookmark <a href="javascript:window.open(\'http://cmd.deviouschimp.co.uk/\',\'_blank\',\'height=388,width=669,left=100,top=100,menubar=no,location=no,scrollbars=yes,status=no,toolbar=no,titlebar=no\');">this link.</a>';
         break;
       case 'ispopup':
         if (this.popup) {
-          displayOutput(cmd_in, 'Popup mode is enabled.');
+          return 'Popup mode is enabled.';
         } else {
-          displayOutput(cmd_in, 'Popup mode is not enabled.');
+          return 'Popup mode is not enabled.';
         }
         break;
       default:
@@ -80,43 +80,14 @@ var Chimpcom = {
    * @param  object data AJAX response data
    */
   handleAjaxSuccess: function(data) {
-    if (data.redirect !== undefined) {
-      document.location.href = data.redirect;
-    }
-
-    if (data.openWindow !== undefined) {
-      window.open(data.openWindow, '_blank', data.openWindowSpecs);
-    }
-
-    if (data.log !== undefined && data.log !== '') {
-      console.log(data.log);
-    }
-
-    // mask the text that was input when outputting it to screen
-    if (data.hide_output === true) {
-      data.cmd_in = new Array(cmd_in.length + 1).join("*");
-    }
-
-    console.log(cmd.showInputType)
-    console.log(cmd.showInputType())
-    // Show password/text box
-    if (data.show_pass === true) {
-      cmd.showInputType('password');
-    } else {
-      cmd.showInputType();
-    }
-    
-    cmd.handleResponse({
-      cmd_in: data.cmd_in,
-      cmd_out: data.cmd_out
-    });
+    cmd.handleResponse(data);
 
     // user.id = data.user.id;
     // user.name = data.user.name;
     prompt_str = data.user.name + ' $ ';
     $('.prompt').html(prompt_str);
 
-    // autofill cmd_in from PHP 
+    // autofill cmd_in from PHP
     if (data.cmd_fill !== '') {
       $('#cmd_in').val(data.cmd_fill);
     }
@@ -144,7 +115,6 @@ var Chimpcom = {
     }
 
     cmd.handleResponse({
-      cmd_in: 'oops',
       cmd_out: cmd_out
     });
   }

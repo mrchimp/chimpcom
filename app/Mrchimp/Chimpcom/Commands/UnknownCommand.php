@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Responds to an unknown command
  */
@@ -17,7 +17,6 @@ class UnknownCommand extends AbstractCommand
    * Run the command
    */
   public function process() {
-    $this->response->setCmdIn($this->input->getInput());
     $this->response->say(Format::error('Unknown command ' . htmlspecialchars($this->input->getCommand())));
     $this->unknownCmd();
     $this->logCmd();
