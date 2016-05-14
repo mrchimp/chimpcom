@@ -12,6 +12,9 @@ use App;
 use Auth;
 use Session;
 use Validator;
+use GetOptionKit\OptionCollection;
+use GetOptionKit\OptionParser;
+use GetOptionKit\OptionPrinter\ConsoleOptionPrinter;
 
 /**
  * Basis for all Chimpcom commands
@@ -130,11 +133,12 @@ abstract class AbstractCommand
 
   /**
    * Run the command
-   * @param  Mrchimp\Chimpcom\Input    $input the command input
+   * @param  String                    $input the command input string
    * @return Mrchimp\Chimpcom\Response        the command response
    */
-  public function run(Input $input) {
-    $this->input = $input;
+  public function run(String $cmd_in) {
+    $parser = new OptionParser($this->getSpecs());
+    $this->input = $parser->parse(explode(' ', $cmd_in));
     $this->process();
     return $this->response;
   }
@@ -227,4 +231,12 @@ abstract class AbstractCommand
     return '';
   }
 
+  /**
+   * Get the GetOptionKit spec for parsing
+   */
+  public function getSpecs()
+  {
+    $specs = new OptionCollection;
+    return $specs;
+  }
 }

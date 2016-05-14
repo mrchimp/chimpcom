@@ -13,6 +13,7 @@ use Mrchimp\Chimpcom\Models\Shortcut;
 use Mrchimp\Chimpcom\Models\Message;
 use Mrchimp\Chimpcom\Models\Oneliner;
 use Mrchimp\Chimpcom\Commands\UnknownCommand;
+use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 
 
 /**
@@ -98,6 +99,7 @@ class Chimpcom
         'newtask',
         'oneliner',
         // 'phpinfo',
+        'parser',
         'priority',
         'project',
         'projects',
@@ -144,17 +146,18 @@ class Chimpcom
      * @param  string           $input the user input string.
      * @return ChimpcomResponse        Response object
      */
-    public function respond($input) {
-        $this->input = new Input($input);
-
+    public function respond($cmd_in) {
         // Catch "@username foo" messages shorthand
-        if (substr($input, 0, 1) === '@') {
-            $input = "message $input";
+        if (substr($cmd_in, 0, 1) === '@') {
+            $cmd_in = "message $cmd_in";
         }
 
-        $this->cmd_in = $input;
+        $parts = explode(' ', trim($cmd_in)); // @todo - efficiency!
 
-        if ($input === 'clearaction') {
+        $cmd_name = ChimpcomAlias::lookup($parts[0]);
+
+        $this->cmd_in = $cmd_in;
+        if ($cmd_in === 'clearaction') {
             $this->setAction('normal');
             $command = new BypassCommand();
             return $command->run('clearaction', Format::alert('Ok.'));
@@ -164,75 +167,88 @@ class Chimpcom
         $action = $this->getAction();
 
         if ($action !== 'normal') {
-            if (in_array($action, self::$available_actions)) {
-                try {
-                    $command_name = "Mrchimp\Chimpcom\Actions\\".ucfirst($action);
-                    $command = new $command_name;
-                    return $command->run($this->input);
-                } catch (Exception $e) {
-                    trigger_error('Invalid action: '.$action);
-                    $this->setAction();
-                    $response = new Response();
-                    $response->say(htmlspecialchars($input));
-                    $response->setCmdOut(Format::error('Invalid action. This should not have happened.'));
-                    return $response;
-                }
-            } else {
-                $response = new Response();
-                $response->error('Invalid action: '.htmlspecialchars($action));
-                return $response;
-            }
+            return $this->handleAction($action, $cmd_in);
         }
 
         // Check for shortcuts?
-        $shortcut = Shortcut::where('name', $this->input->get(0))->take(1)->first();
+        $shortcut = Shortcut::where('name', $cmd_name)->take(1)->first();
 
         if (count($shortcut) > 0) {
-            $url = str_replace('%PARAM', urlencode($this->input->get(1)), $shortcut->url);
-
-            $response = new Response();
-
-            if ($this->input->isFlagSet(array('--blank', '-b'))) {
-                $response->openWindow($url);
-            } else {
-                $response->redirect($url);
-            }
-
-            $response->alert('Redirecting...');
-
-            return $response;
+            return $this->handleShortcut($shortcut, $cmd_in);
         }
 
         // Do we have a witty oneliner?
-        $oneliner = Oneliner::where('command', $this->input->getCommand())
+        $oneliner = Oneliner::where('command', $cmd_name)
                                     ->orderBy(DB::raw('RAND()'))
                                     ->first();
 
         if (count($oneliner) > 0) {
             $response = new Response;
-            $response->say($this->input->getInput());
-            $response->setCmdOut($oneliner->response);
-
+            $response->say($oneliner->response);
             return $response;
         }
 
         // Normal command?
-        if (in_array($this->input->getCommand(), self::$available_commands)) {
-            try {
-                $command = $this->getCommand($this->input->getCommand());
-                return $command->run($this->input);
-            } catch (FatalErrorException $e) {
-                $response = new Response;
-                $response->say($this->input->getInput());
-                $response->setCmdOut('Failed to load command.');
-                return $response;
-            }
+        if (in_array($cmd_name, self::$available_commands)) {
+            return $this->handleCommand($cmd_name, $cmd_in);
         }
 
         // I give up
         $command = new UnknownCommand();
-        return $command->run($this->input);
+        return $command->run($this->input); // @todo
     }
+
+    private function handleCommand($cmd_name, $cmd_in) {
+        try {
+            $command = $this->getCommand($cmd_name);
+            $response = $command->run($cmd_in);
+            // dd($response);
+            return $response;
+        } catch (FatalErrorException $e) {
+            $response = new Response;
+            $response->say('Failed to load command.');
+            return $response;
+        }
+    }
+
+    private function handleShortcut($shortcut, $cmd_in) {
+        // @todo - this!
+        $url = str_replace('%PARAM', urlencode($this->input->get(1)), $shortcut->url);
+
+        $response = new Response();
+
+        if ($this->input->isFlagSet(array('--blank', '-b'))) {
+            $response->openWindow($url);
+        } else {
+            $response->redirect($url);
+        }
+
+        $response->alert('Redirecting...');
+
+        return $response;
+    }
+
+    private function handleAction($action, $cmd_in) {
+        // @todo -this!
+        if (in_array($action, self::$available_actions)) {
+            try {
+                $command_name = "Mrchimp\Chimpcom\Actions\\".ucfirst($action);
+                $command = new $command_name;
+                return $command->run($this->input);
+            } catch (Exception $e) {
+                trigger_error('Invalid action: '.$action);
+                $this->setAction();
+                $response = new Response();
+                $response->say(Format::error('Invalid action. This should not have happened.'));
+                return $response;
+            }
+        } else {
+            $response = new Response();
+            $response->error('Invalid action: '.htmlspecialchars($action));
+            return $response;
+        }
+    }
+
 
     /**
      * Returns the action to perform.
