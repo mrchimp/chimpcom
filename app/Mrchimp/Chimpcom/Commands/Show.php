@@ -3,9 +3,11 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
+use Mrchimp\Chimpcom\Chimpcom;
 use Mrchimp\Chimpcom\Models\Memory;
 use Mrchimp\Chimpcom\Format;
 use DB;
+use Log;
 // use Mrchimp\Chimpcom\Models\Tag; @todo - add tags
 
 class Show extends LoggedInCommand
@@ -46,15 +48,14 @@ class Show extends LoggedInCommand
       $item_type = 'both';
     }
 
-    $memories = Memory::visibility($item_type)
-        ->orderBy('name')
-        ->orderBy('id')
-        ->with('user');
+    Log::debug('Getting memory type ' . $item_type);
+
+    $memories = Memory::visibility($item_type);
 
     if (is_numeric($this->input->get(1))) {
       $memory_id = $this->input->get(1);
-      $memories = $memories->where('id', $memory_id);
-    } else if ($this->input->get(1) === 'last') {
+      $memories = $memories->where('id', Chimpcom::decodeId($memory_id));
+  } else if ($this->input->get(1) === false) {
       $count = $this->input->get(2);
 
       $memories = $memories->take(20);
@@ -63,7 +64,11 @@ class Show extends LoggedInCommand
         ->where('user_id', $user->id);
     }
 
-    $memories = $memories->get();
+    $memories = $memories
+        ->orderBy('name')
+        ->orderBy('id')
+        ->with('user')
+        ->get();
 
     if ($memories->count() === 0) {
       $this->response->error('Nothing found.');

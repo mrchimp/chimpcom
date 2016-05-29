@@ -24,9 +24,9 @@ class Memory extends Model
 
   /**
    * Filter by visibility
-   * @param  [type] $query [description]
-   * @param  string $type  [description]
-   * @return [type]        [description]
+   * @param  Builder $query The query to scope
+   * @param  string  $type  Memory type. private, private, minr or both.
+   * @return Builder        The altered query
    */
   public function scopeVisibility($query, $type = 'both') {
     $user_id = Auth::user()->id;
@@ -37,14 +37,16 @@ class Memory extends Model
         break;
       case 'private':
         $query->where('public', 0)
-              ->where('user_id', $user_id);
+        ->Where('user_id', $user_id);
         break;
       case 'mine':
         $query->where('user_id', $user_id);
         break;
       default:
-        $query->where('user_id', $user_id)
-              ->orWhere('public', 1);
+        $query->where(function($query) use ($user_id) {
+            $query->where('user_id', $user_id)
+            ->orWhere('public', 1);
+        });
         break;
     }
 

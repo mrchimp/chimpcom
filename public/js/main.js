@@ -13054,7 +13054,7 @@ function CmdStack(id, max_size) {
 
 /**
  * HTML5 Command Line Terminal
- * 
+ *
  * @author   Jake Gully (chimpytk@gmail.com)
  * @license  MIT License
  */
@@ -13192,74 +13192,26 @@ function CmdStack(id, max_size) {
   }
 
   /**
-   * Output text one letter at a time
-   */
-  Cmd.prototype.typewriter = function (elem, str) {
-    elem = elem.first()[0];
-
-    str = elem.innerHTML + str;
-
-    var i = elem.innerHTML.length,
-      isTag,
-      text;
-
-    var type = $.proxy(function () {
-        text = str.slice(0, ++i);
-        if (text === str) return;
-
-        elem.innerHTML = text;
-
-        var char = text.slice(-1);
-        if( char === '<' ) isTag = true;
-        if( char === '>' ) isTag = false;
-
-        if (isTag) return type();
-        console.log(this);
-        setTimeout(type, this.options.typewriter_time);
-    }, this);
-
-    type();
-  }
-
-  /**
-   * Takes the client's input and the server's output 
+   * Takes the client's input and the server's output
    * and displays them appropriately.
-   * 
+   *
    * @param   string  cmd_in      The command as entered by the user
    * @param   string  cmd_out     The server output to write to screen
    */
-  Cmd.prototype.displayOutput = function(cmd_in, cmd_out) {
-    if (typeof cmd_in !== 'string') {
-      cmd_in = 'Error: invalid cmd_in returned.';
-    }
-
+  Cmd.prototype.displayOutput = function(cmd_out) {
     if (typeof cmd_out !== 'string') {
       cmd_out = 'Error: invalid cmd_out returned.';
     }
-
-    cmd_in = cmd_in.replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
 
     if (this.output.html())  {
       this.output.append('<br>');
     }
 
-    this.output.append('<span class="prompt">' + this.prompt_str + '</span> ' + 
-      '<span class="grey_text">' + cmd_in + '</span><br>')
-
-    if (this.options.typewriter_time > 0 && cmd_out.length < 200) {
-      this.typewriter(this.output, cmd_out + '<br>');
-    } else {
-      this.output.append(cmd_out);
-    }
-
+    this.output.append(cmd_out + '<br>');
 
     if (this.options.talk) {
       this.speakOutput(cmd_out);
-    }      
+    }
 
     this.cmd_stack.reset();
 
@@ -13267,6 +13219,21 @@ function CmdStack(id, max_size) {
 
     this.enableInput();
     this.focusOnInput();
+    this.activateAutofills();
+  }
+
+  /**
+   * Take an input string and output it to the screen
+   */
+  Cmd.prototype.displayInput = function(cmd_in) {
+    cmd_in = cmd_in.replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+    this.output.append('<span class="prompt">' + this.prompt_str + '</span> ' +
+      '<span class="grey_text">' + cmd_in + '</span>');
   }
 
   /**
@@ -13307,17 +13274,20 @@ function CmdStack(id, max_size) {
           alert('Your browser does not support html5 drag and drop.');
           break;
         case 'TooManyFiles':
-          this.displayOutput('[File Upload]', 'Too many files!');
+          this.displayInput('[File Upload]');
+          this.displayOutput('Too many files!');
           this.resetDropzone();
           break;
         case 'FileTooLarge':
           // FileTooLarge also has access to the file which was too large
           // use file.name to reference the filename of the culprit file
-          this.displayOutput('[File Upload]', 'File too big!');
+          this.displayInput('[File Upload]');
+          this.displayOutput('File too big!');
           this.resetDropzone();
           break;
         default:
-          this.displayOutput('[File Upload]', 'Fail D:');
+          this.displayInput('[File Upload]');
+          this.displayOutput('Fail D:');
           this.resetDropzone();
           break;
         }
@@ -13362,8 +13332,10 @@ function CmdStack(id, max_size) {
       afterAll: function () {
         // runs after all files have been uploaded or otherwise dealt with
         if (upload_error !== '') {
-          this.displayOutput('[File Upload]', 'Error: ' + upload_error);
+          this.displayInput('[File Upload]');
+          this.displayOutput('Error: ' + upload_error);
         } else {
+          this.displayInput('[File Upload]');
           this.displayOutput('[File Upload]', 'Success!');
         }
 
@@ -13384,7 +13356,7 @@ function CmdStack(id, max_size) {
   }
 
 
-  
+
   // ====== Handlers ==============================
 
   /**
@@ -13392,10 +13364,17 @@ function CmdStack(id, max_size) {
    */
   Cmd.prototype.handleInput = function(input_str) {
     var cmd_array = input_str.split(' ');
+    var shown_input = input_str;
+
+    if (this.input.attr('type') === 'password') {
+      shown_input = new Array(shown_input.length + 1).join("•");
+    }
+
+    this.displayInput(shown_input);
 
     switch (cmd_array[0]) {
       case '':
-        this.displayOutput('', '');
+        this.displayOutput('');
         break;
       case 'clear':
       case 'cls':
@@ -13405,45 +13384,45 @@ function CmdStack(id, max_size) {
       case 'clearhistory':
         this.cmd_stack.empty();
         this.cmd_stack.reset();
-        this.displayOutput(input_str,  'Command history cleared. ');
+        this.displayOutput('Command history cleared. ');
         break;
       case 'invert':
         this.invert();
-        this.displayOutput(input_str, 'Shazam.');
+        this.displayOutput('Shazam.');
         break;
       case 'shh':
         if (this.options.talk) {
           window.speechSynthesis.cancel();
           this.options.talk = false;
-          this.displayOutput(input_str, 'Speech stopped. Talk mode is still enabled. Type TALK to disable talk mode.');
+          this.displayOutput('Speech stopped. Talk mode is still enabled. Type TALK to disable talk mode.');
           this.options.talk = true;
         } else {
-          this.displayOutput(input_str, 'Ok.');
+          this.displayOutput('Ok.');
         }
         break;
       case 'talk':
         if (!this.speech_synth_support) {
-          this.displayOutput(input_str, 'You browser doesn\'t support speech synthesis.');
+          this.displayOutput('You browser doesn\'t support speech synthesis.');
           return false;
         }
 
         this.options.talk = !this.options.talk;
-        this.displayOutput(input_str, (this.options.talk ? 'Talk mode enabled.' : 'Talk mode disabled.'));
+        this.displayOutput((this.options.talk ? 'Talk mode enabled.' : 'Talk mode disabled.'));
         break;
       default:
         if (typeof this.options.external_processor !== 'function') {
-          this.displayOutput(input_str, this.options.unknown_cmd);
+          this.displayOutput(this.options.unknown_cmd);
           return false;
         }
 
         var result = this.options.external_processor(input_str, this);
 
         switch (typeof result) {
-          // If undefined, external handler should 
+          // If undefined, external handler should
           // call handleResponse when done
           case 'boolean':
             if (!result) {
-              this.displayOutput(input_str, this.options.unknown_cmd);
+              this.displayOutput(this.options.unknown_cmd);
             }
             break;
           // If we get a response object, deal with it directly
@@ -13453,10 +13432,10 @@ function CmdStack(id, max_size) {
           // If we have a string, output it. This shouldn't
           // really happen but it might be useful
           case 'string':
-            this.displayOutput(input_str, result);
+            this.displayOutput(result);
             break;
           default:
-            this.displayOutput(input_str, this.options.unknown_cmd);
+            this.displayOutput(this.options.unknown_cmd);
         }
     }
   }
@@ -13478,23 +13457,17 @@ function CmdStack(id, max_size) {
       console.log(res.log);
     }
 
-    if (res.hide_output === true) {
-      res.cmd_in = new Array(cmd_in.length).join("*");
-    }
-
     if (res.show_pass === true) {
       this.showInputType('password');
     } else {
       this.showInputType();
     }
 
-    this.displayOutput(res.cmd_in, res.cmd_out);
+    this.displayOutput(res.cmd_out);
 
     if (res.cmd_fill !== '') {
       this.wrapper.children('.cmd-container').children('.cmd-in').first().val(res.cmd_fill);
     }
-
-    this.activateAutofills();
   }
 
   /**
@@ -13617,7 +13590,7 @@ function CmdStack(id, max_size) {
       this.input.val(autocompletions[0]);
     } else {
       if (this.autocompletion_attempted) {
-        this.displayOutput(str, autocompletions.join(', '));
+        this.displayOutput(autocompletions.join(', '));
         this.autocompletion_attempted = false;
         this.input.val(str);
         return;
@@ -13626,10 +13599,10 @@ function CmdStack(id, max_size) {
       }
     }
   }
-  
+
 
   // ====== Helpers ===============================
-  
+
   /**
    * Takes a user to a given url. Adds "http://" if necessary.
    */
@@ -13652,7 +13625,7 @@ function CmdStack(id, max_size) {
   }
 
   /**
-   * Give focus to the command input and 
+   * Give focus to the command input and
    * scroll to the bottom of the page
    */
   Cmd.prototype.focusOnInput = function() {
@@ -13704,9 +13677,13 @@ function CmdStack(id, max_size) {
    * will insert text into the input
    */
   Cmd.prototype.activateAutofills = function() {
-    this.wrapper.find('[data-type=autofill]').on('click', function () {
-      this.input.val($(this).data('autofill'));
-    });
+    var input = this.input;
+
+    this.wrapper
+      .find('[data-type=autofill]')
+      .on('click', function() {
+        input.val($(this).data('autofill'));
+      });
   }
 
   /**
@@ -13729,7 +13706,7 @@ function CmdStack(id, max_size) {
 
   /**
    * Speak output aloud using speech synthesis API
-   * 
+   *
    * @param {String} output Text to read
    */
   Cmd.prototype.speakOutput = function(output) {
@@ -13769,7 +13746,7 @@ var Chimpcom = {
         if (!$('#bash').length) {
           $('body').prepend('<img src="assets/img/bash.png" id="bash" style="position:fixed;">');
         }
-        displayOutput('bash', 'Ow! I hope you\'re going to fix that!');
+        return 'Ow! I hope you\'re going to fix that!';
         break;
       case 'alert':
       case 'alarm':
@@ -13778,25 +13755,25 @@ var Chimpcom = {
           'chimpcom_timer',
           'height=90,width=350,left=100,top=100,menubar=no,location=no,scrollbars=no,status=no,toolbar=no,titlebar=no');
 
-        displayOutput(cmd_in, 'Clock has opened in new window.');
+        return 'Clock has opened in new window.';
         break;
       case 'fix':
         $('#bash').remove();
-        displayOutput('fix', 'Good as new.');
+        return 'Good as new.';
         break;
       case 'pwd':
-        displayOutput('pwd', document.location.href);
+        return document.location.href;
         break;
       case 'popup':
       case 'detach':
         openChimpcomPopup();
-        displayOutput(cmd_in, 'If nothing happened, try disabling your popup blocker.<br><br>To create popup bookmarklet, bookmark <a href="javascript:window.open(\'http://cmd.deviouschimp.co.uk/\',\'_blank\',\'height=388,width=669,left=100,top=100,menubar=no,location=no,scrollbars=yes,status=no,toolbar=no,titlebar=no\');">this link.</a>');
+        return 'If nothing happened, try disabling your popup blocker.<br><br>To create popup bookmarklet, bookmark <a href="javascript:window.open(\'http://cmd.deviouschimp.co.uk/\',\'_blank\',\'height=388,width=669,left=100,top=100,menubar=no,location=no,scrollbars=yes,status=no,toolbar=no,titlebar=no\');">this link.</a>';
         break;
       case 'ispopup':
         if (this.popup) {
-          displayOutput(cmd_in, 'Popup mode is enabled.');
+          return 'Popup mode is enabled.';
         } else {
-          displayOutput(cmd_in, 'Popup mode is not enabled.');
+          return 'Popup mode is not enabled.';
         }
         break;
       default:
@@ -13829,43 +13806,14 @@ var Chimpcom = {
    * @param  object data AJAX response data
    */
   handleAjaxSuccess: function(data) {
-    if (data.redirect !== undefined) {
-      document.location.href = data.redirect;
-    }
-
-    if (data.openWindow !== undefined) {
-      window.open(data.openWindow, '_blank', data.openWindowSpecs);
-    }
-
-    if (data.log !== undefined && data.log !== '') {
-      console.log(data.log);
-    }
-
-    // mask the text that was input when outputting it to screen
-    if (data.hide_output === true) {
-      data.cmd_in = new Array(cmd_in.length + 1).join("*");
-    }
-
-    console.log(cmd.showInputType)
-    console.log(cmd.showInputType())
-    // Show password/text box
-    if (data.show_pass === true) {
-      cmd.showInputType('password');
-    } else {
-      cmd.showInputType();
-    }
-    
-    cmd.handleResponse({
-      cmd_in: data.cmd_in,
-      cmd_out: data.cmd_out
-    });
+    cmd.handleResponse(data);
 
     // user.id = data.user.id;
     // user.name = data.user.name;
     prompt_str = data.user.name + ' $ ';
     $('.prompt').html(prompt_str);
 
-    // autofill cmd_in from PHP 
+    // autofill cmd_in from PHP
     if (data.cmd_fill !== '') {
       $('#cmd_in').val(data.cmd_fill);
     }
@@ -13893,11 +13841,11 @@ var Chimpcom = {
     }
 
     cmd.handleResponse({
-      cmd_in: 'oops',
       cmd_out: cmd_out
     });
   }
 }
+
 
 var cmd = new Cmd({
 	selector: '#chimpcom',
