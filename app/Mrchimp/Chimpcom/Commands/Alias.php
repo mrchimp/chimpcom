@@ -16,7 +16,7 @@ class Alias extends AdminCommand
 {
 
   protected $title = 'Alias';
-  protected $description = 'View aliases or add an alias for a command.';
+  protected $description = 'Add an alias for a command.';
   protected $usage = 'alias [&lt;alias&gt; &lt;command&gt;]';
   protected $example = 'alias foo bar';
 
@@ -24,14 +24,8 @@ class Alias extends AdminCommand
    * Run the command
    */
   public function process() {
-    if (!$this->input->get(1)) {
-        $aliases = ChimpcomAlias::get();
-        $output = [];
-        foreach ($aliases as $alias) {
-            $output[] = $alias->name;
-            $output[] = $alias->alias;
-        }
-        $this->response->say(Format::listToTable($output, 2, true));
+    if (!$this->input->get(2)) {
+        $this->response->error('Alias and command needed.');
         return;
     }
 
