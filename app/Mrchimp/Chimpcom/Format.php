@@ -238,13 +238,13 @@ class Format
    * @param  Collection $tasks Tasks to format
    * @return string            Formatted output
    */
-  static function tasks($tasks) {
+  static function tasks($tasks, $show_project_names = true) {
     $output = '';
 
     foreach ($tasks as $task) {
       $hex_id = Chimpcom::encodeId($task->id);
 
-      $output .= Format::style(" $hex_id ".($task->completed ? '&#10004;' : ''), '', [
+      $output .= Format::style(" #$hex_id ".($task->completed ? '&#10004;' : ''), '', [
         'data-type' => 'autofill',
         'data-autofill' => "done $hex_id"
       ]);
@@ -273,7 +273,10 @@ class Format
         $output .= ' ' . e($task->description); // @todo - set this a block title instead
       }
 
-      $output .= Format::grey(' (' . $task->project->name . ')');
+      if ($show_project_names) {
+          $output .= Format::grey(' (' . $task->project->name . ')');
+      }
+
       $output .= '<br>';
     }
 

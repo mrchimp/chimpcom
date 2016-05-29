@@ -51,9 +51,10 @@ class Todo extends LoggedInCommand
         $tasks = Task::where('user_id', $user->id);
 
         if ($show_all_projects) {
-            $this->response->say('Showing task from all projects.<br>');
+            $this->response->title('Showing tasks from all projects.<br><br>');
         } else {
-            $this->response->say('Current project: ' . e($project->name) . '<br>');
+            $this->response->title(e($project->name) . '<br>');
+            $this->response->grey(e($project->description) . '<br><br>');
         }
 
         $count = 10;
@@ -78,8 +79,16 @@ class Todo extends LoggedInCommand
             return false;
         }
 
-        $this->response->say(Format::tasks($tasks));
-        $this->response->say('<br>' . count($tasks) . ' tasks.');
+        // @todo - Unnecessary whereRaw(). It's needed so that we can use the
+        // static project method. There's a better way to do this but I can't
+        // remember the method name.
+        $total_in_proj = Task::whereRaw('1')
+            ->project($show_all_projects ? null : $user->activeProject->id)
+            ->completed(false)
+            ->count();
+
+        $this->response->say(Format::tasks($tasks, $show_all_projects));
+        $this->response->say('<br>Showing ' . count($tasks) . ' tasks. ' . $total_in_proj . ' incomplete to go!');
     }
 
 }
