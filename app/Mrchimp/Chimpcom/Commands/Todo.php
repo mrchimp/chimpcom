@@ -18,7 +18,7 @@ class Todo extends LoggedInCommand
 
     protected $title = 'Todo';
     protected $description = 'Lists tasks on the current project. By default only incomplete tasks from the current project are shown.';
-    protected $usage = 'todo [--all|-a] [--allprojects|-p] [--completed|-c]';
+    protected $usage = 'todo [--allprojects|-a] [--completed|-c]<br><br>--allprojects shows tasks from all your projects.<br>--completed shows only completed tasks.';
     protected $example = 'todo -all';
     protected $see_also = 'project, projects, newtask, done';
 
@@ -36,17 +36,8 @@ class Todo extends LoggedInCommand
         }
 
         $data = [];
-        $show_all_items    = $this->input->isFlagSet(['--all', '-a']);
         $show_all_projects = $this->input->isFlagSet(['--allprojects', '-p']);
-        $show_completed    = $this->input->isFlagSet(['--completed', '-c']);
-
-        if ($show_all_items) {
-            $completion = null;
-        } else if ($show_completed) {
-            $completion = true;
-        } else {
-            $completion = false;
-        }
+        $show_complete     = $this->input->isFlagSet(['--complete', '-c']);
 
         $tasks = Task::where('user_id', $user->id);
 
@@ -67,7 +58,7 @@ class Todo extends LoggedInCommand
 
         $tasks = $tasks->search($search_term)
             ->project($show_all_projects ? null : $user->activeProject->id)
-            ->completed($completion)
+            ->completed($show_complete)
             ->orderBy('completed', 'ASC')
             ->orderBy('priority', 'DESC')
             ->orderBy('created_at', 'DESC')
