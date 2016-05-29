@@ -10,13 +10,11 @@ var elixir = require('laravel-elixir');
  | file for our application, as well as publishing vendor resources.
  |
  */
-
 elixir(function(mix) {
-  mix.less('main.less')
-    .version('css/main.css');
-});
+  mix.less([
+    'main.less'
+  ], 'public/css/main.css');
 
-elixir(function(mix) {
   mix.scripts([
     'querystring.js',
     '../bower_components/lodash/lodash.js',
@@ -25,5 +23,10 @@ elixir(function(mix) {
     '../bower_components/cmd/src/js/Cmd.js',
     'chimpcom.js',
     'main.js'
-  ], 'public/js/main.js');
+  ], 'public/js/main.js')
+
+  mix.version([
+    'css/main.css',
+    'js/main.js'
+  ]);
 });

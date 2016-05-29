@@ -26,12 +26,12 @@
 <meta name="msapplication-TileColor" content="#111112">
 <meta name="msapplication-TileImage" content="/mstile-144x144.png">
 <meta name="theme-color" content="#111112">
-<link href='css/main.css' rel='stylesheet' type='text/css'>
+<link href='{{ elixir('css/main.css') }}' rel='stylesheet' type='text/css'>
 </head>
 <body>
 <div id="chimpcom"></div>
 <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="{{ elixir('js/main.js') }}"></script>
 </body>
 </html>
