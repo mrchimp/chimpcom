@@ -71,7 +71,8 @@ class Project extends LoggedInCommand
             }
 
             $project->activeUsers()->save($user);
-            $this->response->alert(e($project->name) . ' is now the current project.');
+            $this->response->alert('Current project set to ' . e($project->name) . '.<br>');
+            $this->response->say(e($project->description));
 
             return;
         }
@@ -106,7 +107,8 @@ class Project extends LoggedInCommand
         }
 
         // Show info about current project
-        $this->response->say('Current project: '.$project->name);
+        $this->response->say('Current project: ' . Format::title(e($project->name)) . '<br>');
+        $this->response->say(e($project->description));
     }
 
     public function tabcomplete() {
