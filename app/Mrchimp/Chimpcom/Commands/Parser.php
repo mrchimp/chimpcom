@@ -19,6 +19,9 @@ class Parser extends AbstractCommand
      */
     public function process()
     {
+        // $this->response->say('<pre>' . print_r($this->input, true) . '</pre>');
+        // return;
+
         $this->response->title('<br>keys<br>');
         foreach ($this->input as $key => $spec) {
             // echo '<pre>';
@@ -38,7 +41,7 @@ class Parser extends AbstractCommand
     {
       $specs = new OptionCollection;
 
-      $specs->add('f|foo:', 'option requires a value.' )
+      $specs->add('o|option:', 'option requires a value.' );
           ->isa('String');
 
       $specs->add('b|bar+', 'option with multiple value.' )

@@ -5,6 +5,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Exception;
 use Mrchimp\Chimpcom\Input;
 use Mrchimp\Chimpcom\Response;
 use Mrchimp\Chimpcom\Format;
@@ -138,7 +139,14 @@ abstract class AbstractCommand
    */
   public function run(String $cmd_in) {
     $parser = new OptionParser($this->getSpecs());
-    $this->input = $parser->parse(explode(' ', $cmd_in));
+
+    try {
+        $this->input = $parser->parse(explode(' ', $cmd_in));
+    } catch (Exception $e) {
+        $this->response->error($e->getMessage());
+        return $this->response;
+    }
+
     $this->process();
     return $this->response;
   }
