@@ -35,6 +35,13 @@ You can use tags in some commands with `#hashtag` syntax.
 
 # Development #
 
+## Requirements ##
+
+* Composer
+* Node
+* Gulp
+* Bower
+
 ## Installation ##
 
 1. Set up a PHP web server
@@ -49,8 +56,8 @@ You'll need [Node](http://nodejs.org/), [Grunt](http://gruntjs.com/) and [Bower]
 
 1. `npm install` Get dev tools
 2. `bower install` Get frontend dependencies
-3. `grunt` Compile everything
-4. `grunt watch-all` Watch for changes to code and recompile
+3. `gulp` Compile everything
+4. `gulp watch-all` Watch for changes to code and recompile
 
 ## Docs ##
 
