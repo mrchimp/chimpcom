@@ -10,7 +10,7 @@ abstract class AdminCommand extends LoggedInCommand {
     public function run (Input $input) {
         $user = Auth::user();
 
-        if (!$user->is_admin) {
+        if (!$user || !$user->is_admin) {
             $this->response->error('No.');
             return $this->response;
         }
