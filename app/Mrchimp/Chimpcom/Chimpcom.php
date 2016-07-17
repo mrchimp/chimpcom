@@ -47,7 +47,9 @@ class Chimpcom
         'project_rm',
         'register',
         'register2',
-        'register3'
+        'register3',
+        'chpass_1',
+        'chpass_2',
     );
 
     /**
@@ -67,7 +69,7 @@ class Chimpcom
         'candyman',
         'cd',
         'charmap',
-        // 'chpass',
+        'chpass',
         'coin',
         'credits',
         'date',
