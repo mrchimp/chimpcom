@@ -14,6 +14,11 @@ use Mrchimp\Chimpcom\Models\Message;
 use Mrchimp\Chimpcom\Models\Oneliner;
 use Mrchimp\Chimpcom\Commands\UnknownCommand;
 use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
+use Mrchimp\Chimpcom\Console\Command;
+use Mrchimp\Chimpcom\Console\Output;
+
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Input\InputArgument;
 
 
 /**
@@ -198,15 +203,23 @@ class Chimpcom
         return $command->run($this->input); // @todo
     }
 
+    /**
+     * Execute a normal command
+     */
     private function handleCommand($cmd_name, $cmd_in) {
         try {
             $command = $this->getCommand($cmd_name);
-            $response = $command->run($cmd_in);
-            // dd($response);
-            return $response;
+
+            $input = new StringInput('');
+            $output = new Output();
+
+            $command->run($input, $output);
+
+            return $output;
         } catch (FatalErrorException $e) {
             $response = new Response;
             $response->say('Failed to load command.');
+
             return $response;
         }
     }

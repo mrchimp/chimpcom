@@ -41,7 +41,7 @@ class Parser extends AbstractCommand
     {
       $specs = new OptionCollection;
 
-      $specs->add('o|option:', 'option requires a value.' );
+      $specs->add('o|option:', 'option requires a value.' )
           ->isa('String');
 
       $specs->add('b|bar+', 'option with multiple value.' )
