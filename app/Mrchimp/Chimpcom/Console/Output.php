@@ -4,6 +4,7 @@ namespace Mrchimp\Chimpcom\Console;
 
 use Symfony\Component\Console\Output\Output as SymfonyOutput;
 use Auth;
+use Mrchimp\Chimpcom\Format;
 
 class Output extends SymfonyOutput
 {
@@ -38,7 +39,7 @@ class Output extends SymfonyOutput
         $this->out['cmd_out'] .= $message;
 
         if ($newline) {
-            $this->out['cmd_out'] .= "\n";
+            $this->out['cmd_out'] .= '<br>';
         }
     }
 

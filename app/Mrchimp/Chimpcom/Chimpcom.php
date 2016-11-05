@@ -8,6 +8,7 @@ namespace Mrchimp\Chimpcom;
 use DB;
 use Auth;
 use Session;
+use RuntimeException;
 use Illuminate\Http\Request;
 use Mrchimp\Chimpcom\Models\Shortcut;
 use Mrchimp\Chimpcom\Models\Message;
@@ -209,19 +210,25 @@ class Chimpcom
     private function handleCommand($cmd_name, $cmd_in) {
         try {
             $command = $this->getCommand($cmd_name);
-
-            $input = new StringInput('');
-            $output = new Output();
-
-            $command->run($input, $output);
-
-            return $output;
         } catch (FatalErrorException $e) {
             $response = new Response;
             $response->say('Failed to load command.');
 
             return $response;
         }
+
+        $input = new StringInput('');
+        $output = new Output();
+
+        try {
+            $command->run($input, $output);
+        } catch (RuntimeException $e) {
+            $output->error('Bad input: ' . $e->getMessage());
+
+            return $output;
+        }
+
+        return $output;
     }
 
     private function handleShortcut($shortcut, $cmd_in) {

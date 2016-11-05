@@ -5,8 +5,12 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 use Mrchimp\Chimpcom\Chimpcom;
-use Mrchimp\Chimpcom\Input;
+use Mrchimp\Chimpcom\ChimpcomAlias;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Man as ManPage;
 
@@ -37,7 +41,8 @@ class Man extends AbstractCommand
             return;
         }
 
-        $page_name = Input::getAlias($this->input->get(1));
+        $page_name = ChimpcomAlias::lookup($this->input->get(1));
+        // $page_name = Input::getAlias($this->input->get(1));
         $command = Chimpcom::getCommand($page_name);
 
         if (!$command) {

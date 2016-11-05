@@ -5,65 +5,106 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Mrchimp\Chimpcom\Chimpcom;
-use GetOptionKit\OptionCollection;
 
 /**
  * Parser test
  */
-class Parser extends AbstractCommand
+class Parser extends SymfonyCommand
 {
+
+    public function configure()
+    {
+
+        $this->setName('Parser');
+        $this->setDescription('Test command for the new parser.');
+        $this->setHelp('Just run the command. If you don\'t give the right options it should tell you.');
+
+        $this->addArgument(
+            'first_name',
+            InputArgument::REQUIRED,
+            'Your first name is required.'
+        );
+
+        $this->addArgument(
+            'second_name',
+            null,
+            'Your second name is optional.'
+        );
+
+        $this->addArgument(
+            'arguments',
+            InputArgument::IS_ARRAY,
+            'What are some extra words you want to add?'
+        );
+
+        $this->addOption(
+            'option',
+            'o',
+            null,
+            'This option is optional.'
+        );
+
+        $this->addOption(
+            'other_option',
+            'x',
+            InputOption::VALUE_REQUIRED,
+            'This option requires a value.'
+        );
+    //   $specs = new OptionCollection;
+      //
+    //   $specs->add('o|option:', 'option requires a value.' )
+    //       ->isa('String');
+      //
+    //   $specs->add('b|bar+', 'option with multiple value.' )
+    //       ->isa('Number');
+      //
+    //   $specs->add('ip+', 'Ip constraint' )
+    //       ->isa('Ip');
+      //
+    //   $specs->add('email+', 'Email address constraint' )
+    //       ->isa('Email');
+      //
+    //   $specs->add('z|zoo?', 'option with optional value.' )
+    //       ->isa('Boolean');
+      //
+    //   $specs->add('file:', 'option value should be a file.' )
+    //       ->isa('File');
+      //
+    //   $specs->add('v|verbose', 'verbose message.' )->isa('Number')->incremental();
+    //   $specs->add('d|debug', 'debug message.' );
+    //   $specs->add('long', 'long option name only.' );
+    //   $specs->add('s', 'short option name only.' );
+      //
+    //   return $specs;
+    }
 
     /**
      * Run the command
      */
-    public function process()
+    public function execute(InputInterface $input, OutputInterface $output)
     {
         // $this->response->say('<pre>' . print_r($this->input, true) . '</pre>');
         // return;
 
-        $this->response->title('<br>keys<br>');
-        foreach ($this->input as $key => $spec) {
-            // echo '<pre>';
-            // var_dump($spec);
-            // echo '</pre>';
-            $this->response->say($key . ' - ' . $spec->value . '<br>');
-        }
-
-        $this->response->title('<br>Arguments<br>');
-        foreach ($this->input->arguments as $word) {
-            $this->response->say($word . '<br>');
-        }
+        $output->title('<br>keys<br>');
+        // dd($input);
+        // foreach ($input as $key => $spec) {
+        //     // echo '<pre>';
+        //     // var_dump($spec);
+        //     // echo '</pre>';
+        //     $output->say($key . ' - ' . $spec->value . '<br>');
+        // }
+        //
+        // $output->title('<br>Arguments<br>');
+        // foreach ($this->input->arguments as $word) {
+        //     $output->say($word . '<br>');
+        // }
         // exit;
-    }
-
-    public function getSpecs()
-    {
-      $specs = new OptionCollection;
-
-      $specs->add('o|option:', 'option requires a value.' )
-          ->isa('String');
-
-      $specs->add('b|bar+', 'option with multiple value.' )
-          ->isa('Number');
-
-      $specs->add('ip+', 'Ip constraint' )
-          ->isa('Ip');
-
-      $specs->add('email+', 'Email address constraint' )
-          ->isa('Email');
-
-      $specs->add('z|zoo?', 'option with optional value.' )
-          ->isa('Boolean');
-
-      $specs->add('file:', 'option value should be a file.' )
-          ->isa('File');
-
-      $specs->add('v|verbose', 'verbose message.' )->isa('Number')->incremental();
-      $specs->add('d|debug', 'debug message.' );
-      $specs->add('long', 'long option name only.' );
-      $specs->add('s', 'short option name only.' );
-
-      return $specs;
     }
 }

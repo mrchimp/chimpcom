@@ -11,14 +11,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Mrchimp\Chimpcom\Chimpcom;
 
 /**
- * Your basic common or garden Chimpcom function
+ * Your basic common or garden Chimpcom command
  */
 class Hi extends SymfonyCommand
 {
 
     protected function configure()
     {
-        $this->name = 'Hi';
+        $this->setName('Hi');
     }
 
     /**

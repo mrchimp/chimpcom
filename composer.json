@@ -2,7 +2,7 @@
     "name": "mrchimp/chimpcom",
     "description": "Command line website.",
     "keywords": ["command line", "terminal"],
-    "version": "7.0.0",
+    "version": "8.0.0",
     "license": "MIT",
     "type": "project",
     "require": {
