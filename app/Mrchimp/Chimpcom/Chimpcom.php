@@ -158,9 +158,15 @@ class Chimpcom
             $cmd_in = "message $cmd_in";
         }
 
-        $parts = explode(' ', trim($cmd_in)); // @todo - efficiency!
+        $parts = explode(' ', trim($cmd_in), 2); // @todo - efficiency!
 
         $cmd_name = ChimpcomAlias::lookup($parts[0]);
+
+        if (isset($parts[1])) {
+            $arguments = $parts[1];
+        } else {
+            $arguments = '';
+        }
 
         $this->cmd_in = $cmd_in;
         if ($cmd_in === 'clearaction') {
@@ -196,7 +202,7 @@ class Chimpcom
 
         // Normal command?
         if (in_array($cmd_name, self::$available_commands)) {
-            return $this->handleCommand($cmd_name, $cmd_in);
+            return $this->handleCommand($cmd_name, $arguments);
         }
 
         // I give up
@@ -217,7 +223,7 @@ class Chimpcom
             return $response;
         }
 
-        $input = new StringInput('');
+        $input = new StringInput($cmd_in);
         $output = new Output();
 
         try {

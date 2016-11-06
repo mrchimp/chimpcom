@@ -93,7 +93,24 @@ class Parser extends SymfonyCommand
         // return;
 
         $output->title('<br>keys<br>');
-        // dd($input);
+
+        $output->write($input->getArgument('first_name') . '<br>');
+        $output->write($input->getArgument('second_name') . '<br>');
+
+        $output->title('Arguments<br>');
+
+        foreach ($input->getArgument('arguments') as $argument) {
+            $output->write($argument . '<br>');
+        }
+
+        if ($input->getOption('option')) {
+            $output->writeLn('Option!');
+        }
+
+        if ($input->getOption('other_option')) {
+            $output->writeLn('Other Option!');
+        }
+
         // foreach ($input as $key => $spec) {
         //     // echo '<pre>';
         //     // var_dump($spec);
