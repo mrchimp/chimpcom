@@ -5,7 +5,6 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Mrchimp\Chimpcom\Chimpcom;
@@ -13,12 +12,17 @@ use Mrchimp\Chimpcom\Chimpcom;
 /**
  * Your basic common or garden Chimpcom command
  */
-class Hi extends SymfonyCommand
+class Hi extends Command
 {
 
     protected function configure()
     {
-        $this->setName('Hi');
+        $this->setName('hi');
+        $this->setDescription('Displays a welcome message.');
+        $this->setHelp('There are no additional options for this command');
+        $this->addUsage('');
+        $this->addUsage('--there');
+
     }
 
     /**

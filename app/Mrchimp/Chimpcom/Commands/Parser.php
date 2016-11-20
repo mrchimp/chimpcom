@@ -5,7 +5,6 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,15 +14,16 @@ use Mrchimp\Chimpcom\Chimpcom;
 /**
  * Parser test
  */
-class Parser extends SymfonyCommand
+class Parser extends Command
 {
 
     public function configure()
     {
 
-        $this->setName('Parser');
+        $this->setName('parser');
         $this->setDescription('Test command for the new parser.');
         $this->setHelp('Just run the command. If you don\'t give the right options it should tell you.');
+        $this->addUsage('foo bar "baz bing" --option');
 
         $this->addArgument(
             'first_name',
