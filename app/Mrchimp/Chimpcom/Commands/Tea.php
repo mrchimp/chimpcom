@@ -1,30 +1,45 @@
-<?php 
+<?php
 /**
- * Your basic common or garden Chimpcom function
+ * Decide who should make the tea
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Mrchimp\Chimpcom\Chimpcom;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Your basic common or garden Chimpcom function
+ * Decide who should make the tea
  */
-class Tea extends AbstractCommand
+class Tea extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('tea');
+        $this->setDescription('Decide who should make the tea.');
+        $this->addArgument(
+            'names',
+            InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+            'The names of the potential beverage makers'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @return void
      */
-    public function process() {
-    	if ($this->input->get(1) == false) {
-            $this->response->error('I\'m gonna need some names.');
-            return;
-        }
-
-        $names = $this->input->getParamArray();
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $names = $input->getArgument('names');
         $rand = array_rand($names);
-        $this->response->say(ucwords($this->input->getParamArray()[$rand]).' is on hot beverage duty.');
+        $output->write(ucwords($names[$rand]).' is on hot beverage duty.');
     }
 
 }

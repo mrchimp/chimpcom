@@ -14,19 +14,22 @@ use Mrchimp\Chimpcom\Chimpcom;
  */
 class Hi extends Command
 {
-
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
     protected function configure()
     {
         $this->setName('hi');
         $this->setDescription('Displays a welcome message.');
         $this->setHelp('There are no additional options for this command');
-        $this->addUsage('');
-        $this->addUsage('--there');
-
     }
 
     /**
      * Run the command
+     *
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

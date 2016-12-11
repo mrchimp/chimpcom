@@ -5,25 +5,38 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 
 use Auth;
 use Mrchimp\Chimpcom\Models\Memory;
 use Mrchimp\Chimpcom\Models\Tag;
 use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Create a memory item
  */
 class Save extends Command
 {
-
-    public function configure()
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
     {
         $this->setName('save');
-        $this->setDescription('Save a memory. Each memory consists of a name a description. The name must be a single word. The description can be a whole paragraph. By default the memory will only be visible by you. To make it visible to other users add the --public or -p flag or after saving, use the SETPUBLIC command.<br><br>Once the memory has been saved you can search for it using FIND or SHOW and delete it with FORGET.');
+        $this->setDescription(<<<DESC
+Save a memory. Each memory consists of a name and some content. The name must be a
+single word and does not have to be unique. The description can be a word, a
+sentence, a URL or whatever. By default the memory will only be visible by you.
+To make it visible to other users add the --public or -p flag or after saving,
+use the SETPUBLIC command.<br><br>
+Once the memory has been saved you can search for it using FIND or SHOW and
+delete it with FORGET command.
+DESC
+        );
         $this->addUsage('chimpcom A command line website.');
         $this->addRelated('forget');
         $this->addRelated('show');
@@ -52,22 +65,13 @@ class Save extends Command
 
     /**
      * Run the command
+     *
+     * @return void
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // $num_params = count($this->input->getParamArray());
-        //
-        // if ($num_params < 2) {
-        //   $this->response->error('Gonna need more than that.');
-        //   return false;
-        // }
-
-        // $content = '';
-        // $name    = $this->input->get(1);
-        // $content = implode(' ', array_slice($this->input->getParamArray(), 1));
-
         if (!Auth::check()) {
-            $output->write(Format::error('You must log in to use this command.'));
+            $output->error('You must log in to use this command.');
             return;
         }
 

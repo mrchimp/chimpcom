@@ -6,58 +6,77 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
+use Validator;
 use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Add a command alias
  */
-class Alias extends AdminCommand
+class Alias extends Command
 {
+    protected function configure()
+    {
+        $this->setName('alias');
+        $this->setDescription('Create a new command alias. If no arguments are given, list existing aliases.');
+        $this->addArgument(
+            'alias',
+            InputArgument::OPTIONAL,
+            'The alias for the command.'
+        );
+        $this->setName('register2');
+        $this->setDescription('Register step 3.');
+        $this->addArgument(
+            'command',
+            InputArgument::OPTIONAL,
+            'The command to alias.'
+        );
+    }
 
-  protected $title = 'Alias';
-  protected $description = 'View aliases or add an alias for a command.';
-  protected $usage = 'alias [&lt;alias&gt; &lt;command&gt;]';
-  protected $example = 'alias foo bar';
+    /**
+     * Run the command
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $alias_name = $input->getArgument('alias');
+        $command_name = $input->getArgument('command');
 
-  /**
-   * Run the command
-   */
-  public function process() {
-    if (!$this->input->get(1)) {
-        $aliases = ChimpcomAlias::get();
-        $output = [];
-        foreach ($aliases as $alias) {
-            $output[] = $alias->name;
-            $output[] = $alias->alias;
+        if (!$alias_name) {
+            $aliases = ChimpcomAlias::get();
+            $output = [];
+            foreach ($aliases as $alias) {
+                $output[] = $alias->name;
+                $output[] = $alias->alias;
+            }
+            $this->response->say(Format::listToTable($output, 2, true));
+            return;
         }
-        $this->response->say(Format::listToTable($output, 2, true));
-        return;
+
+        $validator = Validator::make([
+            'name' => $alias_name,
+            'alias' => $command_name,
+        ], [
+            'name'  => 'required|unique:aliases,name',
+            'alias' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $output->writeErrors($validator);
+            return false;
+        }
+
+        // @todo Fix these column names
+        $alias = new ChimpcomAlias();
+        $alias->name  = $alias_name;
+        $alias->alias = $command_name;
+
+        if ($alias->save()) {
+            $output->alert('Ok.');
+        } else {
+            $output->error('There was a problem. Try again.');
+        }
     }
-
-    $data = [
-      'name' => $this->input->get(1),
-      'alias' => implode(' ', array_slice($this->input->getParamArray(), 1))
-    ];
-
-    $rules = [
-      'name'  => 'required|unique:aliases,name',
-      'alias' => 'required'
-    ];
-
-    if (!$this->validateOrDie($data, $rules)) {
-      return;
-    }
-
-    $alias = new ChimpcomAlias();
-    $alias->name  = $data['name'];
-    $alias->alias = $data['alias'];
-
-    if ($alias->save()) {
-      $this->response->alert('Ok.');
-    } else {
-      $this->response->error('There was a problem. Try again.');
-    }
-  }
-
 }

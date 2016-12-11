@@ -9,43 +9,91 @@ use Auth;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Chimpcom;
 use Mrchimp\Chimpcom\Models\Memory;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Find a memory by its name or description
  */
-class Find extends LoggedInCommand
+class Find extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('find');
+        $this->setDescription('Find a memory by its name or description.');
+        $this->addUsage('chimpcom');
+        $this->addRelated('save');
+        $this->addRelated('show');
+        $this->addRelated('forget');
+        $this->addRelated('setpublic');
 
-    protected $title = 'Find';
-    protected $description = 'Find a memory by its name or description.';
-    protected $usage = 'find &lt;search_term&gt;';
-    protected $example = 'find chimpcom';
-    protected $see_also = 'save, show, forget, setpublic';
+        $this->addArgument(
+            'search_string',
+            InputArgument::IS_ARRAY | InputArgument::REQUIRED,
+            'Search term to find in memory name or description.'
+        );
+
+        $this->addOption(
+            'public',
+            'p',
+            null,
+            'Shows only public memories.'
+        );
+
+        $this->addOption(
+            'private',
+            'P',
+            null,
+            'Shows only private memories.'
+        );
+
+        $this->addOption(
+            'mine',
+            'm',
+            null,
+            'Show only your own memories.'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @return void
      */
-    public function process() {
-        $user = Auth::user();
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $show_public  = $input->getOption('public');
+        $show_private = $input->getOption('private');
+        $show_mine    = $input->getOption('mine');
+        $search_term = '%' . implode(' ', $input->getArgument('search_string')) . '%';
 
-        if (!$user->is_admin) {
-            $this->error('No.');
-            return;
+        if ($show_public) {
+            $item_type = 'public';
+        } else if ($show_private) {
+            $item_type = 'private';
+        } else if ($show_mine) {
+            $item_type = 'mine';
+        } else {
+            $item_type = 'both';
         }
 
-        $search_term = '%'.$this->input->getParamString().'%';
-        $user_id     = $user->id;
-
-        $memories = Memory::where('name', 'LIKE', $search_term)
-                          ->orWhere('content', 'LIKE', $search_term)
-                          ->get();
+        $memories = Memory::visibility($item_type)
+            ->search($search_term)
+            ->with('user')
+            ->get();
 
         if (count($memories) === 0){
-            $this->response->error('I have no recollection of that.');
+            $output->error('I have no recollection of that.');
             return;
         }
 
-        $this->response->say(Format::memories($memories));
+        $output->write(Format::memories($memories));
     }
 
 }

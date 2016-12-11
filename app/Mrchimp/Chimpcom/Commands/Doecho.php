@@ -1,28 +1,47 @@
-<?php 
+<?php
 /**
  * Echo echo echo
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Echo echo echo
  */
-class Doecho extends AbstractCommand
+class Doecho extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('echo');
+        $this->setDescription('Echo echo echo');
+        $this->addArgument(
+            'echo',
+            InputArgument::OPTIONAL,
+            'Echo echo echo echo.'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @return void
      */
-    public function process() {
-        $word = $this->input->getParamString();
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $word = $input->getArgument('echo');
 
         if (!$word) { $word = 'echo'; }
 
-        $this->response->say("$word <span style=\"font-size: 75%\">$word</span> <span style=\"font-size: 50%\">$word</span> <span style=\"font-size: 25%\">$word</span>");
+        $output->write("$word <span style=\"font-size: 75%\">$word</span> <span style=\"font-size: 50%\">$word</span> <span style=\"font-size: 25%\">$word</span>");
     }
 
 }

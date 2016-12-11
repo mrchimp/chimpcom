@@ -173,4 +173,44 @@ class Output extends SymfonyOutput
         $this->out['openWindow'] = $url;
         $this->out['openWindowSpecs'] = $specs;
     }
+
+    /**
+     * Set normal input and normal action.
+     */
+    public function resetTerminal()
+    {
+        $this->setAction('normal');
+        $this->response->usePasswordInput(false);
+    }
+
+    /**
+     * Get user details from session. This only needs to be called after user logs in/out.
+     */
+    public function getUserDetails() {
+        if (Auth::check()) {
+            $this->user = Auth::user();
+            $this->out['user']['id'] = $this->user->id;
+            $this->out['user']['name'] = $this->user->name;
+        } else {
+            $this->out['user']['id'] = -1;
+            $this->out['user']['name'] = 'Guest';
+        }
+    }
+
+    /**
+     * Output errors from a Validator object
+     *
+     * @param  Validator $validator Validator to output
+     * @param  string    $message   Message to prepend to errors
+     * @return void
+     */
+    public function writeErrors($validator, $message = 'There was a problem:')
+    {
+        $errors = $validator->errors();
+
+        $this->error($message . '<br>');
+        foreach ($errors->all() as $message) {
+            $this->error(' &bullet; ' . $message . '<br>');
+        }
+    }
 }

@@ -59,7 +59,7 @@ class Man extends Command
 
         $page_name = Alias::lookup($input->getArgument('command_name'));
         // $page_name = Input::getAlias($this->input->get(1));
-        $command = Chimpcom::getCommand($page_name);
+        $command = Chimpcom::instantiateCommand($page_name);
 
         if (!$command) {
           $output->write(Format::error('No man page found'));

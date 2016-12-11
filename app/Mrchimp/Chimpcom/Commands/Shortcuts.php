@@ -3,20 +3,38 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Chimpcom\Models\Shortcut;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class Shortcuts extends AbstractCommand
+class Shortcuts extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('shortcuts');
+        $this->setDescription('List all available shortcuts.');
+    }
 
-    public function process() {
+    /**
+     * Run the command
+     *
+     * @return void
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $shortcuts = Shortcut::get();
 
         if (count($shortcuts) === 0) {
-            $this->response->error('The are currently no shortcuts.');
+            $output->error('The are currently no shortcuts.');
             return;
         }
 
         foreach ($shortcuts as $shortcut) {
-            $this->response->say($shortcut->name . ' - ' . $shortcut->url . '<br>');
+            $output->write($shortcut->name . ' - ' . $shortcut->url . '<br>');
         }
     }
 

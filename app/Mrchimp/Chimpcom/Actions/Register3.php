@@ -5,33 +5,56 @@ namespace Mrchimp\Chimpcom\Actions;
 use Auth;
 use Session;
 use Validator;
+use Chimpcom;
 use App\User;
-use Mrchimp\Chimpcom\Commands\AbstractCommand;
+use Mrchimp\Chimpcom\Commands\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class Register3 extends AbstractCommand
+/**
+ * Handle email input and create an account
+ */
+class Register3 extends Command
 {
+    protected function configure()
+    {
+        $this->setName('register3');
+        $this->setDescription('Register step 4.');
+        $this->addArgument(
+            'email',
+            InputArgument::REQUIRED,
+            'Email for new account.'
+        );
+    }
 
-    public function process() {
-        $username = Session::get('register_username');
-        $password = Session::get('register_password');
+    /**
+     * Run the command
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $username  = Session::get('register_username');
+        $password  = Session::get('register_password');
         $password2 = Session::get('register_password2');
-        $email = $this->input->get(0);
+        $email     = $input->getArgument('email');
 
         $data = [
-            'name' => $username,
-            'email' => $email,
-            'password' => $password,
+            'name'                  => $username,
+            'email'                 => $email,
+            'password'              => $password,
             'password_confirmation' => $password2
         ];
 
-        $rules = [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
+        $validator = Validator::make($data, [
+            'name'     => 'required|max:255|unique:users',
+            'email'    => 'required|email|max:255|unique:users',
             'password' => 'required|confirmed|min:6'
-        ];
+        ]);
 
-        if (!$this->validateOrDie($data, $rules)) {
-            return;
+        if ($validator->fails()) {
+            $output->writeErrors($validator, 'Something went wrong. Please try again.');
+            Chimpcom::setAction('normal');
+            return false;
         }
 
         Auth::login($this->create($data));
@@ -40,9 +63,9 @@ class Register3 extends AbstractCommand
         Session::forget('register_password');
         Session::forget('register_password2');
 
-        $this->response->say('Hello, ' . e($data['name']) . '! Welcome to Chimpcom.');
-        $this->setAction('normal');
-        $this->response->usePasswordInput(false);
+        $output->write('Hello, ' . e($data['name']) . '! Welcome to Chimpcom.');
+        Chimpcom::setAction('normal');
+        $output->usePasswordInput(false);
     }
 
     /**

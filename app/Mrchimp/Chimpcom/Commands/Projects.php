@@ -9,38 +9,49 @@ use Auth;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Project;
 
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
  * List available projects
  */
-class Projects extends LoggedInCommand
+class Projects extends Command
 {
-
-    protected $title = 'Projects';
-    protected $description = 'Lists projects.';
-    protected $usage = 'projects';
-    protected $example = 'projects';
-    protected $see_also = 'project, newtask, todo, done';
+    protected function configure()
+    {
+        $this->setName('projects');
+        $this->setDescription('Lists projects.');
+        $this->addRelated('project');
+        $this->addRelated('newtask');
+        $this->addRelated('todo');
+        $this->addRelated('done');
+    }
 
     /**
      * Run the command
      */
-    public function process() {
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $user = Auth::user();
-        $projects = $user->projects;
+
+        if (!Auth::check()) {
+            $output->error('You must log in to use this command.');
+            return;
+        }
 
         // Report result
-        if (count($projects) === 0) {
-            $this->response->error('No projects.');
+        if (count($user->projects) === 0) {
+            $output->error('No projects.');
             return false;
         }
 
         $output_chunks = [];
 
-        foreach ($projects as $project) {
+        foreach ($user->projects as $project) {
             $output_chunks[] = '#'.$project->id . ' <span data-type="autofill" data-autofill="project '.$project->id.'"> ' . e($project->name) . ' - ' . count($project->tasks()) . ' tasks</span>';
         }
 
-        $this->response->say(implode('<br>', $output_chunks));
+        $output->write(implode('<br>', $output_chunks));
     }
 
 }

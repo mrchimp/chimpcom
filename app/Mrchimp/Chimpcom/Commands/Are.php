@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Get some answers
  */
@@ -7,38 +7,79 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
 use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Get some answers
  */
-class Are extends AbstractCommand
+class Are extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('are');
+        $this->setDescription('Answer some questions.');
 
-  /**
-   * Run the command
-   */
-  public function process() {
-    if (substr($this->input->getInput(), -1) != '?'){
-      $this->response->say('Questions end with question marks.');
-      return;
+        $this->addArgument(
+            'question',
+            InputArgument::IS_ARRAY | InputArgument::REQUIRED,
+            'The question you need answering.'
+        );
     }
 
-    if ($this->input->get(1) == 'you') {
-      if ($this->input->get(2) == 'sentient?') {
-        $this->response->say('Pretty much.');
-      } else if ($this->input->get(2) == 'human?') {
-        $this->response->say('What does it look like?');
-      }
-      return;
+    /**
+     * Run the command
+     *
+     * @return void
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $words = $input->getArgument('question');
+        $question = implode(' ', $words);
+
+        if (substr($question, -1) != '?'){
+            $output->write('Questions end with question marks.');
+            return;
+        }
+
+        if ($this->setAndEqual($words, 0, 'you')) {
+            if ($this->setAndEqual($words, 1, 'sentient?')) {
+                $output->write('Pretty much.');
+            } else if ($this->setAndEqual($words, 1, 'human?')) {
+                $output->write('What does it look like?');
+            }
+            return;
+        }
+
+        $answers = ['I\'m not sure yet. ',
+                    'No way. ',
+                    'Definitely. ',
+                    'It depends on your point of view. '];
+
+        $rand = floor(rand(0,count($answers) - 1));
+        $output->write($answers[$rand]);
     }
 
-    $answers = ['I\'m not sure yet. ',
-                'No way. ',
-                'Definitely. ',
-                'It depends on your point of view. '];
+    /**
+     * Returns true if the $index of $array exists and is equal to $value
+     *
+     * @param  array    $array
+     * @param  integer  $index
+     * @param  various  $value
+     * @return boolean
+     */
+    protected function setAndEqual($array, $index, $value)
+    {
+        if (!isset($array[$index])) {
+            return false;
+        }
 
-    $rand = floor(rand(0,count($answers) - 1));
-    $this->response->say($answers[$rand]);
-  }
-
+        return $array[$index] === $value;
+    }
 }

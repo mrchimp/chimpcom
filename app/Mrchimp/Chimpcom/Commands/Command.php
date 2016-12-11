@@ -10,6 +10,7 @@ use Mrchimp\Chimpcom\Format;
 
 class Command extends SymfonyCommand
 {
+    protected $log_this = true;
 
     protected $relatedCommands = [];
 
@@ -25,6 +26,10 @@ class Command extends SymfonyCommand
         $out .= Format::title($this->getName()) . '<br>';
         $out .= $this->getDescription() . '<br><br>';
 
+        if ($this->getHelp()) {
+            $out .= e($this->getHelp()) . '<br><br>';
+        }
+
         $out .= Format::alert('Syntax') . '<br>';
         $out .= e($this->getSynopsis('long', true)) . '<br><br>';
 
@@ -38,13 +43,12 @@ class Command extends SymfonyCommand
 
         if ($this->getRelated()) {
             $out .= Format::alert('See Also') . '<br>';
-            foreach ($this->getRelated() as $related)
-            $out .= $related . '<br><br>';
+            $out .= implode(', ', $this->getRelated()) . '<br><br>';
         }
 
         if (count($this->getAliases())) {
             $out .= Format::alert('Aliases') . '<br>';
-            $out .= implode(', ', $this->aliases) . '<br><br>';
+            $out .= implode(', ', $this->getAliases()) . '<br><br>';
         }
 
         $definition = $this->getDefinition();
@@ -68,7 +72,7 @@ class Command extends SymfonyCommand
                         $out .= ' / -' . $option->getShortcut();
                     }
                 $out .= '</strong><br>';
-                $out .= $option->getDescription() . '<br><br>';
+                $out .= $option->getDescription() . '<br>';
             }
         }
 

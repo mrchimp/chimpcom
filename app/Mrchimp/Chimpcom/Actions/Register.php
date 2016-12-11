@@ -7,41 +7,55 @@ namespace Mrchimp\Chimpcom\Actions;
 
 use Auth;
 use Session;
+use Chimpcom;
 use App\User;
 use Illuminate\Http\Request;
-use Mrchimp\Chimpcom\Commands\AbstractCommand;
+use Mrchimp\Chimpcom\Commands\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Handle password input after 'register'
  * @action register2
  * @action normal
  */
-class Register extends AbstractCommand
+class Register extends Command
 {
-
-  /**
-   * Run the command
-   */
-  public function process() {
-    if (!Session::get('register_username')) {
-      $this->response->error('This should not happen.');
-      $this->setAction('normal');
-      return;
+    protected function configure()
+    {
+        $this->setName('register');
+        $this->setDescription('Register step 2.');
+        $this->addArgument(
+            'password',
+            InputArgument::REQUIRED,
+            'Password for new account.'
+        );
     }
 
-    $password = $this->input->get(0);
+    /**
+     * Run the command
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!Session::get('register_username')) {
+          $output->error('This should not happen.');
+          Chimpcom::setAction('normal');
+          return;
+        }
 
-    if (!$password) {
-      $this->response->error('No password given. Giving up.');
-      $this->setAction('normal');
-      Session::forget('register_username');
-      return;
+        $password = $input->getArgument('password');
+
+        if (!$password) {
+          $output->error('No password given. Giving up.');
+          Chimpcom::setAction('normal');
+          Session::forget('register_username');
+          return;
+        }
+
+        Session::set('register_password', $password);
+        $output->alert('Enter the same password again:');
+        Chimpcom::setAction('register2');
+        $output->usePasswordInput(true);
     }
-
-    Session::set('register_password', $password);
-    $this->response->alert('Enter the same password again:');
-    $this->setAction('register2');
-    $this->response->usePasswordInput(true);
-  }
-
 }
