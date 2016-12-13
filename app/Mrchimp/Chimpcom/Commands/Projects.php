@@ -25,6 +25,7 @@ class Projects extends Command
         $this->addRelated('newtask');
         $this->addRelated('todo');
         $this->addRelated('done');
+        $this->addRelated('priority');
     }
 
     /**

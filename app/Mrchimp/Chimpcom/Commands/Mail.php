@@ -6,63 +6,118 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
-use Mrchimp\Chimpcom\Chimpcom;
+use Chimpcom;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Message as MessageModel;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * View messages sent by other users
  */
-class Mail extends LoggedInCommand
+class Mail extends Command
 {
-
-    protected $title = 'Mail';
-    protected $description = 'Read messages from other users. Use --sent to show messages that you have sent to others. Messages will be marked as read as soon as they are seen. Use --dont-read to prevent this.';
-    protected $usage = 'mail [--all|-a] [--sent|-s] [--dont-read|-r] [--delete|-d &lt;message_id&gt;]';
-    protected $see_also = 'message';
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('mail');
+        $this->setDescription('Read messages from other users.');
+        $this->setHelp('Use --sent to show messages that you have sent to others. ' .
+            'Messages will be marked as read as soon as they are seen. ' .
+            'Use --dont-read to prevent this.');
+        $this->addRelated('message');
+        $this->addOption(
+            'all',
+            'a',
+            null,
+            'Show read and unread messages.'
+        );
+        $this->addOption(
+            'sent',
+            's',
+            null,
+            'Show sent messages.'
+        );
+        $this->addOption(
+            'dont-read',
+            'r',
+            null,
+            'Don\'t mark messages as read when reading them.'
+        );
+        $this->addOption(
+            'delete',
+            'd',
+            null,
+            'Delete messages by ID.'
+        );
+        $this->addArgument(
+            'delete_ids',
+            InputArgument::IS_ARRAY,
+            'IDs of messages to delete. For use with the --delete flag.'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @todo fix read status
+     * @return void
      */
-    public function process() {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!Auth::check()) {
+            $output->error('You must be logged in to use this command.');
+            return false;
+        }
+
         $user = Auth::user();
 
         // Delete messages
-        if ($this->input->isFlagSet(['--delete', '-d'])) {
-            $message_ids = array_slice($this->input->getWordArray(), 1);
+        if ($input->getOption('delete')) {
+            $message_ids = $input->getArgument('delete_ids');
+
+            if (empty($message_ids)) {
+                $output->error('No message IDs given.');
+                return false;
+            }
+
             $result = MessageModel::where('recipient_id', $user->id)
                 ->whereIn('id', $message_ids)
                 ->delete();
 
             if ($result) {
-              $this->response->alert('Message(s) deleted.');
+              $output->alert('Message(s) deleted.');
             } else {
-              $this->response->error('There was a problem.');
+              $output->error('There was a problem.');
             }
 
             return;
         }
 
-        $showAll = $this->input->isFlagSet(['--all', '-a']);
-        $mailbox = ($this->input->isFlagSet(['--sent', '-s']) ? 'outbox' : 'inbox');
+        $showAll = $input->getOption('all');
+        $mailbox = $input->getOption('sent') ? 'outbox' : 'inbox';
 
         $messages = MessageModel::where('recipient_id', $user->id)
             ->with('author', 'recipient')
             ->get();
 
         if (count($messages) === 0) {
-            $this->response->say('No messages');
+            $output->write('No messages');
             return;
         }
 
-        $this->response->say(Format::messages($messages));
+        $output->write(Format::messages($messages));
 
-        if (!$this->input->isFlagSet(['-r', '--dont-read'])) {
+        if (!$input->getOption('dont-read')) {
             foreach ($messages as $message) {
                 $message->has_been_read = true;
                 $message->save();
             }
         }
     }
-
 }

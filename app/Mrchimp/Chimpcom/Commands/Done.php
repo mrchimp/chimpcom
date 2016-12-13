@@ -7,51 +7,76 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
 use Session;
-use Mrchimp\Chimpcom\Chimpcom;
+use Chimpcom;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Task;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Mark a task as done
  */
-class Done extends LoggedInCommand
+class Done extends Command
 {
-
-    protected $title = 'Done';
-    protected $description = 'Marks a task as completed.';
-    protected $usage = 'done &lt;task_id&gt;';
-    protected $example = 'done 12';
-    protected $see_also = 'project, projects, newtask, todo';
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('done');
+        $this->setDescription('Mark a task as complete.');
+        $this->addRelated('project');
+        $this->addRelated('projects');
+        $this->addRelated('newtask');
+        $this->addRelated('todo');
+        $this->addRelated('priority');
+        $this->addArgument(
+            'task_id',
+            InputArgument::REQUIRED,
+            'ID of the task to complete.'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @return void
      */
-    public function process() {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!Auth::check()) {
+            $output->error('You must log in to use this command.');
+            return false;
+        }
+
         $user = Auth::user();
         $project = $user->activeProject;
 
         if (!$project) {
-            $this->response->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
+            $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
             return;
         }
 
-        $task_id = Chimpcom::decodeId($this->input->get(1));
+        $task_id = Chimpcom::decodeId($input->getArgument('task_id'));
 
         $task = Task::where('id', $task_id)
                     ->where('project_id', $project->id)
                     ->first();
 
         if (!$task) {
-            $this->response->error('Couldn\'t find that task.');
+            $output->error('Couldn\'t find that task.');
             return false;
         }
 
         Session::set('task_to_complete', $task->id);
 
-        $this->response->alert('Are you sure you want to delete this task?<br>');
-        $this->response->say($task->description);
+        $output->alert('Are you sure you want to delete this task?<br>');
+        $output->say($task->description);
 
-        $this->setAction('done');
+        Chimpcom::setAction('done');
     }
 
 }

@@ -37,7 +37,8 @@ class Parser extends Command
         $this->addArgument(
             'second_name',
             null,
-            'Your second name is optional.'
+            'Your second name is optional and defaults to "banana".',
+            'banana'
         );
 
         $this->addArgument(

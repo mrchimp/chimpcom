@@ -165,7 +165,7 @@ class Chimpcom
     }
 
     /**
-     * Take an input string and return a resopnse array
+     * Take an input string and return a response array
      * @param  string           $input the user input string.
      * @return ChimpcomResponse        Response object
      */

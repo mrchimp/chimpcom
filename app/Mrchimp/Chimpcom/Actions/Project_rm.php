@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Delete a project
  */
@@ -6,43 +6,75 @@
 namespace Mrchimp\Chimpcom\Actions;
 
 use Auth;
+use Chimpcom;
+use Session;
 use Mrchimp\Chimpcom\Booleanate;
 use Mrchimp\Chimpcom\Format;
-use Mrchimp\Chimpcom\Commands\LoggedInCommand;
+use Mrchimp\Chimpcom\Models\Project;
+use Mrchimp\Chimpcom\Commands\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Delete a project
  */
-class Project_rm extends LoggedInCommand
+class Project_rm extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('projectrm');
+        $this->setDescription('Remove a project.');
+        $this->addArgument(
+            'confirmation',
+            InputArgument::REQUIRED,
+            'A yes or no-like answer'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @return void
      */
-    public function process() {
-        $this->setAction('normal');
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!Auth::check()) {
+            $output->error('You must be logged in to perform this action.');
+            return false;
+        }
+
+        Chimpcom::setAction('normal');
         $user = Auth::user();
 
-        if (!Booleanate::isAffirmative($this->input->getInput())) {
-            $this->response->error('Fair enough.');
+        $argument = $input->getArgument('confirmation');
+
+        if (!Booleanate::isAffirmative($argument)) {
+            $output->error('Fair enough.');
             return;
         }
 
-        $project = $user->activeProject;
+        $project = Project::where('id', Session::get('projectrm'))->first();
+        Session::forget('projectrm');
 
         if (!$project) {
-            $this->response->error('No active project.');
+            $output->error('No active project.');
             return;
         }
 
         if ($project->user_id !== $user->id) {
-            $this->response->error('That isn\'t yours to delete.');
+            $output->error('That isn\'t yours to delete.');
             return;
         }
 
         $project->delete();
 
-        $this->response->alert('Ok. It\'s gone.');
+        $output->alert('Ok. It\'s gone.');
     }
 
 }

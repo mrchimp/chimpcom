@@ -6,26 +6,57 @@ use DB;
 use Auth;
 use Session;
 use App\User;
+use Chimpcom;
+use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Booleanate;
 use Mrchimp\Chimpcom\Models\Task;
-use Mrchimp\Chimpcom\Commands\LoggedInCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class Done extends LoggedInCommand
+class Done extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('done');
+        $this->setDescription('Mark a task as completed.');
+        $this->addArgument(
+            'confirmation',
+            InputArgument::REQUIRED,
+            'A yes or no-like answer.'
+        );
+    }
 
-    public function process() {
+    /**
+     * Run the command
+     *
+     * @return void
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!Auth::check()) {
+            $output->error('You must be logged in to use this command.');
+            return false;
+        }
+
         $user = Auth::user();
-        $confirmed = Booleanate::isAffirmative($this->input->get(0));
+        $confirmation = $input->getArgument('confirmation');
+        $confirmed = Booleanate::isAffirmative($confirmation);
         $project = $user->activeProject;
 
         if (!$project) {
-            $this->response->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
+            $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
             return;
         }
 
         if (!$confirmed) {
-            $this->response->say('Fair enough.');
-            $this->setAction();
+            $output->write('Fair enough.');
+            Chimpcom::setAction();
             Session::forget('task_to_complete');
             return;
         }
@@ -35,7 +66,7 @@ class Done extends LoggedInCommand
                     ->first();
 
         if (!$task) {
-            $this->response->error('Couldn\'t find that task.');
+            $output->error('Couldn\'t find that task.');
             return;
         }
 
@@ -43,8 +74,8 @@ class Done extends LoggedInCommand
         $task->time_completed = DB::raw('now()');
         $task->save();
 
-        $this->setAction();
-        $this->response->alert('Ok.');
+        Chimpcom::setAction();
+        $output->alert('Ok.');
     }
 
 }

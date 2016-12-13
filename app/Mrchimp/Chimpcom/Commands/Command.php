@@ -37,8 +37,10 @@ class Command extends SymfonyCommand
             $out .= Format::alert('Usage') . '<br>';
 
             foreach ($this->getUsages() as $usage) {
-                $out .= '<code>' . $usage . '</code><br><br>';
+                $out .= '<code>' . $usage . '</code><br>';
             }
+
+            $out .= '<br>';
         }
 
         if ($this->getRelated()) {
@@ -111,4 +113,15 @@ class Command extends SymfonyCommand
         return $this->relatedCommands;
     }
 
+    /**
+     * Return tab completion options for the current command input
+     *
+     * @todo
+     * @param  Input  $input
+     * @return string
+     */
+    public function tabComplete(InputInterface $input)
+    {
+        return '';
+    }
 }
