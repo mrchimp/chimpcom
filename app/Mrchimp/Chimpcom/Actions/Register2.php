@@ -8,42 +8,53 @@ namespace Mrchimp\Chimpcom\Actions;
 use Auth;
 use Session;
 use App\User;
-use Mrchimp\Chimpcom\Commands\AbstractCommand;
+use Chimpcom;
+use Mrchimp\Chimpcom\Commands\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Handle second password input and create account
- * @action normal
+ * Handle second password input and prompt for an email address
+ *
+ * @action register3
  */
-class Register2 extends AbstractCommand
+class Register2 extends Command
 {
+
+    protected function configure()
+    {
+        $this->setName('register2');
+        $this->setDescription('Register step 3.');
+        $this->addArgument(
+            'password_confirmation',
+            InputArgument::REQUIRED,
+            'The same password again.'
+        );
+    }
 
     /**
      * Run the command
      */
-    public function process() {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $username = Session::get('register_username');
         $password = Session::get('register_password');
-        $password2 = $this->input->get(0);
+        $password2 = $input->getArgument('password_confirmation');
 
         if (!$username || !$password) {
-            $this->response->error('This should not happen.');
-            $this->setAction('normal');
-            $this->response->usePasswordInput(false);
+            $output->error('This should not happen.');
+            Chimpcom::setAction('normal');
+            $output->usePasswordInput(false);
             Session::forget('register_username');
             Session::forget('register_password');
             return;
         }
 
-        if (!$password2) {
-            $this->response->error('No password given. Giving up.');
-            $this->resetTerminal();
-            return;
-        }
-
         Session::set('register_password2', $password2);
-        $this->response->alert('Your email address:');
-        $this->setAction('register3');
-        $this->response->usePasswordInput(false);
+        $output->alert('Your email address:');
+        Chimpcom::setAction('register3');
+        $output->usePasswordInput(false);
     }
 
 }

@@ -1,37 +1,106 @@
-<?php 
+<?php
 /**
  * How some fake server info
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Mrchimp\Chimpcom\Chimpcom;
+use Chimpcom;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * How some fake server info
  */
-class Uname extends AbstractCommand
+class Uname extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('uname');
+        $this->setDescription('Print system information.');
+        $this->addOption(
+            'kernel-name',
+            's',
+            null,
+            'Print the kernel name.'
+        );
+        $this->addOption(
+            'nodename',
+            'n',
+            null,
+            'Print the network node hostname.'
+        );
+        $this->addOption(
+            'kernel-version',
+            'v',
+            null,
+            'Print the kernel version.'
+        );
+        $this->addOption(
+            'kernel-release',
+            'r',
+            null,
+            'Print the kernel release.'
+        );
+        $this->addOption(
+            'machine',
+            'm',
+            null,
+            'Print the machine hardware name.'
+        );
+        $this->addOption(
+            'processor',
+            'p',
+            null,
+            'Print the processor type (non-portable).'
+        );
+        $this->addOption(
+            'hardware-platform',
+            'i',
+            null,
+            'Print the hardware platform (non-portable).'
+        );
+        $this->addOption(
+            'operating-system',
+            'o',
+            null,
+            'Print the operating system.'
+        );
+        $this->addOption(
+            'all',
+            'a',
+            null,
+            'Print all information.'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @return void
      */
-    public function process() {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $flags = [
-            's' => ['--kernel-name', '-s'],
-            'n' => ['--nodename', '-n'],
-            'r' => ['--kernel-version', '-v'],
-            'v' => ['--kernel-release', '-r'],
-            'm' => ['--machine', '-m'],
-            'p' => ['--processor', '-p'],
-            'i' => ['--hardware-platform', '-i'],
-            'o' => ['--operating-system', '-o']
+            's' => 'kernel-name',
+            'n' => 'nodename',
+            'r' => 'kernel-version',
+            'v' => 'kernel-release',
+            'm' => 'machine',
+            'p' => 'processor',
+            'i' => 'hardware-platform',
+            'o' => 'operating-system'
         ];
 
         $bits = [
             's' => 'Chimpcom',
             'n' => $_SERVER['HTTP_HOST'],
-            'r' => Chimpcom::VERSION,
+            'r' => Chimpcom::getVersion(),
             'v' => date('d M Y H:i:s'),
             'p' => 'unknown',
             'i' => 'unknown',
@@ -39,20 +108,20 @@ class Uname extends AbstractCommand
             'o' => 'Interwebs'
         ];
 
-        if ($this->input->isFlagSet(['--all', '-a'])) {
-            $this->response->say(implode(' ', $bits));
+        if ($input->getOption('all')) {
+            $output->write(implode(' ', $bits));
             return true;
         }
 
         foreach ($flags as $key => $flag) {
-            if ($this->input->isFlagSet($flag)) {
-              $this->response->say($key . '<br>');
-                $this->response->say($bits[$key]);
+            if ($input->getOption($flag)) {
+              $output->write($key . '<br>');
+                $output->write($bits[$key]);
                 return true;
             }
         }
 
-        $this->response->say($bits['s']);
+        $output->write($bits['s']);
     }
 
 }

@@ -65,5 +65,4 @@ To generate Chimpcom docs, install [phpdoc](http://www.phpdoc.org) then run:
 
     makedocs.sh
 
-
-You'll want the [Lumen docs](lumen.laravel.com/docs), too.
+You'll want the [Laravel docs](http://laravel.com/docs), too.

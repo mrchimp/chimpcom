@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Set the priority of todo items
  */
@@ -6,50 +6,89 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
+use Chimpcom;
 use Mrchimp\Chimpcom\Models\Memory;
 use Mrchimp\Chimpcom\Models\Task;
-use Mrchimp\Chimpcom\Chimpcom;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Set the priority of todo items
  */
-class Priority extends LoggedInCommand
+class Priority extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('priority');
+        $this->setDescription('Set the priority of todo tasks.');
+        $this->addRelated('project');
+        $this->addRelated('projects');
+        $this->addRelated('newtask');
+        $this->addRelated('todo');
+        $this->addRelated('done');
+        $this->addArgument(
+            'task_id',
+            InputArgument::REQUIRED,
+            'ID of the task.'
+        );
+        $this->addArgument(
+            'priority',
+            InputArgument::REQUIRED,
+            'Priority to set the task to.'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
      */
-    public function process() {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!Auth::check()) {
+            $output->error('You must be logged in to use this command.');
+            return false;
+        }
+
         $user = Auth::user();
-        $task_id = Chimpcom::decodeId($this->input->get(1));
-        $priority = (int)$this->input->get(2);
+        $task_id = Chimpcom::decodeId($input->getArgument('task_id'));
+        $priority = (int)$input->getArgument('priority');
 
         if (!is_numeric($priority)) {
-            $this->response->error('Priority should be an integer.');
+            $output->error('Priority should be an integer.');
             return false;
         }
 
         $project = $user->activeProject();
 
         if (!$project) {
-            $this->response->error('No active project. User `PROJECTS` and `PROJECT SET x`.');
+            $output->error('No active project. User `PROJECTS` and `PROJECT SET x`.');
             return;
         }
 
-        $task = Task::where('id', $task_id)->where('user_id', $user->id)->first();
+        $task = Task::where('id', $task_id)
+                    ->where('user_id', $user->id)
+                    ->first();
 
         if (!$task) {
-            $this->response->error('Couldn\'t find that task, or it\'s not yours to edit.');
+            $output->error('Couldn\'t find that task, or it\'s not yours to edit.');
             return false;
         }
 
         $task->priority = $priority;
-        
+
         if ($task->save()) {
-            $this->response->alert('Ok.');
+            $output->alert('Ok.');
         } else {
-            $this->response->error('There was a problem. Try again?');
+            $output->error('There was a problem. Try again?');
         }
     }
-
 }

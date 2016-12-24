@@ -1,25 +1,46 @@
-<?php 
+<?php
 /**
  * Encode a string in base64
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Encode a string in base64
  */
-class Base64encode extends AbstractCommand
+class Base64encode extends Command
 {
+  /**
+   * Configure the command
+   *
+   * @return void
+   */
+  protected function configure()
+  {
+      $this->setName('base64encode');
+      $this->setDescription('Encodes a base64 encoded string.');
+      $this->addArgument(
+          'input',
+          InputArgument::REQUIRED,
+          'A plaintext string to be encoded.'
+      );
+  }
 
   /**
    * Run the command
+   *
+   * @param  InputInterface  $input
+   * @param  OutputInterface $output
+   * @return void
    */
-  public function process() {
-    $cypher = base64_encode($this->input->getParamString());
-    $this->response->say(e($cypher));
+  protected function execute(InputInterface $input, OutputInterface $output)
+  {
+    $encoded = $input->getArgument('input');
+    $decoded = base64_encode($encoded);
+    $output->write(e($decoded));
   }
-
 }

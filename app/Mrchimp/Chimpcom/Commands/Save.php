@@ -5,60 +5,105 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+
 use Auth;
 use Mrchimp\Chimpcom\Models\Memory;
 use Mrchimp\Chimpcom\Models\Tag;
+use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Create a memory item
  */
-class Save extends LoggedInCommand
+class Save extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('save');
+        $this->setDescription(<<<DESC
+Save a memory. Each memory consists of a name and some content. The name must be a
+single word and does not have to be unique. The description can be a word, a
+sentence, a URL or whatever. By default the memory will only be visible by you.
+To make it visible to other users add the --public or -p flag or after saving,
+use the SETPUBLIC command.<br><br>
+Once the memory has been saved you can search for it using FIND or SHOW and
+delete it with FORGET command.
+DESC
+        );
+        $this->addUsage('chimpcom A command line website.');
+        $this->addRelated('forget');
+        $this->addRelated('show');
+        $this->addRelated('find');
+        $this->addRelated('setpublic');
 
-  protected $title = 'Save';
-  protected $description = 'Save a memory. Each memory consists of a name a description. The name must be a single word. The description can be a whole paragraph. By default the memory will only be visible by you. To make it visible to other users add the --public or -p flag or after saving, use the SETPUBLIC command.<br><br>Once the memory has been saved you can search for it using FIND or SHOW and delete it with FORGET.';
-  protected $usage = 'save &lt;name&gt; &lt;description&gt; [--public|-p]';
-  protected $example = 'save chimpcom A command line website.';
-  protected $see_also = 'forget, show, find, setpublic';
+        $this->addArgument(
+            'name',
+            InputArgument::REQUIRED,
+            'The name of the memory to save. Must be a single word. This does <em>not</em> need to be unique.'
+        );
 
-  /**
-   * Run the command
-   */
-  public function process() {
-    $num_params = count($this->input->getParamArray());
+        $this->addArgument(
+            'content',
+            InputArgument::IS_ARRAY | InputArgument::REQUIRED,
+            'The content of the memory.'
+        );
 
-    if ($num_params < 2) {
-      $this->response->error('Gonna need more than that.');
-      return false;
+        $this->addOption(
+            'public',
+            'p',
+            null,
+            'Sets the memory as publicly visible. Otherwise only you will be able to see it.'
+        );
     }
 
-    $content = '';
-    $name = $this->input->get(1);
-    $content = implode(' ', array_slice($this->input->getParamArray(), 1));
+    /**
+     * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!Auth::check()) {
+            $output->error('You must log in to use this command.');
+            return;
+        }
 
-    $this->response->say('Name: ' . e($name) . '<br>');
-    $this->response->say('Content: ' . e($content) . '<br>');
+        $user = Auth::user();
 
-    $is_public = $this->input->isFlagSet(['--public', '-p']);
-    $user = Auth::user();
+        $name      = $input->getArgument('name');
+        $content   = implode(' ', $input->getArgument('content'));
+        $is_public = $input->getOption('public');
 
-    $memory = new Memory();
-    $memory->name = $name;
-    $memory->content = $content;
-    $memory->user_id = $user->id;
-    $memory->public = $is_public;
+        $output->write('Name: ' . e($name) . '<br>');
+        $output->write('Content: ' . e($content) . '<br>');
 
-    if (!$memory->save()) {
-      $this->response->error('Could not save memory. Try again.');
+        $memory = new Memory();
+        $memory->name    = $name;
+        $memory->content = $content;
+        $memory->user_id = $user->id;
+        $memory->public  = $is_public;
+
+        if (!$memory->save()) {
+            $output->error('Could not save memory. Try again.');
+        }
+
+        // @todo get tags working
+        // foreach ($this->input->getTags() as $tag_word) {
+        //   $tag = new Tag();
+        //   $tag->tag = $tag_word;
+        //   $memory->tags()->save($tag);
+        // }
+
+        $output->alert('Memory saved. Id: ' . $memory->id);
     }
-
-    foreach ($this->input->getTags() as $tag_word) {
-      $tag = new Tag();
-      $tag->tag = $tag_word;
-      $memory->tags()->save($tag);
-    }
-
-    $this->response->alert('Memory saved. Id: ' . $memory->id);
-  }
 
 }

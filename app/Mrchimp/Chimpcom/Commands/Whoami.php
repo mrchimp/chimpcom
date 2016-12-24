@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Get current username
  */
@@ -6,23 +6,36 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
-use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Get current username
  */
-class Whoami extends AbstractCommand
+class Whoami extends Command
 {
-
-  /**
-   * Run the command
-   */
-  public function process() {
-    if (Auth::check()) {
-      $this->response->say(Auth::user()->name);
-    } else {
-      $this->response->say('Guest');
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('whoami');
+        $this->setDescription('Print the current user name.');
     }
-  }
 
+    /**
+     * Run the command
+     *
+     * @return void
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (Auth::check()) {
+            $output->write(Auth::user()->name);
+        } else {
+            $output->write('Guest');
+        }
+    }
 }

@@ -1,22 +1,36 @@
-<?php 
+<?php
 /**
- * Show a random tetrino
+ * Show a random tetromino
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Mrchimp\Chimpcom\Chimpcom;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Show a random tetrino
+ * Show a random tetromino
  */
-class Tetris extends AbstractCommand
+class Tetris extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('tetris');
+        $this->setDescription('Show a random tetromino.');
+    }
 
     /**
      * Run the command
+     *
+     * @return void
      */
-    public function process() {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $tetrinos = [
           '&#x25A0;&#x25A0;&#x25A0;&#x25A0;',                     // Line
           '&#x25A0;<br>&#x25A0;<br>&#x25A0;&#x25A0;',             // J
@@ -26,8 +40,8 @@ class Tetris extends AbstractCommand
           '&#x25A0;&#x25A0;<br>&nbsp;&#x25A0;&#x25A0;',           // Z
           '&nbsp;&#x25A0;&#x25A0;<br>&#x25A0;&#x25A0;'            // S
         ];
-        
-        $this->response->say('<div class="tetris">' . $tetrinos[rand(0, count($tetrinos) - 1)] . '</div>');
+
+        $output->write('<div class="tetris">' . $tetrinos[rand(0, count($tetrinos) - 1)] . '</div>');
     }
 
 }

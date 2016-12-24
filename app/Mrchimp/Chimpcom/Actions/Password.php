@@ -5,53 +5,68 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
+use Hash;
 use Auth;
 use Session;
 use App\User;
-use Mrchimp\Chimpcom\Commands\AbstractCommand;
-
-use Hash;
+use Mrchimp\Chimpcom\Commands\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Handle password input after 'login username'
  */
-class Password extends AbstractCommand
+class Password extends Command
 {
 
-  /**
-   * Run the command
-   */
-  public function process() {
-    if (Auth::check()) {
-      $user = Auth::user();
-      $this->response->alert('You are already logged in as '.htmlspecialchars($user->name).'. How did you do that?');
-      return;
+    public function configure()
+    {
+        $this->setName('password');
+        $this->setDescription('Handles password input.');
+
+        $this->addArgument(
+            'password',
+            InputArgument::REQUIRED,
+            'Your password.'
+        );
     }
 
-    $username = Session::get('login_username');
-    $password = $this->input->get(0);
-    Session::forget('login_username');
-    $this->setAction('normal');
+    /**
+     * Run the command
+     */
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $output->error('You are already logged in as '.htmlspecialchars($user->name).'. How did you do that?');
+            return;
+        }
 
-    if (!$password) {
-      $this->response->alert('No password given. Start again.');
-      return;
-    }
+        $username = Session::get('login_username');
+        $password = $input->getArgument('password');
+        Session::forget('login_username');
+        Session::set('action', 'normal');
 
-    if (!$username) {
-      $this->response->error('I forgot your name, sorry. Start again.');
-      return;
-    }
+        if (!$password) {
+            $this->error('No password given. Start again.');
+            return;
+        }
 
-    if (Auth::attempt([
-      'name' => $username,
-      'password' => $password
-    ], false, true)) {
-      $this->response->getUserDetails();
-      $this->response->alert('Welcome back.');
-    } else {
-      $this->response->error('Hmmmm... No.');
+        if (!$username) {
+            $this->error('I forgot your name, sorry. Start again.');
+            return;
+        }
+
+        if (Auth::attempt([
+            'name' => $username,
+            'password' => $password
+        ], false, true)) {
+            $output->getUserDetails();
+            $output->alert('Welcome back.');
+        } else {
+            $output->error('Hmmmm... No.');
+        }
     }
-  }
 
 }

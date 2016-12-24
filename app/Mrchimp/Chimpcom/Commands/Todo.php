@@ -9,52 +9,110 @@ use DB;
 use Auth;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Task;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Current user's todo list
  */
-class Todo extends LoggedInCommand
+class Todo extends Command
 {
-
-    protected $title = 'Todo';
-    protected $description = 'Lists tasks on the current project. By default only incomplete tasks from the current project are shown.';
-    protected $usage = 'todo [--allprojects|-a] [--completed|-c]<br><br>--allprojects shows tasks from all your projects.<br>--completed shows only completed tasks.';
-    protected $example = 'todo -all';
-    protected $see_also = 'project, projects, newtask, done';
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('todo');
+        $this->setDescription('Lists tasks on the current project.');
+        $this->setHelp('By default only incomplete tasks from the current project are shown.');
+        $this->addRelated('project');
+        $this->addRelated('projects');
+        $this->addRelated('newtask');
+        $this->addRelated('done');
+        $this->addRelated('priority');
+        $this->addArgument(
+            'searchterm',
+            InputArgument::IS_ARRAY,
+            'Show only tasks that contain this.'
+        );
+        $this->addOption(
+            'all',
+            'a',
+            null,
+            'List complete and incomplete tasks.'
+        );
+        $this->addOption(
+            'allprojects',
+            'p',
+            null,
+            'List tasks from all of your projects.'
+        );
+        $this->addOption(
+            'completed',
+            'c',
+            null,
+            'List completed tasks.'
+        );
+        $this->addOption(
+            'num_tasks',
+            'n',
+            InputOption::VALUE_REQUIRED,
+            'Number of tasks to show.',
+            10
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @todo add ability to show dates
+     * @return void
      */
-    public function process() {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!Auth::check()) {
+            $output->error('You must be logged in to use this command.');
+            return false;
+        }
+
         $user = Auth::user();
 
         $project = $user->activeProject;
 
         if (!$project) {
-            $this->response->error('No active project. Use `PROJECTS` and `SET PROJECT x`.');
+            $output->error('No active project. Use `PROJECTS` and `SET PROJECT x`.');
             return;
         }
 
         $data = [];
-        $show_all_projects = $this->input->isFlagSet(['--allprojects', '-p']);
-        $show_complete     = $this->input->isFlagSet(['--complete', '-c']);
+
+        $show_all_items    = $input->getOption('all');
+        $show_all_projects = $input->getOption('allprojects');
+        $show_completed    = $input->getOption('completed');
+
+        if ($show_all_items) {
+            $completion = null;
+        } else if ($show_completed) {
+            $completion = true;
+        } else {
+            $completion = false;
+        }
 
         $tasks = Task::where('user_id', $user->id);
 
         if ($show_all_projects) {
-            $this->response->title('Showing tasks from all projects.<br><br>');
+            $output->write('Showing task from all projects.<br>');
         } else {
-            $this->response->title(e($project->name) . '<br>');
-            $this->response->grey(e($project->description) . '<br><br>');
+            $output->write('Current project: ' . e($project->name) . '<br>');
         }
 
-        $count = 10;
-        $search_term = $this->input->getParamString();
+        $num_tasks = $input->getOption('num_tasks');
 
-        if (is_numeric($this->input->get(1))) {
-            $count = (int)$this->input->get(1);
-            $search_term = implode(' ', array_slice($this->input->getWordArray(), 2));
-        }
+        $search_term = implode(' ', $input->getArgument('searchterm'));
 
         $tasks = $tasks->search($search_term)
             ->project($show_all_projects ? null : $user->activeProject->id)
@@ -62,24 +120,16 @@ class Todo extends LoggedInCommand
             ->orderBy('completed', 'ASC')
             ->orderBy('priority', 'DESC')
             ->orderBy('created_at', 'DESC')
-            ->take($count)
+            ->take($num_tasks)
             ->get();
 
         if (!$tasks) {
-            $this->alert('Nothing to do!');
+            $output->alert('Nothing to do!');
             return false;
         }
 
-        // @todo - Unnecessary whereRaw(). It's needed so that we can use the
-        // static project method. There's a better way to do this but I can't
-        // remember the method name.
-        $total_in_proj = Task::whereRaw('1')
-            ->project($show_all_projects ? null : $user->activeProject->id)
-            ->completed(false)
-            ->count();
-
-        $this->response->say(Format::tasks($tasks, $show_all_projects));
-        $this->response->say('<br>Showing ' . count($tasks) . ' tasks. ' . $total_in_proj . ' incomplete to go!');
+        $output->write(Format::tasks($tasks));
+        $output->write('<br>' . count($tasks) . ' tasks.');
     }
 
 }

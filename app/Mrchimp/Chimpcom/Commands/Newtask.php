@@ -9,40 +9,61 @@ use Auth;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Project;
 use Mrchimp\Chimpcom\Models\Task;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Create a new task on the current project
  */
-class Newtask extends LoggedInCommand
+class Newtask extends Command
 {
-
-    protected $title = 'Do';
-    protected $description = 'Add a new task to the current project.';
-    protected $usage = 'do &lt;task_description&gt;';
-    protected $example = 'do Test some stuff.';
-    protected $see_also = 'project, projects, todo, done';
-    protected $aliases = 'do';
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('do');
+        $this->setDescription('Add a new task to the current project.');
+        $this->addRelated('priority');
+        $this->addRelated('project');
+        $this->addRelated('projects');
+        $this->addRelated('todo');
+        $this->addRelated('done');
+        $this->addArgument(
+            'description',
+            InputArgument::IS_ARRAY | InputArgument::REQUIRED,
+            'Description of what needs doing.'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
      */
-    public function process() {
-        $user = Auth::user();
-
-        if ($this->input->get(1) === false) {
-            $this->response->error('Do what?');
-            return;
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!Auth::check()) {
+            $output->error('You must be logged in to use this command.');
+            return false;
         }
 
+        $user = Auth::user();
+        $description = implode(' ', $input->getArgument('description'));
         $project = $user->activeProject;
 
         if (!$project) {
-            $this->response->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
+            $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
             return;
         }
 
         $task = new Task();
-        $task->description = $this->input->getParamString();
+        $task->description = $description;
         $user->tasks()->save($task);
         $project->tasks()->save($task);
 
@@ -62,7 +83,6 @@ class Newtask extends LoggedInCommand
 
         // $project_id = \R::store($task);
 
-        $this->response->alert('Ok.');
+        $output->alert('Ok.');
     }
-
 }
