@@ -66,6 +66,8 @@ DESC
     /**
      * Run the command
      *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -83,7 +85,6 @@ DESC
 
         $output->write('Name: ' . e($name) . '<br>');
         $output->write('Content: ' . e($content) . '<br>');
-
 
         $memory = new Memory();
         $memory->name    = $name;

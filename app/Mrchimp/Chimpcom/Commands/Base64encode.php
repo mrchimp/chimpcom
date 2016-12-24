@@ -33,6 +33,8 @@ class Base64encode extends Command
   /**
    * Run the command
    *
+   * @param  InputInterface  $input
+   * @param  OutputInterface $output
    * @return void
    */
   protected function execute(InputInterface $input, OutputInterface $output)
@@ -41,5 +43,4 @@ class Base64encode extends Command
     $decoded = base64_encode($encoded);
     $output->write(e($decoded));
   }
-
 }

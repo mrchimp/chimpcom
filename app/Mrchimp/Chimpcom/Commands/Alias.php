@@ -18,6 +18,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Alias extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
     protected function configure()
     {
         $this->setName('alias');
@@ -38,10 +43,14 @@ class Alias extends Command
 
     /**
      * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $alias_name = $input->getArgument('alias');
+        $alias_name   = $input->getArgument('alias');
         $command_name = $input->getArgument('command');
 
         if (!$alias_name) {

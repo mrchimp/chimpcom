@@ -27,6 +27,8 @@ class Lipsum extends Command
     /**
      * Run the command
      *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -38,5 +40,4 @@ class Lipsum extends Command
             <p>Donec facilisis felis lorem. In pellentesque vulputate iaculis. Morbi iaculis, magna a dapibus commodo, mauris odio malesuada purus, ut malesuada dui quam sed tortor. Donec luctus magna elit. Pellentesque sit amet nisi nec risus mattis suscipit sed at mi. Nullam id nisi lacus, fringilla scelerisque mauris. Nullam tempus ipsum vel ante dictum tincidunt. Praesent bibendum erat in est eleifend convallis. Mauris massa mi, varius eu sodales vel, molestie eget metus. Nunc auctor, dolor at facilisis tempus, tellus ante lacinia est, id accumsan justo est id quam. In id tellus dui, id auctor ligula. Integer id eros magna, vel malesuada mauris. Aenean viverra mollis quam, quis gravida justo condimentum eget. Etiam in metus et diam aliquam commodo.</p>
             <a href="http://www.lipsum.com/" target="_blank">Get more</a>');
     }
-
 }

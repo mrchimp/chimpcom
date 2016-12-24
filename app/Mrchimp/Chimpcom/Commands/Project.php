@@ -53,6 +53,8 @@ class Project extends Command
     /**
      * Run the command
      *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -139,6 +141,12 @@ class Project extends Command
         $output->say('Current project: '.$project->name);
     }
 
+    /**
+     * Return tab completion result
+     *
+     * @param  InputInterface $input
+     * @return String
+     */
     public function tabcomplete(InputInterface $input) {
         $user = Auth::user();
 
@@ -154,5 +162,4 @@ class Project extends Command
 
         return '';
     }
-
 }

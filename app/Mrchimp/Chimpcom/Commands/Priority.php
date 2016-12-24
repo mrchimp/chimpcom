@@ -47,6 +47,8 @@ class Priority extends Command
     /**
      * Run the command
      *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -89,5 +91,4 @@ class Priority extends Command
             $output->error('There was a problem. Try again?');
         }
     }
-
 }

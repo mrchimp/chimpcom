@@ -33,6 +33,8 @@ class Doecho extends Command
     /**
      * Run the command
      *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -43,5 +45,4 @@ class Doecho extends Command
 
         $output->write("$word <span style=\"font-size: 75%\">$word</span> <span style=\"font-size: 50%\">$word</span> <span style=\"font-size: 25%\">$word</span>");
     }
-
 }

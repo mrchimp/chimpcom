@@ -48,6 +48,8 @@ class Date extends Command
     /**
      * Run the command
      *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -62,5 +64,4 @@ class Date extends Command
             $output->write(date('l jS \of F Y h:i:s A e'));
         }
     }
-
 }

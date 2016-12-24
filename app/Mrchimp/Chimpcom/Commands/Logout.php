@@ -16,13 +16,23 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Logout extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
     protected function configure()
     {
         $this->setName('logout');
         $this->setDescription('End the current users session.');
     }
+
     /**
      * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -35,5 +45,4 @@ class Logout extends Command
         $output->getUserDetails();
         $output->alert('You are now logged out.');
     }
-
 }

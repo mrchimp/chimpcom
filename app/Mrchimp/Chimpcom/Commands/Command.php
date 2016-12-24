@@ -10,6 +10,7 @@ use Mrchimp\Chimpcom\Format;
 
 class Command extends SymfonyCommand
 {
+    // @todo fix per-command logging
     protected $log_this = true;
 
     protected $relatedCommands = [];

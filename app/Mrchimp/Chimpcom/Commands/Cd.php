@@ -37,6 +37,8 @@ class Cd extends Command
     /**
      * Run the command
      *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -56,5 +58,4 @@ class Cd extends Command
             $output->error('No such file or directory.');
         }
     }
-
 }

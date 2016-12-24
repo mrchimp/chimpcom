@@ -42,6 +42,8 @@ class Message extends Command
      * Run the command
      *
      * @todo only remove names from start of content - leave them in message
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -70,9 +72,6 @@ class Message extends Command
         $output->write('Sending to...<br>');
 
         foreach ($recipient_names as $name) {
-
-            // @todo strip @s from start of name
-
             $recipient = User::where('name', $name)->first();
 
             if (!$recipient) {
@@ -110,5 +109,4 @@ class Message extends Command
             }
         }
     }
-
 }

@@ -5,12 +5,12 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Auth;
 use Session;
 use App\User;
 use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Accepts a username and asks for a password. Action logging in happens in actions/password
@@ -33,6 +33,10 @@ class Login extends Command
 
     /**
      * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
@@ -67,5 +71,4 @@ class Login extends Command
         $output->usePasswordInput();
         Session::set('action', 'password');
     }
-
 }

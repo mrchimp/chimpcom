@@ -19,7 +19,11 @@ use Mrchimp\Chimpcom\Models\Alias;
  */
 class Man extends Command
 {
-
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
     protected function configure()
     {
         $this->setName('man');
@@ -43,6 +47,10 @@ class Man extends Command
 
     /**
      * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
@@ -58,7 +66,6 @@ class Man extends Command
         }
 
         $page_name = Alias::lookup($input->getArgument('command_name'));
-        // $page_name = Input::getAlias($this->input->get(1));
         $command = Chimpcom::instantiateCommand($page_name);
 
         if (!$command) {
@@ -70,5 +77,4 @@ class Man extends Command
         $output->write($text);
         return;
     }
-
 }

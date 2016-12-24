@@ -15,44 +15,50 @@ use Cache;
 class Reddit
 {
   /**
-   * Time in seconds(?) that responses are cahced.
+   * Time in seconds(?) that responses are cached.
+   *
    * @var integer
    */
-  public $cache_time    = 10;
+  public $cache_time = 10;
 
   /**
    * Amount of spaces to indent nested content by.
+   *
    * @var integer
    */
-  public $indent        = 5;
+  public $indent = 5;
 
   /**
    * Whether or not to show posts' text content.
+   *
    * @var boolean
    */
   public $show_selftext = true;
 
   /**
    * ID of the reddit post
+   *
    * @var integer
    */
   private $post_id;
 
   /**
    * ID of the reddit comment
+   *
    * @var integer
    */
   private $comment_id;
 
   /**
    * Get a JSON file from Reddit.
+   *
    * @param  string $url URL to get
    * @return string      JSON response
    */
   private function get_content($url) {
     $client = new \GuzzleHttp\Client();
     $res = $client->request('GET', $url);
-    return $res->getBody();
+    return (string)$res->getBody();
   }
 
   /**
@@ -96,10 +102,8 @@ class Reddit
     }
 
     if (Cache::has($cache_file)) {
-      // echo 'Using cache: '.$cache_file;
       $content = Cache::get($cache_file);
     } else {
-      // echo 'Getting remote file: '.$remote_file;
       $content = $this->get_content($remote_file);
       Cache::put($cache_file, $content, $this->cache_time);
     }
@@ -124,6 +128,7 @@ class Reddit
 
   /**
    * Render JSON Reddit content recursively
+   *
    * @param  object  $node  Decoded Reddit JSON object
    * @param  integer $depth Nesting amount
    * @return string         Rendered output

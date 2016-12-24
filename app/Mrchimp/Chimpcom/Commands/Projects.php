@@ -17,6 +17,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Projects extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
     protected function configure()
     {
         $this->setName('projects');
@@ -30,6 +35,10 @@ class Projects extends Command
 
     /**
      * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
@@ -54,5 +63,4 @@ class Projects extends Command
 
         $output->write(implode('<br>', $output_chunks));
     }
-
 }

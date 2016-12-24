@@ -433,5 +433,4 @@ class Chimpcom
     {
         return self::VERSION;
     }
-
 }
