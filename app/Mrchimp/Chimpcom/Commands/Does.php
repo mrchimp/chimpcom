@@ -1,25 +1,49 @@
-<?php 
+<?php
 /**
  * Answer questions beginning with "does"
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Answer questions beginning with "does"
  */
-class Does extends AbstractCommand
+class Does extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('does');
+        $this->setDescription('Answer questions beginning with "does".');
+        $this->addArgument(
+            'question',
+            InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+            'The question to answer.'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
      */
-    public function process() {
-        if (substr($this->input->getInput(), -1) != '?'){
-            $this->response->say('Questions end with question marks.');
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $question = $input->getArgument('question');
+        $question_str = implode(' ', $question);
+
+        if (substr($question_str, -1) != '?'){
+            $output->write('Questions end with question marks.');
             return;
         }
 
@@ -31,7 +55,6 @@ class Does extends AbstractCommand
 
         $rand = floor(rand(0,count($answers) - 1));
 
-        $this->response->say($answers[$rand]);
+        $output->write($answers[$rand]);
     }
-
 }

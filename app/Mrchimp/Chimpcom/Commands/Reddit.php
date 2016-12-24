@@ -1,62 +1,115 @@
-<?php 
+<?php
 /**
  * Read Reddit descretely
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Mrchimp\Chimpcom\Reddit as Api;
 use Cache;
+use Mrchimp\Chimpcom\Reddit as Api;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
-  * Read Reddit descretely
+ * Read Reddit descretely
  */
-class Reddit extends AbstractCommand
+class Reddit extends Command
 {
-
-  /**
-   * Wastes time
-   * reddit                              <frontpage>
-   * reddit -r --reddit subreddit        <subreddit>
-   * reddit -c --comments 12345 [12345]  <post/comment>
-   * reddit -l --list                    <reddits>
-   * reddit -s --self                    show self text
-   */
-  public function process() {
-    $cache_time    = 10;
-    $indent        = 5;
-    $post_id       = $this->input->getWord(1);
-    $comment_id    = $this->input->getWord(2);
-    $show_selftext = $this->input->isFlagSet(array('-s', '--self'));
-
-    $reddit = new Api();
-    $reddit->show_selftext = $show_selftext;
-    
-    if ($show_selftext) {
-      $this->response->say(Format::alert('Showing selftext.').'<br>');
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('reddit');
+        $this->setDescription('Wastes time.');
+        $this->addArgument(
+            'post',
+            null,
+            'Post ID'
+        );
+        $this->addArgument(
+            'comment',
+            null,
+            'Comment ID'
+        );
+        $this->addOption(
+            'reddit',
+            'r',
+            null,
+            'Show posts from a given subreddit.'
+        );
+        $this->addOption(
+            'comments',
+            'c',
+            null,
+            'Show a given comment tree.'
+        );
+        $this->addOption(
+            'list',
+            'l',
+            null,
+            'List subreddits.'
+        );
+        $this->addOption(
+            'self',
+            's',
+            null,
+            'Show self-post text.'
+        );
     }
-    
-    if ($this->input->isFlagSet(array('-r', '--reddit'))) {
-      $action = 'subreddit';
-    } else if ($this->input->isFlagSet(array('-c', '--comments'))) {
-      if ($comment_id !== false) {
-        $action = 'comment';
-      } else {
-        $action = 'post';
-      }
-    } else if ($this->input->isFlagSet(array('-l', '--list'))) {
-      $action = 'reddits';
-    } else {
-      $action = 'frontpage';
+
+    /**
+     * Wastes time
+     * reddit                              <frontpage>
+     * reddit -r --reddit subreddit        <subreddit>
+     * reddit -c --comments 12345 [12345]  <post/comment>
+     * reddit -l --list                    <reddits>
+     * reddit -s --self                    show self text
+     */
+     /**
+      * Run the command
+      *
+      * @param  InputInterface  $input
+      * @param  OutputInterface $output
+      * @return void
+      */
+     protected function execute(InputInterface $input, OutputInterface $output)
+     {
+        $cache_time    = 10;
+        $indent        = 5;
+        $post_id       = $input->getArgument('post');
+        $comment_id    = $input->getArgument('comment');
+        $show_selftext = $input->getOption('self');
+
+        $reddit = new Api();
+        $reddit->show_selftext = $show_selftext;
+
+        if ($show_selftext) {
+            $output->alert('Showing selftext.<br>');
+        }
+
+        if ($input->getOption('reddit')) {
+            $action = 'subreddit';
+        } else if ($input->getOption('comments')) {
+            if ($comment_id !== false) {
+                $action = 'comment';
+            } else {
+                $action = 'post';
+            }
+        } else if ($input->getOption('list')) {
+            $action = 'reddits';
+        } else {
+            $action = 'frontpage';
+        }
+
+        $html = $reddit->get($action, $post_id, $comment_id);
+        $output->write($html);
+
+        // @todo - Make this work
+        // if ($this->user->isAdmin()) {
+        //   $output->write('<br>'.($use_cache ? 'Using cache.' : 'Not using cache.'));
+        // }
     }
-
-    $html = $reddit->get($action, $post_id, $comment_id);
-    $this->response->say($html);
-
-    // @todo - Make this work
-    // if ($this->user->isAdmin()) {
-    //   $this->response->say('<br>'.($use_cache ? 'Using cache.' : 'Not using cache.'));
-    // }
-  }
-
 }

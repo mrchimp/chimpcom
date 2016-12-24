@@ -1,75 +1,79 @@
-<?php 
+<?php
 /**
  * Convert hexadecimal to decimal
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Convert hexadecimal to decimal
  */
-class Hexdec extends AbstractCommand
+class Hexdec extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('hexdec');
+        $this->setDescription('Convert hexadecimal to decimal.');
+
+        $this->addArgument(
+            'input',
+            InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+            'Hexadecimal numbers to convert.'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
      */
-    public function process() {
-        // We have a list
-        if ($this->input->get(2) !== false) {
-            $this->response->say('multiple<br>');
-            $values = $this->input->getParamArray();
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $values = $input->getArgument('input');
+        $output_vals = [];
 
-            foreach ($values as $value){
-                $value = hexdec($value);
+        foreach ($values as &$value){
+            $output_val = '';
+            // Check for colour values
+            if (substr($value, 0, 1) === '#') {
+                $value = substr($value, 1);
+                $length = strlen($value);
+
+                if ($length == 3) { // FFF
+                    $parts = str_split($value, 1);
+                    $output_val = 'rgb(' . hexdec($parts[0] . $parts[0]) . ', ' .
+                    hexdec($parts[1] . $parts[1]) . ', ' .
+                    hexdec($parts[2] . $parts[2]) . ') ';
+                    $output_val .= '<span style="color:#'.$value.'">███████</span>';
+                } else if ($length == 6) { #FFFFFF
+                    $parts = str_split($value, 2);
+                    $output_val = 'rgb(' . hexdec($parts[0]) . ', ' .
+                    hexdec($parts[1]) . ', ' .
+                    hexdec($parts[2]) . ') ';
+                    $output_val .= '<span style="color:#'.$value.'">███████</span>';
+                } else {
+                    $output->error('I don\'t know how to handle this.');
+                    return;
+                }
+            } else {
+                $output_val = hexdec($value);
             }
 
-            $this->response->say(implode(' ', $values));
-            return true;
+            $output_vals[] = $output_val;
         }
 
-        $input = $this->input->get(1);
-
-        // we've got a single item
-        if ($input) {
-            $this->response->say(hexdec($input));
-            return;
-        }
-
-        $tags = $this->input->getTags();
-
-        // Try the tags
-        if (!empty($tags)) {
-            foreach ($tags as $tag) {
-                $tag = '#'.$tag;
-                $length = strlen($tag);
-
-                // FFF
-                if ($length == 4 && substr($tag, 0, 1) == '#') {
-                    $output = 'rgb(' . hexdec(substr($tag, 1, 1) . substr($tag, 1, 1)) . ', ' .
-                                       hexdec(substr($tag, 2, 1) . substr($tag, 2, 1)) . ', ' .
-                                       hexdec(substr($tag, 3, 1) . substr($tag, 3, 1)) . ') ';
-                    $output .= '<span style="color:'.$output.'">███████</span>';
-                    $this->response->say($output . '<br>');
-                }
-
-                // FFFFFF
-                if ($length == 7 && substr($tag, 0, 1) == '#') {
-                    $output = 'rgb(' . hexdec(substr($tag, 1, 2)) . ', ' .
-                                       hexdec(substr($tag, 3, 2)) . ', ' .
-                                       hexdec(substr($tag, 5, 2)) . ')';
-                    $output .= '<span style="color:'.$output.'">███████</span>';
-                    $this->response->say($output . '<br>');
-                }
-            }
-            return;
-        }
-
-        $this->response->error('Nothing to convert.');
-
+        $output->write(implode('<br>', $output_vals));
+        return true;
     }
-
 }

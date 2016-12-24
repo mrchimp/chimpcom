@@ -144,7 +144,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        Mrchimp\Chimpcom\ChimpcomServiceProvider::class,
     ],
 
     /*
@@ -194,6 +194,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
 
+        'Chimpcom'  => Mrchimp\Chimpcom\Facades\Chimpcom::class,
     ],
 
 ];

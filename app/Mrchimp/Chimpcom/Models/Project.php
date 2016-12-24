@@ -15,21 +15,35 @@ use Mrchimp\Chimpcom\Models\Task;
 class Project extends Model
 {
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('app\User');
     }
 
-    public function activeUsers() {
+    public function activeUsers()
+    {
         return $this->hasMany('app\User', 'active_project_id');
     }
 
-    public function tasks() {
+    public function tasks()
+    {
         return $this->hasMany('Mrchimp\Chimpcom\Models\Task');
     }
 
-    public function delete() {
-    	Task::where('project_id', $this->id)->delete();
-    	return parent::delete();
+    public function delete()
+    {
+        Task::where('project_id', $this->id)->delete();
+        return parent::delete();
     }
 
+    public function scopeNameOrId($query, $identifier)
+    {
+        if (is_numeric($identifier)) {
+            $query->where('id', $identifier);
+        } else {
+            $query->where('name', $identifier);
+        }
+
+        return $query;
+    }
 }

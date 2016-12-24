@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Send a message to another user
  */
@@ -7,70 +8,105 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
 use App\User;
-use Mrchimp\Chimpcom\Chimpcom;
+use Chimpcom;
 use Mrchimp\Chimpcom\Models\Message as MessageModel;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Send a message to another user
  */
-class Message extends LoggedInCommand
+class Message extends Command
 {
-    protected $title = 'Message';
-    protected $description = 'Send a message to other users.';
-    protected $usage = 'message &lt;username[s]&gt; &lt;message&gt;';
-    protected $example = 'message @mrchimp Hey there!';
-    protected $see_also = 'mail';
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('message');
+        $this->setDescription('Send a message to other users.');
+        $this->setHelp('You can omit the MESSAGE keyword entirely and just start a command with @username.');
+        $this->addUsage('@mrchimp Hey there!');
+        $this->addRelated('mail');
+        $this->addArgument(
+            'content',
+            InputArgument::IS_ARRAY | InputArgument::REQUIRED,
+            'Usernames and message content. Usernames are any word that begins with an @.'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @todo only remove names from start of content - leave them in message
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
      */
-    public function process() {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $user = Auth::user();
-        $success_count = 0;
-        $recipient_names = $this->input->getNames();
+        $content = $input->getArgument('content');
+
+        $recipient_names = [];
+
+        foreach ($content as $key => $word) {
+            if (substr($word, 0, 1) === '@') {
+                $recipient_names[] = substr($word, 1);
+                unset($content[$key]);
+            }
+        }
 
         if (empty($recipient_names)) {
-            $this->response->error('You need to tell me who to send that to. Begin usernames with an @ symbol - Twitter style.');
+            $output->error('You need to tell me who to send that to. Begin usernames with an @ symbol - Twitter style.');
             return false;
         }
+
+        $body = implode(' ', $content);
+
+        $success_count = 0;
+
+        $output->write('Sending to...<br>');
 
         foreach ($recipient_names as $name) {
             $recipient = User::where('name', $name)->first();
 
-            if ($recipient) {
-                $message = new MessageModel();
-                $message->message = $this->input->getParamString();
-                $message->recipient_id = $recipient->id;
-                $message->author_id = $user->id;
-                $message->save();
-
-                $this->response->say('Sent message to ' . e($name) . '.<br>');
-
-                $success_count++;
-            } else {
-                $this->response->error('There is no user called ' . e($name) . '. Try using the USERS command.<br>');
+            if (!$recipient) {
+                $output->error(e($name). ' ✘<br>');
+                continue;
             }
+
+            $message = new MessageModel();
+            $message->message = $body;
+            $message->recipient_id = $recipient->id;
+            $message->author_id = $user->id;
+            $message->save();
+
+            $output->alert(e($name) . ' ✔<br>');
+
+            $success_count++;
         }
 
-        // Report result
         $name_count = count($recipient_names);
 
         if ($name_count > 1) {
-            $success_percent = (($success_count / $name_count) * 100);
-            if ($success_percent < 1) {
-                $this->response->error('No messages were sent.');
-            } else if ($success_percent > 99) {
-                $this->response->alert('All messages were sent!');
+            if ($success_count === 1) {
+                $output->error('No messages were sent.');
+            } else if ($success_count === $name_count) {
+                $output->alert('All messages were sent!');
             } else {
-                $this->response->error('Sent messages with '.$success_percent.'% success rate.');
+                $success_percent = (($success_count / $name_count) * 100);
+                $output->error('Sent messages with ~'.round($success_percent, 3).'% success rate.');
             }
         } else {
             if ($success_count == 1) {
-                $this->response->alert('Message sent!');
+                $output->alert('Message sent!');
             } else {
-                $this->response->error('Error sending message.');
+                $output->error('Error sending message.');
             }
         }
     }
-
 }

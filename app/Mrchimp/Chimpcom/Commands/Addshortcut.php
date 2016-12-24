@@ -4,40 +4,84 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
 use Validator;
+use Chimpcom;
 use Mrchimp\Chimpcom\Models\Shortcut;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class Addshortcut extends AdminCommand
+class Addshortcut extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('addshortcut');
+        $this->setDescription('Add a shortcut command.');
+        $this->addArgument(
+            'name',
+            InputArgument::REQUIRED,
+            'Search command name.'
+        );
+        $this->addArgument(
+            'url',
+            InputArgument::REQUIRED,
+            'Search URL. Should be a valid URL with %PARAM placeholder for search term'
+        );
+    }
 
-    public function process() {
-        if ($this->input->get(2) === false) {
-            $this->error('Not enough params.');
+    /**
+     * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!Auth::check()) {
+            $output->error('You must be logged in to use this command.');
             return false;
         }
 
-        $data = [
-            'name' => $this->input->get(1),
-            'url' => $this->input->get(2)
-        ];
+        $user = Auth::user();
 
-        $rules = [
-            'name' => 'required',
-            'url' => 'required|url'
-        ];
+        if (!$user->is_admin) {
+            $output->error('No.');
+            return false;
+        }
 
-        if (!$this->validateOrDie($data, $rules)) {
+        $name = $input->getArgument('name');
+        $url = $input->getArgument('url');
+
+        $available_commands = Chimpcom::getCommandList();
+
+        $validator = Validator::make([
+            'name' => $name,
+            'url' => $url,
+        ],[
+            'name' => 'required|not_in:'.implode(',', $available_commands),
+            'url' => 'required|url',
+        ],[
+            'not_in' => 'Shortcut name must not match other shortcut or command names.',
+        ]);
+
+        if ($validator->fails()) {
+            $output->writeErrors($validator);
             return;
         }
 
         $shortcut = new Shortcut();
-        $shortcut->name = $data['name'];
-        $shortcut->url = $data['url'];
+        $shortcut->name = $name;
+        $shortcut->url = $url;
 
         if ($shortcut->save()) {
-            $this->response->alert('Ok.');
+            $output->alert('Ok.');
         } else {
-            $this->response->error('There was an error. Try again.');
+            $output->error('There was an error. Try again.');
         }
     }
-
 }

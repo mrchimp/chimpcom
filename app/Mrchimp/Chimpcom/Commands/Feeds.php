@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Read RSS feeds
  */
@@ -9,39 +9,79 @@ use Auth;
 use Validator;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Feed;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Read RSS feeds
  */
-class Feeds extends LoggedInCommand
+class Feeds extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('feeds');
+        $this->setDescription('Reads RSS feeds.');
+        $this->addUsage('');
+        $this->addUsage('add example http://example.com/rss_url.xml');
+        $this->addUsage('list');
+        $this->addUsage('remove example');
+        $this->addArgument(
+            'subcommand',
+            null,
+            'add, list or remove. If not provided, feeds are displayed'
+        );
+        $this->addArgument(
+            'name',
+            null,
+            'An alias for a feed.'
+        );
+        $this->addArgument(
+            'url',
+            null,
+            'An RSS feed URL.'
+        );
+    }
 
     /**
      * Run the command
+     *
+     * @return void
      */
-    public function process() {
-        // <td>feeds</td>
-        // <td>feeds add name rss_url.xml</td>
-        // <td>feeds list</td>
-        // <td>feeds remove ID</td>
- 
-        $user = Auth::user();
-        $action = $this->input->get(1);
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
 
-        if ($action === 'add') {
-            if ($this->input->get(1) == false) {
-                $this->response->error('You need to provide a url.');
+
+        if (!Auth::check()) {
+            $output->error('You must be logged in to use this command.');
+            return false;
+        }
+
+        $user = Auth::user();
+
+        $subcommand = $input->getArgument('subcommand');
+        $name = $input->getArgument('name');
+        $url = $input->getArgument('url');
+
+        if ($subcommand === 'add') {
+            if (!$url) {
+                $output->error('You need to provide a url.');
                 return false;
             }
 
             $data = [
-                'name' => $this->input->get(2),
-                'url' => $this->input->get(3)
+                'name' => $name,
+                'url' => $url,
             ];
 
             $rules = [
                 'name' => 'required|string|min:1',
-                'url' => 'required|active_url'
+                'url' => 'required|active_url',
             ];
 
             if (!$this->validateOrDie($data, $rules)) {
@@ -50,21 +90,21 @@ class Feeds extends LoggedInCommand
 
             $feed = new Feed($data);
             $user->feeds()->save($feed);
-            $this->response->alert('Ok');
+            $output->alert('Ok');
             return;
         }
 
 
-        if ($action === 'list') {
+        if ($subcommand === 'list') {
             $feeds = $user->feeds;
 
             if (count($feeds) === 0) {
-                $this->response->error('No feeds. use `FEED ADD ...`');
+                $output->error('No feeds. use `FEED ADD ...`');
                 return;
             }
 
             foreach ($feeds as $feed) {
-                $this->response->say(
+                $output->write(
                     Format::title(e($feed->name)) .': ' . e($feed->url).'<br>'
                 );
             }
@@ -73,60 +113,43 @@ class Feeds extends LoggedInCommand
         }
 
 
-        if ($action == 'remove') {
-            $name = $this->input->get(2);
-
+        if ($subcommand == 'remove') {
             if ($name === false) {
-                $this->response->error('You must provide a feed name.');
+                $output->error('You must provide a feed name.');
                 return;
             }
 
             $feed = Feed::where('name', $name)
-                          ->where('user_id', $user->id)
-                          ->first();
+                        ->where('user_id', $user->id)
+                        ->first();
 
             if (!$feed) {
-                $this->response->error('Could not find feed or it isn\'t yours to remove.');
+                $output->error('Could not find feed or it isn\'t yours to remove.');
                 return;
             }
 
             $result = $feed->delete();
 
             if ($result) {
-                $this->response->alert('Feed removed.');
+                $output->alert('Feed removed.');
             } else {
-                $this->response->error('Problem removing feed.');
+                $output->error('Problem removing feed.');
             }
 
             return;
         }
 
 
-
-
-
         // ============= Get feeds ============================
-        $name = $this->input->get(1);
-
-        $feeds = Feed::where('user_id', $user->id);
-
-        if ($name !== false) {
-            $feeds->where('name', $name);
-        }
-
-        $feeds = $feeds->get();
-
-        if (!$feeds) {
-            $this->response->say('Couldn\'t get feed list.');
+        if (!$user->feeds) {
+            $output->write('Couldn\'t get feed list.');
             return;
         }
 
-        foreach ($feeds as $feed) {
+        foreach ($user->feeds as $feed) {
             $the_feed = $feed->getFeed(); // Well shit this is getting confusing
 
-            $this->response->say(Format::feed($the_feed));
+            $output->write(Format::feed($the_feed));
         }
-
     }
-
 }

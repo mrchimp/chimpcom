@@ -1,23 +1,38 @@
-<?php 
+<?php
 /**
- * Show Chimpcom version number
+ * Print Chimpcom version number
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Mrchimp\Chimpcom\Chimpcom;
+use Chimpcom;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Show Chimpcom version number
+ * Print Chimpcom version number
  */
-class Version extends AbstractCommand
+class Version extends Command
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('version');
+        $this->setDescription('Print Chimpcom version number.');
+    }
 
     /**
      * Run the command
+     *
+     * @return void
      */
-    public function process() {
-        $this->response->say(Chimpcom::VERSION);
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $output->write(Chimpcom::getVersion());
     }
 
 }
