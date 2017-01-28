@@ -116,7 +116,7 @@ class Todo extends Command
 
         $tasks = $tasks->search($search_term)
             ->project($show_all_projects ? null : $user->activeProject->id)
-            ->completed($show_complete)
+            ->completed($completion)
             ->orderBy('completed', 'ASC')
             ->orderBy('priority', 'DESC')
             ->orderBy('created_at', 'DESC')
