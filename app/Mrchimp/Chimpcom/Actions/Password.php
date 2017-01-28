@@ -46,7 +46,7 @@ class Password extends Command
         $username = Session::get('login_username');
         $password = $input->getArgument('password');
         Session::forget('login_username');
-        Session::set('action', 'normal');
+        Session::put('action', 'normal');
 
         if (!$password) {
             $this->error('No password given. Start again.');

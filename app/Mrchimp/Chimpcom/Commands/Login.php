@@ -61,14 +61,14 @@ class Login extends Command
                             Create a new account by using the register command.');
             // $this->response->cFill("register $username"); // @todo
             $output->usePasswordInput(false);
-            Session::set('action', 'normal');
+            Session::put('action', 'normal');
             return;
         }
 
-        Session::set('login_username', trim($username));
+        Session::put('login_username', trim($username));
 
         $output->alert('Password:');
         $output->usePasswordInput();
-        Session::set('action', 'password');
+        Session::put('action', 'password');
     }
 }

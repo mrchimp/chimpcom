@@ -89,7 +89,7 @@ class Project extends Command
             $user->projects()->save($project);
 
             // @todo check current project logic and tidy up this logic
-            Session::set('current_project_id', $project->id);
+            Session::put('current_project_id', $project->id);
 
             $user->active_project_id = $project->id;
             $user->save();
@@ -125,7 +125,7 @@ class Project extends Command
                             ->first();
 
             $output->title('Are you sure you want to delete the project `' . e($project->name) . '`?');
-            Session::set('projectrm', $project->id);
+            Session::put('projectrm', $project->id);
             Chimpcom::setAction('project_rm');
             return;
         }

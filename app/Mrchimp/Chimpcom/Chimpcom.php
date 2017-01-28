@@ -330,7 +330,7 @@ class Chimpcom
      */
     public function setAction($str = 'normal')
     {
-        Session::set('action', $str);
+        Session::put('action', $str);
     }
 
     /**

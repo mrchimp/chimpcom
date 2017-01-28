@@ -55,7 +55,7 @@ class Register extends Command
             return false;
         }
 
-        Session::set('register_username', $username);
+        Session::put('register_username', $username);
         Chimpcom::setAction('register');
         $output->usePasswordInput(true);
         $output->alert('Enter a password:');

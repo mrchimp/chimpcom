@@ -51,7 +51,7 @@ class Register2 extends Command
             return;
         }
 
-        Session::set('register_password2', $password2);
+        Session::put('register_password2', $password2);
         $output->alert('Your email address:');
         Chimpcom::setAction('register3');
         $output->usePasswordInput(false);

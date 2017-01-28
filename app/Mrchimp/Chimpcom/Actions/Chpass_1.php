@@ -19,7 +19,7 @@ class Chpass_1 extends LoggedInCommand
             return;
         }
 
-        Session::set('chpass_1', $password);
+        Session::put('chpass_1', $password);
         $this->setAction('chpass_2');
         $this->response->usePasswordInput(true);
         $this->response->alert('Enter password again. Type cancel to cancel.');

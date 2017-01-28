@@ -73,7 +73,7 @@ class Done extends Command
             return false;
         }
 
-        Session::set('task_to_complete', $task->id);
+        Session::put('task_to_complete', $task->id);
 
         $output->alert('Are you sure you want to delete this task?<br>');
         $output->say($task->description);
