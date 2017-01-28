@@ -90,7 +90,7 @@ class Command extends SymfonyCommand
     public function getAliases()
     {
         return ChimpcomAlias::where('alias', $this->getName())
-                            ->lists('name')
+                            ->pluck('name')
                             ->toArray();
     }
 

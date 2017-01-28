@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->boolean('is_admin')->default(false);
             $table->integer('active_project_id');
             $table->rememberToken();
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
     }
 

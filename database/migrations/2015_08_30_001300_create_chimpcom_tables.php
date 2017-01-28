@@ -16,7 +16,7 @@ class CreateChimpcomTables extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('alias');
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
 
         Schema::create('cities', function (Blueprint $table) {
@@ -37,7 +37,7 @@ class CreateChimpcomTables extends Migration
             $table->string('name', 32);
             $table->string('url', 255);
             $table->integer('type');
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
 
         Schema::create('mans', function (Blueprint $table) {
@@ -48,7 +48,7 @@ class CreateChimpcomTables extends Migration
             $table->text('see_also');
             $table->text('usage');
             $table->text('aliases');
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
 
         Schema::create('memories', function (Blueprint $table) {
@@ -57,7 +57,7 @@ class CreateChimpcomTables extends Migration
             $table->string('content', 255);
             $table->integer('user_id');
             $table->boolean('public', 255);
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
 
         Schema::create('messages', function (Blueprint $table) {
@@ -66,14 +66,14 @@ class CreateChimpcomTables extends Migration
             $table->double('recipient_id');
             $table->integer('author_id');
             $table->boolean('has_been_read');
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
 
         Schema::create('oneliners', function (Blueprint $table) {
             $table->increments('id');
             $table->string('command', 16);
             $table->string('response', 255);
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
 
         Schema::create('projects', function (Blueprint $table) {
@@ -82,14 +82,14 @@ class CreateChimpcomTables extends Migration
             $table->string('name', 255);
             $table->string('description', 255);
             $table->integer('user_id');
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
 
         Schema::create('shortcuts', function(Blueprint $table) {
             $table->increments('id');
             $table->string('name', 255);
             $table->string('url', 255);
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
 
         Schema::create('tasks', function(Blueprint $table) {
@@ -97,10 +97,10 @@ class CreateChimpcomTables extends Migration
             $table->integer('project_id');
             $table->string('description', 255);
             $table->integer('user_id');
-            $table->timestamp('time_completed');
+            $table->timestamp('time_completed')->nullable();
             $table->integer('priority');
             $table->boolean('completed');
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
 
         // Schema::create('users' , function(Blueprint $table) {

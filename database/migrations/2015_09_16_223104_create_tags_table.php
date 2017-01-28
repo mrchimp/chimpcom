@@ -15,7 +15,7 @@ class CreateTagsTable extends Migration
         Schema::create('tags', function ($table) {
             $table->increments('id');
             $table->string('tag');
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
 
         Schema::create('taggables', function ($table) {
