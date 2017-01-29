@@ -95,7 +95,7 @@ class Show extends Command
                 $words[] = '<span data-type="autofill" data-autofill="show '.e($word->name).'">'.e($word->name).'</span>';
             }
 
-            $this->response->say(Format::listToTable($words, 6, false));
+            $output->write(Format::listToTable($words, 6, false));
             return;
         }
 
