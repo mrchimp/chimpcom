@@ -30,14 +30,12 @@ class Alias extends Command
         $this->addArgument(
             'alias',
             InputArgument::OPTIONAL,
-            'The alias for the command.'
+            'The command you want to type.'
         );
-        $this->setName('register2');
-        $this->setDescription('Register step 3.');
         $this->addArgument(
             'command',
             InputArgument::OPTIONAL,
-            'The command to alias.'
+            'The command that ALIAS will be translated to.'
         );
     }
 
