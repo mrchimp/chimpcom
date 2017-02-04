@@ -7,30 +7,43 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * List all command aliases
  */
-class Aliases extends AbstractCommand
+class Aliases extends Command
 {
-    protected $title = 'Alias';
-    protected $description = 'View available aliases.';
-    protected $usage = 'aliases';
-
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('aliases');
+        $this->setDescription('View available aliases.');
+    }
 
     /**
-     * Run the example
+     * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
      */
-    public function process() {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $aliases = ChimpcomAlias::all();
-        $output = [];
+        $out = [];
 
         foreach ($aliases as $alias) {
-            $output[] = $alias->name;
-            $output[] = ' ➞ ';
-            $output[] = $alias->alias;
+            $out[] = $alias->name;
+            $out[] = ' ➞ ';
+            $out[] = $alias->alias;
         }
 
-        $this->response->say(Format::listToTable($output, 3));
+        $output->write(Format::listToTable($out, 3, true));
     }
 }

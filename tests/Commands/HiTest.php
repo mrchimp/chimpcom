@@ -6,7 +6,7 @@ class HiTest extends CommandTestTemplate
 {
     public function testResponse()
     {
-        $this->getResponse('hi')
+        $this->getGuestResponse('hi')
             ->assertStatus(200)
             ->assertSee('Chimpcom');
     }

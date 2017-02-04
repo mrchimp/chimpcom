@@ -48,17 +48,32 @@ class Alias extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!Auth::check()) {
+            $output->error('You must be logged in to use this command.');
+            return false;
+        }
+
+        $user = Auth::user();
+
+        if (!$user->is_admin) {
+            $output->error('No.');
+            return false;
+        }
+
         $alias_name   = $input->getArgument('alias');
         $command_name = $input->getArgument('command');
 
         if (!$alias_name) {
-            $aliases = ChimpcomAlias::get();
-            $output = [];
+            $aliases = ChimpcomAlias::all();
+            $out = [];
+
             foreach ($aliases as $alias) {
-                $output[] = $alias->name;
-                $output[] = $alias->alias;
+                $out[] = $alias->name;
+                $out[] = ' ➞ ';
+                $out[] = $alias->alias;
             }
-            $this->response->say(Format::listToTable($output, 2, true));
+
+            $output->write(Format::listToTable($out, 3, true));
             return;
         }
 

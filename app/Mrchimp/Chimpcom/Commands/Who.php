@@ -77,14 +77,17 @@ class Who extends Command
                      </tr>';
             }
 
+            $remote_addr = isset($_SERVER['REMOTE_ADDR']) ? e($_SERVER['REMOTE_ADDR']) : 'ERR_NO_REMOTE_ADDR';
+            $http_user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? e($_SERVER['HTTP_USER_AGENT']) : 'ERR_NO_HTTP_USER_AGENT';
+
             $tbl .= '<tr><td width="150">' .
                         Format::title('IP ADDRESS') .
                       '</td>
-                     <td>'.$_SERVER['REMOTE_ADDR'].'</td></tr>
+                     <td>'.$remote_addr.'</td></tr>
                      <tr><td>' .
                         Format::title('USERAGENT') .
                       '</td>
-                     <td>'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>
+                     <td>'.$http_user_agent.'</td></tr>
                      </table>';
 
             $output->write($tbl);
