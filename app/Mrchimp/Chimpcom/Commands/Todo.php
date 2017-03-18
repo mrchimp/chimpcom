@@ -128,8 +128,13 @@ class Todo extends Command
             return false;
         }
 
+        $total_task_count = Task::where('user_id', $user->id)
+            ->project($show_all_projects ? null : $user->activeProject->id)
+            ->completed($completion)
+            ->count();
+
         $output->write(Format::tasks($tasks));
-        $output->write('<br>' . count($tasks) . ' tasks.');
+        $output->write('<br>' . $total_task_count . ' tasks.');
     }
 
 }
