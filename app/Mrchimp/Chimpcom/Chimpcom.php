@@ -409,10 +409,9 @@ class Chimpcom
             }
         } else {
             $output .= Format::title('Chimpcom ' . self::VERSION) . '<br>';
-            $output .= 'Hello, stranger! Don\'t be afraid. It\'s just text.';
+            $output .= 'Go ahead';
         }
 
-        $output .= '<br>For help type \'<code>?</code>\'';
         return $output;
     }
 
