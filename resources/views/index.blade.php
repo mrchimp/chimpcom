@@ -13,10 +13,10 @@
 <meta property="og:url" content="https://deviouschimp.co.uk">
 <meta property="og:locale" content="en-GB">
 <meta property="og:site_name" content="Chimpcom">
-<meta property="twitter:card" content="summary">
-<meta property="twitter:site" content="@mr_chimp">
-<meta property="twitter:title" content="Chimpcom">
-<meta property="twitter:description" content="A command line website.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@mr_chimp">
+<meta name="twitter:title" content="Chimpcom">
+<meta name="twitter:description" content="A command line website.">
 <title>Chimpcom</title>
 <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
