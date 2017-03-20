@@ -6,17 +6,17 @@
 <meta name="description" content="A command line website.">
 <meta name="keywords" content="chimpcom, command line website, shell, javascript command line, cli">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
-<meta name="og:title" content="Chimpcom">
-<meta name="og:type" content="website">
-<meta name="og:description" content="A command line website.">
-<meta name="og:image" content="">
-<meta name="og:url" content="https://deviouschimp.co.uk">
-<meta name="og:locale" content="en-GB">
-<meta name="og:site_name" content="Chimpcom">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:site" content="@mr_chimp">
-<meta name="twitter:title" content="Chimpcom">
-<meta name="twitter:description" content="A command line website.">
+<meta property="og:title" content="Chimpcom">
+<meta property="og:type" content="website">
+<meta property="og:description" content="A command line website.">
+<meta property="og:image" content="">
+<meta property="og:url" content="https://deviouschimp.co.uk">
+<meta property="og:locale" content="en-GB">
+<meta property="og:site_name" content="Chimpcom">
+<meta property="twitter:card" content="summary">
+<meta property="twitter:site" content="@mr_chimp">
+<meta property="twitter:title" content="Chimpcom">
+<meta property="twitter:description" content="A command line website.">
 <title>Chimpcom</title>
 <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
