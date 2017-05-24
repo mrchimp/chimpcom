@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Mrchimp\Chimpcom\Log;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,6 +15,15 @@ class Command extends SymfonyCommand
     protected $log_this = true;
 
     protected $relatedCommands = [];
+
+    protected $log;
+
+    public function __construct($name = null)
+    {
+        parent::__construct($name);
+
+        $this->log = new Log;
+    }
 
     /**
      * Generate a help string from the provided parts.
@@ -124,5 +134,27 @@ class Command extends SymfonyCommand
     public function tabComplete(InputInterface $input)
     {
         return '';
+    }
+
+    /**
+     * Runs the command.
+     *
+     * The code to execute is either defined directly with the
+     * setCode() method or by overriding the execute() method
+     * in a sub-class.
+     *
+     * @param InputInterface  $input  An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
+     *
+     * @return int The command exit code
+     *
+     * @see setCode()
+     * @see execute()
+     */
+    public function run(InputInterface $input, OutputInterface $output)
+    {
+        parent::run($input, $output);
+
+        $this->log->info($this->getName());
     }
 }
