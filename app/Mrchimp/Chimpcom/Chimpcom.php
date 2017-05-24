@@ -8,8 +8,8 @@ namespace Mrchimp\Chimpcom;
 use DB;
 use Auth;
 use Session;
-use RuntimeException;
 use Illuminate\Http\Request;
+use Mrchimp\Chimpcom\Log;
 use Mrchimp\Chimpcom\Models\Shortcut;
 use Mrchimp\Chimpcom\Models\Message;
 use Mrchimp\Chimpcom\Models\Oneliner;
@@ -17,6 +17,7 @@ use Mrchimp\Chimpcom\Commands\UnknownCommand;
 use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 use Mrchimp\Chimpcom\Console\Command;
 use Mrchimp\Chimpcom\Console\Output;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -130,6 +131,13 @@ class Chimpcom
         'who'
     ];
 
+    protected $log;
+
+    public function __construct()
+    {
+        $this->log = new Log;
+    }
+
     /**
      * Get an instance of the appropriate command
      *
@@ -216,6 +224,7 @@ class Chimpcom
         if (count($oneliner) > 0) {
             $output = new Output();
             $output->write($oneliner->response);
+            $this->log->info('Oneliner: ' . $cmd_name);
             return $output;
         }
 
@@ -226,6 +235,7 @@ class Chimpcom
 
         // I give up
         $output = new Output();
+        $this->log->error('Invalid command: ' . $cmd_in);
         $output->error('Invalid command: '.htmlspecialchars($cmd_name));
         return $output;
     }
@@ -245,6 +255,7 @@ class Chimpcom
         try {
             $command = $this->instantiateCommand($cmd_name);
         } catch (FatalErrorException $e) {
+            $this->log->error('Failed to load command: ' . $cmd_name);
             $output->error('Failed to load command.');
             return $output;
         }
@@ -252,6 +263,7 @@ class Chimpcom
         try {
             $command->run($input, $output);
         } catch (RuntimeException $e) {
+            $this->log->error('Bad input ' . $e->getMessage());
             $output->error('Bad input: ' . $e->getMessage());
         }
 
@@ -271,6 +283,8 @@ class Chimpcom
         $url = str_replace('%PARAM', urlencode($this->input->get(1)), $shortcut->url);
 
         $response = new Response();
+
+        $this->log->info('Shortcut: ' . $cmd_in);
 
         if ($this->input->isFlagSet(array('--blank', '-b'))) {
             $response->openWindow($url);
@@ -298,6 +312,7 @@ class Chimpcom
         try {
             $action = $this->instantiateAction($action_name);
         } catch (FaralErrorException $e) {
+            $this->log->error('Failed to load action: ' . $action_name);
             $output->error('Failed to load action.');
             return $output;
         }
@@ -305,6 +320,7 @@ class Chimpcom
         try {
             $action->run($input, $output);
         } catch (RuntimeException $e) {
+            $this->log->error('Bad action input. Action: ' . $action_name);
             $output->error('Bad input: ' . $e->getMessage());
         }
 
