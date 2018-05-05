@@ -38,6 +38,15 @@
 <meta name="msapplication-TileImage" content="/mstile-144x144.png">
 <meta name="theme-color" content="#111112">
 <link href='{{ asset(elixir('css/main.css')) }}' rel='stylesheet' type='text/css'>
+@if(config('services.ga.code'))
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-28242373-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-28242373-1');
+</script>
+@endif
 </head>
 <body>
 <div id="chimpcom"></div>
