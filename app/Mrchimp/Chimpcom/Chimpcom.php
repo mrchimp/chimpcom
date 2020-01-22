@@ -5,21 +5,18 @@
 
 namespace Mrchimp\Chimpcom;
 
-use DB;
 use Auth;
-use Session;
-use Illuminate\Http\Request;
-use Mrchimp\Chimpcom\Log;
-use Mrchimp\Chimpcom\Models\Shortcut;
-use Mrchimp\Chimpcom\Models\Message;
-use Mrchimp\Chimpcom\Models\Oneliner;
-use Mrchimp\Chimpcom\Commands\UnknownCommand;
-use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
+use DB;
 use Mrchimp\Chimpcom\Console\Command;
 use Mrchimp\Chimpcom\Console\Output;
+use Mrchimp\Chimpcom\Log;
+use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
+use Mrchimp\Chimpcom\Models\Message;
+use Mrchimp\Chimpcom\Models\Oneliner;
+use Mrchimp\Chimpcom\Models\Shortcut;
+use Session;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Main Chimpcom object.
@@ -34,6 +31,7 @@ class Chimpcom
 
     /**
      * Command input
+     *
      * @var ChimpcomInput
      */
     private $input;
@@ -41,6 +39,7 @@ class Chimpcom
     /**
      * Available actions. Actions are alternative command modes used to accept
      * special input. Normal operation is to have action set to 'normal'.
+     *
      * @var array
      */
     private static $available_actions = [
@@ -57,9 +56,10 @@ class Chimpcom
 
     /**
      * Available Chimpcom commands. Used to compare input against for security.
+     *
      * @todo rather than comparing to array, should probably use something like
-      *      have 'cmd' => Cmd::class
-     * @var array
+     *      have 'cmd' => Cmd::class
+     * @var  array
      */
     private static $available_commands = [
         'addshortcut',
@@ -174,7 +174,8 @@ class Chimpcom
 
     /**
      * Take an input string and return a response array
-     * @param  string           $input the user input string.
+     *
+     * @param  string $input the user input string.
      * @return ChimpcomResponse        Response object
      */
     public function respond($cmd_in)
@@ -212,7 +213,7 @@ class Chimpcom
         // Check for shortcuts?
         $shortcut = Shortcut::where('name', $cmd_name)->take(1)->first();
 
-        if (count($shortcut) > 0) {
+        if (!empty($shortcut)) {
             return $this->handleShortcut($shortcut, $cmd_in);
         }
 
@@ -221,7 +222,7 @@ class Chimpcom
                                     ->orderBy(DB::raw('RAND()'))
                                     ->first();
 
-        if (count($oneliner) > 0) {
+        if (!empty($oneliner)) {
             $output = new Output();
             $output->write($oneliner->response);
             $this->log->info('Oneliner: ' . $cmd_name);
@@ -243,8 +244,8 @@ class Chimpcom
     /**
      * Execute a normal command
      *
-     * @param  string                          $cmd_name name of command
-     * @param  string                          $cmd_in   whole input string
+     * @param  string $cmd_name name of command
+     * @param  string $cmd_in   whole input string
      * @return Mrchimp\Chimpcom\Console\Output
      */
     private function handleCommand($cmd_name, $cmd_in)
@@ -300,8 +301,8 @@ class Chimpcom
     /**
      * Execute an action
      *
-     * @param  string                          $action_name name of action
-     * @param  string                          $cmd_in   whole input string
+     * @param  string $action_name name of action
+     * @param  string $cmd_in      whole input string
      * @return Mrchimp\Chimpcom\Console\Output
      */
     private function handleAction($action_name, $cmd_in)
@@ -351,6 +352,7 @@ class Chimpcom
 
     /**
      * Convert integer ID to front-facing id
+     *
      * @param  integer $id Decoded id
      * @return string      Encoded id
      */
@@ -361,6 +363,7 @@ class Chimpcom
 
     /**
      * Encode an array of Ids
+     *
      * @param  array $ids [description]
      * @return [type]      [description]
      */
@@ -375,6 +378,7 @@ class Chimpcom
 
     /**
      * Convert front-facing id to integer
+     *
      * @param  string $id Encoded id
      * @return integer    Decoded id
      */
@@ -400,6 +404,7 @@ class Chimpcom
 
     /**
      * Render a welcome message
+     *
      * @return string
      */
     static function welcomeMessage()
@@ -433,6 +438,7 @@ class Chimpcom
 
     /**
      * Return the available_commands array
+     *
      * @return array All command names
      */
     static public function getCommandList()
@@ -442,6 +448,7 @@ class Chimpcom
 
     /**
      * Get the version number of Chimpcom
+     *
      * @return string
      */
     public function getVersion()

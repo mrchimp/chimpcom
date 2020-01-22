@@ -37,7 +37,7 @@
 <meta name="msapplication-TileColor" content="#111112">
 <meta name="msapplication-TileImage" content="/mstile-144x144.png">
 <meta name="theme-color" content="#111112">
-<link href='{{ asset(elixir('css/main.css')) }}' rel='stylesheet' type='text/css'>
+<link href='{{ mix('css/main.css') }}' rel='stylesheet' type='text/css'>
 @if(config('services.ga.code'))
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-28242373-1"></script>
 <script>
@@ -52,6 +52,6 @@ gtag('config', 'UA-28242373-1');
 <div id="chimpcom"></div>
 <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script type="text/javascript" src="{{ asset(elixir('js/main.js')) }}"></script>
+<script type="text/javascript" src="{{ mix('js/main.js') }}"></script>
 </body>
 </html>

@@ -1,7 +1,18 @@
+import Cmd from '../vendor/cmd/js/Cmd.js';
+import Chimpcom from './Chimpcom';
+import QueryString from './QueryString';
 
-var cmd = new Cmd({
+// $.ajaxSetup({
+// 	headers: {
+// 		'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+// 	}
+// });
+
+const chimpcom = new Chimpcom();
+
+const cmd = new Cmd({
 	selector: '#chimpcom',
-	external_processor: Chimpcom.respond.bind(Chimpcom),
+	external_processor: chimpcom.respond.bind(chimpcom),
 	timeout_length: 20000,
 	remote_cmd_list_url: 'ajax/commands',
 	tabcomplete_url: 'ajax/tabcomplete',

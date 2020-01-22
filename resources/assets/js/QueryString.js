@@ -1,5 +1,5 @@
 // Get QueryString
-var QueryString = (function () {
+export default (function () {
     var results = {},
         hash;
 
@@ -7,7 +7,7 @@ var QueryString = (function () {
         var querystring = window.location.href.slice(window.location.href.indexOf('?') + 1);
         var hashes = querystring.split('&');
 
-        for(var i = 0; i < hashes.length; i++) {
+        for (var i = 0; i < hashes.length; i++) {
             hash = hashes[i].split('=');
             results[hash[0]] = hash[1];
         }
