@@ -8,4 +8,5 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && apt-get install -y git yarn \
     && apt-get -y autoremove \
     && apt-get clean \
+    && npm i -g bower \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
