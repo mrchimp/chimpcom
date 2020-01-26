@@ -2,12 +2,6 @@ import Cmd from '../vendor/cmd/js/Cmd.js';
 import Chimpcom from './Chimpcom';
 import QueryString from './QueryString';
 
-// $.ajaxSetup({
-// 	headers: {
-// 		'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-// 	}
-// });
-
 const chimpcom = new Chimpcom();
 
 const cmd = new Cmd({
