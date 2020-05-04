@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-  return View::make('index');
-});
+Route::get('/', [
+  'uses' => 'ChimpcomController@index'
+]);
 
 Route::get('ajax/respond/json', [
   'uses' => 'ChimpcomController@respond'
