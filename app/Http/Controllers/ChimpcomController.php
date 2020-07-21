@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Chimpcom;
 // use Mrchimp\Chimpcom\Chimpcom;
 use Illuminate\Http\Request;
-use Input;
-use Mrchimp\Chimpcom\Input as ChimpcomInput;
+use Illuminate\Support\Arr;
+use Mrchimp\Chimpcom\Input;
+use Symfony\Component\Console\Input\StringInput;
 
 /**
  * Handle Chimpcom HTTP requests
@@ -47,12 +48,17 @@ class ChimpcomController extends Controller
         return json_encode($commands);
     }
 
-    public function tabComplete()
+    public function tabComplete(Request $request)
     {
-        $cmd_in = Input::get('cmd_in');
-        $input = new ChimpcomInput($cmd_in);
-        $command = Chimpcom::getCommand($input->getCommand());
-        $result = $command->runTabcomplete($input);
-        return json_encode($result);
+        return response()->json('');
+
+        // @todo fix tabcomplete on all commands
+        // $cmd_in = $request->input('cmd_in');
+        // $cmd_name = Arr::first(explode(' ', $cmd_in));
+        // $input = new StringInput($cmd_in);
+        // $command = Chimpcom::instantiateCommand($cmd_name);
+        // $result = $command->tabcomplete($input);
+
+        // return json_encode($result);
     }
 }

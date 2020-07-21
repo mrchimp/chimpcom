@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Manage projects
  */
@@ -6,13 +7,13 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
-use Session;
 use Chimpcom;
-use Validator;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Project as ProjectModel;
+use Session;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Validator;
 
 /**
  * Manage projects
@@ -46,7 +47,7 @@ class Project extends Command
             'project',
             null,
             "For the NEW subcommand this should be the project name. " .
-            "For the SET or RM subcommands and ID or name can be used."
+                "For the SET or RM subcommands and ID or name can be used."
         );
     }
 
@@ -74,7 +75,7 @@ class Project extends Command
         if ($subcommand === 'new') {
             $validator = Validator::make([
                 'project' => $project_id,
-            ],[
+            ], [
                 'project' => 'required|alpha_dash'
             ]);
 
@@ -94,7 +95,7 @@ class Project extends Command
             $user->active_project_id = $project->id;
             $user->save();
 
-            $output->write('Creating project "'.$project->name.'"...<br>');
+            $output->write('Creating project "' . $project->name . '"...<br>');
             $output->write('Please add a description:');
             Chimpcom::setAction('newproject');
 
@@ -104,8 +105,8 @@ class Project extends Command
         // Set current project
         if ($subcommand === 'set') {
             $project = $user->projects()
-                            ->nameOrId($project_id)
-                            ->first();
+                ->nameOrId($project_id)
+                ->first();
 
             if (!$project) {
                 $output->error('That project ID is invalid.');
@@ -121,8 +122,8 @@ class Project extends Command
         // remove project etc
         if ($subcommand === 'rm') {
             $project = $user->projects()
-                            ->nameOrId($project_id)
-                            ->first();
+                ->nameOrId($project_id)
+                ->first();
 
             $output->title('Are you sure you want to delete the project `' . e($project->name) . '`?');
             Session::put('projectrm', $project->id);
@@ -138,7 +139,7 @@ class Project extends Command
         }
 
         // Show info about current project
-        $output->say('Current project: '.$project->name);
+        $output->say('Current project: ' . $project->name);
     }
 
     /**
@@ -147,8 +148,11 @@ class Project extends Command
      * @param  InputInterface $input
      * @return String
      */
-    public function tabcomplete(InputInterface $input) {
+    public function tabcomplete(InputInterface $input)
+    {
         $user = Auth::user();
+
+        $subcommand = $input->getArgument('subcommand');
 
         if ($subcommand === 'set') {
             $projects = $user->projects()->select('name')->get();

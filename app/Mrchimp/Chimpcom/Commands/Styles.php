@@ -2,9 +2,9 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Mrchimp\Chimpcom\Format;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Mrchimp\Chimpcom\Format;
 
 class Styles extends Command
 {
