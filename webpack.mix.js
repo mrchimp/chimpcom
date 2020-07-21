@@ -11,11 +11,8 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js([
-    'resources/assets/js/main.js'
-], 'public/js')
-    .less('resources/assets/less/main.less', 'public/css')
-    .version([
-        'public/js/main.js',
-        'public/css/main.css'
-    ]);
+mix
+  .js(['resources/assets/js/main.js'], 'public/js')
+  .less('resources/assets/less/main.less', 'public/css')
+  .copy('resources/assets/images', 'public/img')
+  .version(['public/js/main.js', 'public/css/main.css']);

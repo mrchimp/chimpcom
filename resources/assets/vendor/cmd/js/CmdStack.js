@@ -1,4 +1,3 @@
-
 /**
  * Stack for holding previous commands for retrieval with the up arrow.
  * Stores data in localStorage. Won't push consecutive duplicates.
@@ -91,7 +90,7 @@ export default class CmdStack {
       this.cur = 0;
     }
 
-    return arr[this.cur];
+    return this.arr[this.cur];
   }
 
   /**
@@ -103,12 +102,12 @@ export default class CmdStack {
 
     // Return a blank string as last item
     if (this.cur === this.arr.length) {
-      return "";
+      return '';
     }
 
     // Limit
-    if (this.cur > (this.arr.length - 1)) {
-      this.cur = (this.arr.length - 1);
+    if (this.cur > this.arr.length - 1) {
+      this.cur = this.arr.length - 1;
     }
 
     return this.arr[this.cur];
@@ -128,7 +127,7 @@ export default class CmdStack {
    */
   isEmpty() {
     this.arr = this.getArray();
-    return (this.arr.length === 0);
+    return this.arr.length === 0;
   }
 
   /**

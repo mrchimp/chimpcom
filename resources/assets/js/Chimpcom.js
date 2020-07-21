@@ -1,16 +1,19 @@
+if (!window.fetch) {
+  alert('Your browser is not good enough.');
+}
+
 /**
-* Chimpcom external command handler for Cmd.js
-*/
+ * Chimpcom external command handler for Cmd.js
+ */
 export default class Chimpcom {
   constructor() {
     this.options = {
       responder: 'ajax/respond/json',
-      timeout_length: 2000
     };
   }
 
   /**
-   * Get a response
+   * Handle a command input
    * @param  string cmd_in The command string
    * @param  object cmd    Reference to Cmd instance
    * @return various
@@ -20,27 +23,42 @@ export default class Chimpcom {
 
     switch (cmd_in) {
       case 'bash':
-        if (!$('#bash').length) {
-          $('body').prepend('<img src="assets/img/bash.png" id="bash" style="position:fixed;">');
+        if (!document.getElementById('bash')) {
+          let bash_img = document.createElement('img');
+          bash_img.setAttribute('src', 'img/bash.png');
+          bash_img.setAttribute('id', 'bash');
+          bash_img.setAttribute(
+            'style',
+            'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);'
+          );
+
+          document.getElementsByTagName('body')[0].prepend(bash_img);
         }
-        return 'Ow! I hope you\'re going to fix that!';
+        return "Ow! I hope you're going to fix that!";
       case 'alert':
       case 'alarm':
       case 'timer':
-        window.open('timer.php?time=' + param,
+        window.open(
+          'timer.php?time=' + param,
           'chimpcom_timer',
-          'height=90,width=350,left=100,top=100,menubar=no,location=no,scrollbars=no,status=no,toolbar=no,titlebar=no');
+          'height=90,width=350,left=100,top=100,menubar=no,location=no,scrollbars=no,status=no,toolbar=no,titlebar=no'
+        );
 
         return 'Clock has opened in new window.';
       case 'fix':
-        $('#bash').remove();
-        return 'Good as new.';
+        let el = document.getElementById('bash');
+        if (el) {
+          el.remove();
+          return 'Good as new.';
+        } else {
+          return 'Nothing to fix.';
+        }
       case 'pwd':
         return document.location.href;
       case 'popup':
       case 'detach':
         openChimpcomPopup();
-        return 'If nothing happened, try disabling your popup blocker.<br><br>To create popup bookmarklet, bookmark <a href="javascript:window.open(\'http://cmd.deviouschimp.co.uk/\',\'_blank\',\'height=388,width=669,left=100,top=100,menubar=no,location=no,scrollbars=yes,status=no,toolbar=no,titlebar=no\');">this link.</a>';
+        return "If nothing happened, try disabling your popup blocker.<br><br>To create popup bookmarklet, bookmark <a href=\"javascript:window.open('http://cmd.deviouschimp.co.uk/','_blank','height=388,width=669,left=100,top=100,menubar=no,location=no,scrollbars=yes,status=no,toolbar=no,titlebar=no');\">this link.</a>";
       case 'ispopup':
         if (this.popup) {
           return 'Popup mode is enabled.';
@@ -54,62 +72,49 @@ export default class Chimpcom {
   }
 
   /**
-   * Sends the command to the server and calls displayOutput() to
-   * deal with the response.
+   * Send a command to the server
    */
   ajaxCmd(cmd_in) {
-    $.ajax({
-      url: this.options.responder,
-      type: 'POST',
-      dataType: 'json',
-      data: {
-        '_token': $('input[name="_token"]').val(),
-        'cmd_in': cmd_in
+    const request = new Request(this.options.responder, {
+      method: 'POST',
+      body: JSON.stringify({
+        _token: document.querySelector('input[name="_token"]').value,
+        cmd_in: cmd_in,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
       },
-      success: this.handleAjaxSuccess.bind(this),
-      error: this.handleAjaxFailure.bind(this),
-      timeout: this.options.timeout_length
     });
-  }
 
-  /**
-   * Handle AJAX success
-   * @param  object data AJAX response data
-   */
-  handleAjaxSuccess(data) {
-    this.cmd.handleResponse(data);
+    fetch(request)
+      .then((response) => response.json())
+      .then((data) => {
+        this.cmd.handleResponse(data);
 
-    $('.prompt').html(data.user.name + ' $ ');
+        const prompts = document.getElementsByClassName('prompt');
+        prompts[prompts.length - 1].textContent = data.user.name + ' $ ';
 
-    // autofill cmd_in from PHP
-    if (data.cmd_fill !== '') {
-      $('#cmd_in').val(data.cmd_fill);
-    }
-  }
+        // autofill cmd_in from PHP
+        if (data.cmd_fill !== '') {
+          document.getElementById('cmd_in').value = data.cmd_fill;
+        }
+      })
+      .catch((error) => {
+        var cmd_out;
 
-  /**
-   * Handle AJAX failure
-   * @param  object data   AJAX response data
-   * @param  string status AJAX response status
-   */
-  handleAjaxFailure(data, status) {
-    var cmd_out;
+        switch (status) {
+          case 'parsererror':
+            cmd_out = 'WTF error.';
+            break;
+          default:
+            cmd_out = 'Server error. Try again.';
+        }
 
-    switch (status) {
-      case 'parsererror':
-        cmd_out = 'WTF error.';
-        break;
-      case 'timeout':
-        cmd_out = "Time out. Try again. If you continue to get this " +
-          "error increase the timeout limit by typing 'timeout " +
-          "10,000' (i.e. 10,000ms. Default is 3000)";
-        break;
-      default:
-        cmd_out = 'Server error. Try again.';
-    }
-
-    this.cmd.handleResponse({
-      cmd_out: cmd_out
-    });
+        this.cmd.handleResponse({
+          cmd_out: cmd_out,
+        });
+      });
   }
 }
