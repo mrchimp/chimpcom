@@ -2,85 +2,78 @@
  * Think you're clever, do you? Pulling apart the pieces.
  */
 
-@import '../vendor/cmd/less/main.less';
-
 body,
 html,
 #chimpcom {
   height: 100%;
 }
 
-#chimpcom {
-  background-color: @background-color;
+.cmd-interface {
+  --bg-color: @color-bg;
+  --text-color: @color-text;
+  --prompt-color: @color-prompt;
+  --error-color: @color-error;
+  --title-color: @color-title;
+  --success-color: @color-success;
+  --grey-color: @color-grey;
+  --link-color: @color-link;
+  --code-color: @color-link;
+  --text-hover-color: @color-hover;
+  --font-size: 18px;
+  --font-default: @font-default;
+  --link-shadow-color: @color-link-shadow;
+  --link-hover-shadow-color: @color-link-hover-shadow;
 
-  &.inverted {
-    background-color: @background-color-inverted;
+  &.theme-light {
+    --bg-color: var(--text-color);
+    --text-color: var(--bg-color);
+    --link-shadow-color: var(--link-shadow-color);
+    --link-hover-shadow-color: var(--link-hover-shadow-color);
+    --code-color: var(--grey-color);
   }
-}
 
-a {
-  // border-bottom: 1px solid darken(@text-color, 40%);
-  box-shadow:0px -5px 0px -3px darken(@text-color, 50%) inset;
-  text-decoration: none;
-  transition: box-shadow linear .1s,
-              background-color linear .2s;
-
-  &:hover {
-    box-shadow:0px 10px 5px 20px darken(@text-color, 30%) inset;
-    color: @background-color;
-    text-decoration: none;
-    transition: box-shadow linear .1s,
-                background-color linear .2s;
+  &.theme-solarized,
+  &.theme-solarized-light {
+    --bg-color: #002b36;
+    --text-color: #fdf6e3;
+    --link-shadow-color: #fdf6e3;
+    --link-hover-shadow-color: #eee8d5;
+    --text-color: #fdf6e3;
+    --link-color: #fdf6e3;
+    --code-color: #fdf6e3;
+    --text-hover-color: #eee8d5;
+    --prompt-color: #b58900;
+    --error-color: #cb4b16;
+    --title-color: #268bd2;
+    --success-color: #859900;
+    --grey-color: #586e75;
   }
 
-  .inverted & {
-    border-bottom-color: lighten(@background-color, 60%);
-    color: @text-color-inverted;
-
-    &:hover {
-      border-bottom-color: @background-color;
-      color: @background-color-inverted;
-    }
+  &.theme-solarized-light {
+    --bg-color: #fdf6e3;
+    --text-color: #002b36;
+    --link-color: #002b36;
+    --code-color: #002b36;
+    --text-hover-color: #586e75;
   }
-}
-
-span.inverted {
-  color: @background-color;
-  background-color: @text-color;
-
-  .inverted& { // .inverted span.inverted??? This is getting confusing
-    background-color: @background-color;
-    color: @text-color;
-  }
-}
-
-@import "tetris.less";
-@import "cards.less";
-@import "countdown_clock.less";
-@import "reddit.less";
-
-#dropzone {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 99%;
-  width: 99%;
-  background-color:rgba(270,0,0,0.6);
-  border: 1px solid red;
-  display: none;
-}
-
-.autofill {
-  cursor: pointer;
 }
 
 * {
   margin: 0;
   padding: 0;
-  font-size: @font-size-default;
+  font-size: var(--font-size);
   box-sizing: border-box;
 
   @media (max-screen-width: 600px) {
     font-size: 10px;
   }
 }
+
+.autofill {
+  cursor: pointer;
+}
+
+@import "../vendor/cmd/less/main.less";
+@import "tetris.less";
+@import "cards.less";
+@import "countdown_clock.less";
