@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<ruleset name="Chimpcom">
+    <description>Chimpcom PHP Code Sniffer Config</description>
+
+    <extensions>php</extensions>
+
+    <exclude-pattern>./vendor/**/*</exclude-pattern>
+    <exclude-pattern>./node-modules/**/*</exclude-pattern>
+    <exclude-pattern>./resources/**/*</exclude-pattern>
+    <exclude-pattern>./tests/**/*</exclude-pattern>
+
+    <rule ref="PSR1"></rule>
+    <rule ref="PSR2"></rule>
+
+    <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
+      <exclude-pattern>/database*</exclude-pattern>
+    </rule>
+
+    <autoload>./vendor/composer/autoload_classmap.php</autoload>
+</ruleset>
