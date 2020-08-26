@@ -1,4 +1,5 @@
 <?php
+
 /**
  * List available projects
  */
@@ -58,7 +59,7 @@ class Projects extends Command
         $output_chunks = [];
 
         foreach ($user->projects as $project) {
-            $output_chunks[] = '#'.$project->id . ' <span data-type="autofill" data-autofill="project '.$project->id.'"> ' . e($project->name) . ' - ' . count($project->tasks()) . ' tasks</span>';
+            $output_chunks[] = '#' . $project->id . ' <span data-type="autofill" data-autofill="project ' . $project->id . '"> ' . e($project->name) . ' - ' . count($project->tasks) . ' tasks</span>';
         }
 
         $output->write(implode('<br>', $output_chunks));
