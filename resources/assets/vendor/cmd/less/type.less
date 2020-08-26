@@ -1,101 +1,51 @@
 .cmd-interface {
   a {
+    &:hover {
+      --text-color: var(--bg-color);
+    }
+  }
+
+  span,
+  a {
     color: var(--text-color);
+    background-color: var(--bg-color);
 
     &::selection,
     &::-webkit-selection,
     &::-moz-selection,
     &.inverted {
-      background-color: var(--text-color);
       color: var(--bg-color);
-    }
-
-    &:hover {
-      color: var(--link-hover-color);
-      text-decoration: underline;
-    }
-
-    &.grey_text {
-      color: var(--grey-color);
+      background-color: var(--text-color);
     }
   }
 
   .prompt {
-    color: var(--prompt-color);
+    --text-color: var(--prompt-color);
     font-weight: 300;
-    text-shadow: 0 0 113px rgba(0, 255, 0, 0.4);
-
-    &::selection,
-    &::-webkit-selection,
-    &::-moz-selection,
-    &.inverted {
-      color: var(--bg-color);
-      background-color: var(--prompt-color);
-    }
   }
 
   .red_highlight {
-    color: var(--error-color);
+    --text-color: var(--error-color);
     font-weight: bold;
-
-    &::selection,
-    &::-webkit-selection,
-    &::-moz-selection,
-    &.inverted {
-      color: var(--bg-color);
-      background-color: var(--error-color);
-    }
   }
 
   .blue_highlight {
-    color: var(--title-color);
+    --text-color: var(--title-color);
     font-weight: bold;
-
-    &::selection,
-    &::-webkit-selection,
-    &::-moz-selection,
-    &.inverted {
-      color: var(--bg-color);
-      background-color: var(--title-color);
-    }
   }
 
   .green_highlight {
-    color: var(--success-color);
+    --text-color: var(--success-color);
     font-weight: 300;
-
-    &::selection,
-    &::-webkit-selection,
-    &::-moz-selection,
-    &.inverted {
-      color: var(--bg-color);
-      background-color: var(--success-color);
-    }
   }
 
   .grey_text {
-    color: var(--grey-color);
-
-    &::selection,
-    &::-webkit-selection,
-    &::-moz-selection,
-    &.inverted {
-      color: var(--bg-color);
-      background-color: var(--grey-color);
-    }
+    --text-color: var(--grey-color);
   }
 
   .inverted {
-    color: var(--bg-color);
+    --text-color: var(--bg-color);
     background-color: var(--text-color);
-
-    &::selection,
-    &::-webkit-selection,
-    &::-moz-selection,
-    &.inverted {
-      color: var(--text-color);
-      background-color: var(--bg-color);
-    }
   }
 
   .ascii {
