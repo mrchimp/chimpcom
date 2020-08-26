@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Main Chimpcom object.
  */
@@ -108,7 +109,7 @@ class Chimpcom
         'priority',
         'project',
         'projects',
-        'reddit',
+        // 'reddit',
         'register',
         'save',
         'scale',
@@ -151,7 +152,7 @@ class Chimpcom
         }
 
         $name = ucfirst($name);
-        $command_name = "Mrchimp\Chimpcom\Commands\\".$name;
+        $command_name = "Mrchimp\Chimpcom\Commands\\" . $name;
         return new $command_name;
     }
 
@@ -168,7 +169,7 @@ class Chimpcom
         }
 
         $name = ucfirst($name);
-        $action_name = "Mrchimp\Chimpcom\Actions\\".$name;
+        $action_name = "Mrchimp\Chimpcom\Actions\\" . $name;
         return new $action_name;
     }
 
@@ -219,8 +220,8 @@ class Chimpcom
 
         // Do we have a witty oneliner?
         $oneliner = Oneliner::where('command', $cmd_name)
-                                    ->orderBy(DB::raw('RAND()'))
-                                    ->first();
+            ->orderBy(DB::raw('RAND()'))
+            ->first();
 
         if (!empty($oneliner)) {
             $output = new Output();
@@ -237,7 +238,7 @@ class Chimpcom
         // I give up
         $output = new Output();
         $this->log->error('Invalid command: ' . $cmd_in);
-        $output->error('Invalid command: '.htmlspecialchars($cmd_name));
+        $output->error('Invalid command: ' . htmlspecialchars($cmd_name));
         return $output;
     }
 
@@ -413,16 +414,16 @@ class Chimpcom
 
         if (Auth::check()) {
             $user = Auth::user();
-            $output .= Format::title('Welcome back, '.e($user->name).'.');
+            $output .= Format::title('Welcome back, ' . e($user->name) . '.');
 
             $messages = Message::where('recipient_id', $user->id)
-                               ->where('has_been_read', false)
-                               ->get();
+                ->where('has_been_read', false)
+                ->get();
 
             if (count($messages) > 0) {
                 $output .= '<br>You have ' . count($messages) . ' new message' .
-                            (count($messages) > 1 ? 's' : '') .
-                            '. Type <code>mail</code> to read. ';
+                    (count($messages) > 1 ? 's' : '') .
+                    '. Type <code>mail</code> to read. ';
 
                 if (count($messages) > 10) {
                     $output .= 'Aren\'t you popular! ';
