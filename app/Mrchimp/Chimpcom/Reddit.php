@@ -16,7 +16,7 @@ use Mrchimp\Chimpcom\Format as Format;
 class Reddit
 {
     /**
-     * Time in seconds(?) that responses are cached.
+     * Time in seconds that responses are cached.
      *
      * @var integer
      */
@@ -108,7 +108,7 @@ class Reddit
             $content = Cache::get($cache_file);
         } else {
             $content = $this->get_content($remote_file);
-            Cache::put($cache_file, $content, $this->cache_time);
+            Cache::put($cache_file, $content, now()->>addSeconts($this->cache_time));
         }
 
         $file = json_decode($content, true);

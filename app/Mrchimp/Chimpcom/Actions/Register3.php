@@ -2,15 +2,15 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use Auth;
-use Session;
-use Validator;
-use Chimpcom;
 use App\User;
+use Auth;
+use Chimpcom;
 use Mrchimp\Chimpcom\Commands\Command;
+use Session;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Validator;
 
 /**
  * Handle email input and create an account
@@ -48,7 +48,7 @@ class Register3 extends Command
         $validator = Validator::make($data, [
             'name'     => 'required|max:255|unique:users',
             'email'    => 'required|email|max:255|unique:users',
-            'password' => 'required|confirmed|min:6'
+            'password' => 'required|confirmed|min:8'
         ]);
 
         if ($validator->fails()) {
@@ -82,5 +82,4 @@ class Register3 extends Command
             'password' => bcrypt($data['password']),
         ]);
     }
-
 }
