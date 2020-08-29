@@ -576,7 +576,7 @@ export default class Cmd {
 
     autofillers.forEach((item) => {
       item.addEventListener('click', (e) => {
-        // e.preventDefault();
+        e.preventDefault();
         input.value = item.dataset.autofill;
       });
     });
