@@ -1,4 +1,4 @@
-import CmdStack from "./CmdStack";
+import CmdStack from './CmdStack';
 
 /**
  * HTML5 Command Line Terminal
@@ -9,37 +9,28 @@ import CmdStack from "./CmdStack";
 export default class Cmd {
   constructor(user_config) {
     this.keys_array = [9, 13, 38, 40, 27];
-    this.style = "dark";
+    this.style = 'dark';
     this.popup = false;
-    this.prompt_str = "$ ";
+    this.prompt_str = '$ ';
     this.speech_synth_support =
-      "speechSynthesis" in window &&
-      typeof SpeechSynthesisUtterance !== "undefined";
+      'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
     this.options = {
-      busy_text: "Communicating...",
+      busy_text: 'Communicating...',
       external_processor: function() {},
-      history_id: "cmd_history",
-      remote_cmd_list_url: "",
-      selector: "#cmd",
-      tabcomplete_url: "",
+      history_id: 'cmd_history',
+      remote_cmd_list_url: '',
+      selector: '#cmd',
+      tabcomplete_url: '',
       talk: false,
-      unknown_cmd: "Unrecognised command",
-      typewriter_time: 32
+      unknown_cmd: 'Unrecognised command',
+      typewriter_time: 32,
     };
     this.voices = false;
     this.remote_commands = [];
     this.all_commands = [];
-    this.local_commands = [
-      "clear",
-      "clr",
-      "cls",
-      "clearhistory",
-      "shh",
-      "talk",
-      "theme"
-    ];
-    this.themes = ["default", "light", "solarized", "solarized-light"];
-    this.theme = "default";
+    this.local_commands = ['clear', 'clr', 'cls', 'clearhistory', 'shh', 'talk', 'theme'];
+    this.themes = ['default', 'light', 'solarized', 'solarized-light'];
+    this.theme = 'default';
     this.remote_autocomplete_cache = {};
     this.autocompletion_attempted = false;
 
@@ -47,41 +38,38 @@ export default class Cmd {
 
     if (this.options.remote_cmd_list_url) {
       const request = new Request(this.options.remote_cmd_list_url, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest"
-        }
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
       });
 
       fetch(request)
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
           this.remote_commands = data;
-          this.all_commands = Object.assign(
-            this.remote_commands,
-            this.local_commands
-          );
+          this.all_commands = Object.assign(this.remote_commands, this.local_commands);
         });
     } else {
       this.all_commands = this.local_commands;
     }
 
     if (!document.querySelector(this.options.selector)) {
-      throw "Cmd err: Invalid selector.";
+      throw 'Cmd err: Invalid selector.';
     }
 
     this.cmd_stack = new CmdStack(this.options.history_id, 30);
     window.cmdstack = this.cmd_stack;
     if (this.cmd_stack.isEmpty()) {
-      this.cmd_stack.push("secretmagicword!");
+      this.cmd_stack.push('secretmagicword!');
     }
 
     this.cmd_stack.reset();
     this.setupDOM();
 
-    let theme = localStorage.getItem("theme");
+    let theme = localStorage.getItem('theme');
 
     if (theme && this.themes.includes(theme)) {
       this.setTheme(theme);
@@ -97,20 +85,20 @@ export default class Cmd {
    */
   setupDOM() {
     this.wrapper = document.querySelector(this.options.selector);
-    this.wrapper.classList.add("cmd-interface");
+    this.wrapper.classList.add('cmd-interface');
 
-    this.container = document.createElement("div");
-    this.container.classList.add("cmd-container");
+    this.container = document.createElement('div');
+    this.container.classList.add('cmd-container');
 
     this.wrapper.append(this.container);
 
     this.clearScreen(); // adds output, input and prompt
 
-    window.addEventListener("resize", this.resizeInput.bind(this));
-    this.wrapper.addEventListener("click", this.focusOnInput.bind(this));
-    this.wrapper.addEventListener("keydown", this.handleKeyDown.bind(this));
-    this.wrapper.addEventListener("keyup", this.handleKeyUp.bind(this));
-    this.wrapper.addEventListener("keydown", this.handleKeyPress.bind(this));
+    window.addEventListener('resize', this.resizeInput.bind(this));
+    this.wrapper.addEventListener('click', this.focusOnInput.bind(this));
+    this.wrapper.addEventListener('keydown', this.handleKeyDown.bind(this));
+    this.wrapper.addEventListener('keyup', this.handleKeyUp.bind(this));
+    this.wrapper.addEventListener('keydown', this.handleKeyPress.bind(this));
   }
 
   /**
@@ -118,31 +106,31 @@ export default class Cmd {
    */
   showInputType(input_type) {
     switch (input_type) {
-      case "password":
-        this.input = document.createElement("input");
+      case 'password':
+        this.input = document.createElement('input');
 
-        this.input.setAttribute("type", "password");
-        this.input.setAttribute("maxlength", 512);
-        this.input.classList.add("cmd-in");
+        this.input.setAttribute('type', 'password');
+        this.input.setAttribute('maxlength', 512);
+        this.input.classList.add('cmd-in');
         break;
-      case "textarea":
-        this.input = document.createElement("textarea");
-        this.input.classList.add("cmd-in");
+      case 'textarea':
+        this.input = document.createElement('textarea');
+        this.input.classList.add('cmd-in');
         break;
       default:
-        this.input = document.createElement("input");
-        this.input.setAttribute("type", "text");
-        this.input.setAttribute("maxlength", 512);
-        this.input.classList.add("cmd-in");
+        this.input = document.createElement('input');
+        this.input.setAttribute('type', 'text');
+        this.input.setAttribute('maxlength', 512);
+        this.input.classList.add('cmd-in');
     }
 
-    let children = this.container.querySelectorAll(".cmd-in");
+    let children = this.container.querySelectorAll('.cmd-in');
 
-    children.forEach(child => {
+    children.forEach((child) => {
       child.remove();
     });
 
-    this.input.setAttribute("title", "Chimpcom input");
+    this.input.setAttribute('title', 'Chimpcom input');
     this.container.append(this.input);
 
     this.focusOnInput();
@@ -156,15 +144,15 @@ export default class Cmd {
    * @param   string  cmd_out     The server output to write to screen
    */
   displayOutput(cmd_out) {
-    if (typeof cmd_out !== "string") {
-      cmd_out = "Error: invalid cmd_out returned.";
+    if (typeof cmd_out !== 'string') {
+      cmd_out = 'Error: invalid cmd_out returned.';
     }
 
     if (this.output.innerHTML.length > 0) {
-      this.output.insertAdjacentHTML("beforeend", "<br>");
+      this.output.insertAdjacentHTML('beforeend', '<br>');
     }
 
-    this.output.insertAdjacentHTML("beforeend", cmd_out + "<br>");
+    this.output.insertAdjacentHTML('beforeend', cmd_out + '<br>');
 
     if (this.options.talk) {
       this.speakOutput(cmd_out);
@@ -172,8 +160,8 @@ export default class Cmd {
 
     this.cmd_stack.reset();
 
-    this.input.value = "";
-    this.input.removeAttribute("disabled");
+    this.input.value = '';
+    this.input.removeAttribute('disabled');
 
     this.enableInput();
     this.focusOnInput();
@@ -185,18 +173,18 @@ export default class Cmd {
    */
   displayInput(cmd_in) {
     cmd_in = cmd_in
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
 
-    const prompt = document.createElement("span");
-    prompt.classList.add("prompt");
+    const prompt = document.createElement('span');
+    prompt.classList.add('prompt');
     prompt.appendChild(document.createTextNode(this.prompt_str));
 
-    const input = document.createElement("span");
-    input.classList.add("grey_text");
+    const input = document.createElement('span');
+    input.classList.add('grey_text');
     input.appendChild(document.createTextNode(cmd_in));
 
     this.output.appendChild(prompt);
@@ -208,8 +196,8 @@ export default class Cmd {
    * @param {string} new_prompt The new prompt string
    */
   setPrompt(new_prompt) {
-    if (typeof new_prompt !== "string") {
-      throw "Cmd error: invalid prompt string.";
+    if (typeof new_prompt !== 'string') {
+      throw 'Cmd error: invalid prompt string.';
     }
 
     this.prompt_str = new_prompt;
@@ -221,11 +209,11 @@ export default class Cmd {
    * @param {string} theme
    */
   setTheme(theme) {
-    localStorage.setItem("theme", theme);
-    this.themes.forEach(theme => {
-      this.wrapper.classList.remove("theme-" + theme);
+    localStorage.setItem('theme', theme);
+    this.themes.forEach((theme) => {
+      this.wrapper.classList.remove('theme-' + theme);
     });
-    this.wrapper.classList.add("theme-" + theme);
+    this.wrapper.classList.add('theme-' + theme);
   }
 
   // ====== Handlers ==============================
@@ -234,71 +222,66 @@ export default class Cmd {
    * Do something
    */
   handleInput(input_str) {
-    var cmd_array = input_str.split(" ");
+    var cmd_array = input_str.split(' ');
     var shown_input = input_str;
 
-    if (this.input.getAttribute("type") === "password") {
-      shown_input = new Array(shown_input.length + 1).join("•");
+    if (this.input.getAttribute('type') === 'password') {
+      shown_input = new Array(shown_input.length + 1).join('•');
     }
 
     this.displayInput(shown_input);
 
     switch (cmd_array[0]) {
-      case "":
-        this.displayOutput("");
+      case '':
+        this.displayOutput('');
         break;
-      case "clear":
-      case "cls":
-      case "clr":
+      case 'clear':
+      case 'cls':
+      case 'clr':
         this.clearScreen();
         break;
-      case "clearhistory":
+      case 'clearhistory':
         this.cmd_stack.empty();
         this.cmd_stack.reset();
-        this.displayOutput("Command history cleared. ");
+        this.displayOutput('Command history cleared. ');
         break;
-      case "shh":
+      case 'shh':
         if (this.options.talk) {
           window.speechSynthesis.cancel();
           this.options.talk = false;
           this.displayOutput(
-            "Speech stopped. Talk mode is still enabled. Type TALK to disable talk mode."
+            'Speech stopped. Talk mode is still enabled. Type TALK to disable talk mode.'
           );
           this.options.talk = true;
         } else {
-          this.displayOutput("Ok.");
+          this.displayOutput('Ok.');
         }
         break;
-      case "talk":
+      case 'talk':
         if (!this.speech_synth_support) {
           this.displayOutput("You browser doesn't support speech synthesis.");
           return false;
         }
 
         this.options.talk = !this.options.talk;
-        this.displayOutput(
-          this.options.talk ? "Talk mode enabled." : "Talk mode disabled."
-        );
+        this.displayOutput(this.options.talk ? 'Talk mode enabled.' : 'Talk mode disabled.');
         break;
-      case "theme":
-        if (typeof cmd_array[1] === "undefined") {
+      case 'theme':
+        if (typeof cmd_array[1] === 'undefined') {
           this.displayOutput(
-            "Current theme: " +
-              this.theme +
-              ".<br>Available themes: " +
-              this.themes.join(", ")
+            'Current theme: ' + this.theme + '.<br>Available themes: ' + this.themes.join(', ')
           );
           return;
         }
         if (!this.themes.includes(cmd_array[1])) {
-          this.displayOutput("Invalid theme.");
+          this.displayOutput('Invalid theme.');
           return;
         }
         this.setTheme(cmd_array[1]);
-        this.displayOutput("Ok.");
+        this.displayOutput('Ok.');
         break;
       default:
-        if (typeof this.options.external_processor !== "function") {
+        if (typeof this.options.external_processor !== 'function') {
           this.displayOutput(this.options.unknown_cmd);
           return false;
         }
@@ -308,18 +291,18 @@ export default class Cmd {
         switch (typeof result) {
           // If undefined, external handler should
           // call handleResponse when done
-          case "boolean":
+          case 'boolean':
             if (!result) {
               this.displayOutput(this.options.unknown_cmd);
             }
             break;
           // If we get a response object, deal with it directly
-          case "object":
+          case 'object':
             this.handleResponse(result);
             break;
           // If we have a string, output it. This shouldn't
           // really happen but it might be useful
-          case "string":
+          case 'string':
             this.displayOutput(result);
             break;
           default:
@@ -338,25 +321,23 @@ export default class Cmd {
     }
 
     if (response.openWindow !== undefined) {
-      window.open(response.openWindow, "_blank", response.openWindowSpecs);
+      window.open(response.openWindow, '_blank', response.openWindowSpecs);
     }
 
-    if (response.log !== undefined && response.log !== "") {
+    if (response.log !== undefined && response.log !== '') {
       console.log(response.log);
     }
 
     if (response.show_pass === true) {
-      this.showInputType("password");
+      this.showInputType('password');
     } else {
       this.showInputType();
     }
 
     this.displayOutput(response.cmd_out);
 
-    if (response.cmd_fill !== "") {
-      let cmd_in = this.wrapper
-        .querySelector(".cmd-container")
-        .querySelector(".cmd-in");
+    if (response.cmd_fill !== '') {
+      let cmd_in = this.wrapper.querySelector('.cmd-container').querySelector('.cmd-in');
 
       cmd_in.value = response.cmd_fill;
     }
@@ -374,7 +355,7 @@ export default class Cmd {
         this.tabComplete(input_str);
         break;
       case 13: // enter
-        if (this.input.getAttribute("disabled")) {
+        if (this.input.getAttribute('disabled')) {
           return false;
         }
 
@@ -385,7 +366,7 @@ export default class Cmd {
           this.disableInput();
 
           // push command to stack if using text input, i.e. no passwords
-          if (this.input.type === "text") {
+          if (this.input.type === 'text') {
             this.cmd_stack.push(input_str);
           }
 
@@ -393,10 +374,7 @@ export default class Cmd {
         }
         break;
       case 38: // up arrow
-        if (
-          input_str !== "" &&
-          this.cmd_stack.cur === this.cmd_stack.getSize() - 1
-        ) {
+        if (input_str !== '' && this.cmd_stack.cur === this.cmd_stack.getSize() - 1) {
           this.cmd_stack.push(input_str);
         }
 
@@ -407,7 +385,7 @@ export default class Cmd {
         this.input.value = this.cmd_stack.next();
         break;
       case 27: // esc
-        if (this.container.css("opacity") > 0.5) {
+        if (this.container.css('opacity') > 0.5) {
           this.container.animate({ opacity: 0 }, 300);
         } else {
           this.container.animate({ opacity: 1 }, 300);
@@ -453,8 +431,8 @@ export default class Cmd {
    */
   tabComplete(str) {
     // If we have a space then offload to external processor
-    if (str.indexOf(" ") !== -1) {
-      if (typeof this.remote_autocomplete_cache[str] !== "undefined") {
+    if (str.indexOf(' ') !== -1) {
+      if (typeof this.remote_autocomplete_cache[str] !== 'undefined') {
         this.input.value = this.remote_autocomplete_cache[str];
         return;
       }
@@ -468,32 +446,29 @@ export default class Cmd {
 
         const params = new URLSearchParams(
           Object.entries({
-            cmd_in: str
+            cmd_in: str,
           })
         );
 
-        const request = new Request(
-          this.options.tabcomplete_url + "?" + params,
-          {
-            method: "GET",
-            signal: this.autocomplete_controller.signal,
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest"
-            }
-          }
-        );
+        const request = new Request(this.options.tabcomplete_url + '?' + params, {
+          method: 'GET',
+          signal: this.autocomplete_controller.signal,
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        });
 
         fetch(request)
-          .then(response => response.json())
-          .then(data => {
+          .then((response) => response.json())
+          .then((data) => {
             if (data) {
               this.input.value = data;
             }
           })
-          .catch(error => {
-            console.error("autocomplete error", error);
+          .catch((error) => {
+            console.error('autocomplete error', error);
           });
       }
       this.autocompletion_attempted = false;
@@ -510,7 +485,7 @@ export default class Cmd {
       this.input.value = autocompletions[0];
     } else {
       if (this.autocompletion_attempted) {
-        this.displayOutput(autocompletions.join(", "));
+        this.displayOutput(autocompletions.join(', '));
         this.autocompletion_attempted = false;
         this.input.value = str;
         return;
@@ -526,12 +501,12 @@ export default class Cmd {
    * Takes a user to a given url. Adds "http://" if necessary.
    */
   goToURL(url) {
-    if (url.substr(0, 4) !== "http" && url.substr(0, 2) !== "//") {
-      url = "http://" + url;
+    if (url.substr(0, 4) !== 'http' && url.substr(0, 2) !== '//') {
+      url = 'http://' + url;
     }
 
     if (popup) {
-      window.open(url, "_blank");
+      window.open(url, '_blank');
       window.focus();
     } else {
       // break out of iframe - used by chrome plugin
@@ -557,9 +532,7 @@ export default class Cmd {
    */
   resizeInput() {
     var cmd_width =
-      this.wrapper.clientWidth -
-      this.wrapper.querySelector(".main-prompt").clientWidth -
-      45;
+      this.wrapper.clientWidth - this.wrapper.querySelector('.main-prompt').clientWidth - 45;
 
     this.input.focus();
     this.input.style.width = cmd_width;
@@ -569,27 +542,27 @@ export default class Cmd {
    * Clear the screen
    */
   clearScreen() {
-    this.container.innerHTML = "";
+    this.container.innerHTML = '';
 
-    this.output = document.createElement("div");
-    this.output.classList.add("cmd-output");
+    this.output = document.createElement('div');
+    this.output.classList.add('cmd-output');
     this.container.append(this.output);
 
-    this.prompt_elem = document.createElement("span");
-    this.prompt_elem.classList.add("main-prompt");
-    this.prompt_elem.classList.add("prompt");
+    this.prompt_elem = document.createElement('span');
+    this.prompt_elem.classList.add('main-prompt');
+    this.prompt_elem.classList.add('prompt');
     this.prompt_elem.innerHTML = this.prompt_str;
     this.container.append(this.prompt_elem);
 
-    this.input = document.createElement("input");
-    this.input.classList.add("cmd-in");
-    this.input.setAttribute("type", "text");
-    this.input.setAttribute("maxlength", 512);
+    this.input = document.createElement('input');
+    this.input.classList.add('cmd-in');
+    this.input.setAttribute('type', 'text');
+    this.input.setAttribute('maxlength', 512);
     this.container.append(this.input);
 
     this.showInputType();
 
-    this.input.value = "";
+    this.input.value = '';
   }
 
   /**
@@ -599,10 +572,11 @@ export default class Cmd {
   activateAutofills() {
     var input = this.input;
 
-    const autofillers = this.wrapper.querySelectorAll("[data-type=autofill]");
+    const autofillers = this.wrapper.querySelectorAll('[data-type=autofill]');
 
-    autofillers.forEach(item => {
-      item.addEventListener("click", item => {
+    autofillers.forEach((item) => {
+      item.addEventListener('click', (e) => {
+        // e.preventDefault();
         input.value = item.dataset.autofill;
       });
     });
@@ -612,7 +586,7 @@ export default class Cmd {
    * Temporarily disable input while runnign commands
    */
   disableInput() {
-    this.input.setAttribute("disabled", true);
+    this.input.setAttribute('disabled', true);
     this.input.value = this.options.busy_text;
   }
 
@@ -620,8 +594,8 @@ export default class Cmd {
    * Reenable input after running disableInput()
    */
   enableInput() {
-    this.input.removeAttribute("disabled");
-    this.input.value = "";
+    this.input.removeAttribute('disabled');
+    this.input.value = '';
   }
 
   /**
@@ -635,7 +609,7 @@ export default class Cmd {
     msg.volume = 1; // 0 - 1
     msg.rate = 1; // 0.1 - 10
     msg.pitch = 2; // 0 - 2
-    msg.lang = "en-UK";
+    msg.lang = 'en-UK';
     msg.text = output;
 
     window.speechSynthesis.speak(msg);
