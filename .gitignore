@@ -12,3 +12,4 @@ storage/simplepie_cache
 .DS_Store
 servers.yml
 public/build
+.phpunit.result.cache
