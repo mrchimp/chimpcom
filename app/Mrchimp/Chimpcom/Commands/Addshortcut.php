@@ -2,9 +2,10 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Validator;
-use Chimpcom;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Shortcut;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -59,15 +60,27 @@ class Addshortcut extends Command
 
         $available_commands = Chimpcom::getCommandList();
 
-        $validator = Validator::make([
+        $rules = [
+            'name' => [
+                'required',
+                Rule::notIn($available_commands),
+            ],
+            'url' => [
+                'required',
+                'url',
+            ],
+        ];
+
+        $data = [
             'name' => $name,
             'url' => $url,
-        ],[
-            'name' => 'required|not_in:'.implode(',', $available_commands),
-            'url' => 'required|url',
-        ],[
+        ];
+
+        $messages = [
             'not_in' => 'Shortcut name must not match other shortcut or command names.',
-        ]);
+        ];
+
+        $validator = Validator::make($data, $rules, $messages);
 
         if ($validator->fails()) {
             $output->writeErrors($validator);

@@ -6,10 +6,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Mrchimp\Chimpcom\Format;
-use Mrchimp\Chimpcom\Models\Project;
-
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
