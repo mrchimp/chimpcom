@@ -11,30 +11,12 @@
 |
 */
 
-Route::get('/', [
-  'uses' => 'ChimpcomController@index'
-]);
-
-Route::get('ajax/respond/json', [
-  'uses' => 'ChimpcomController@respond'
-]);
-
-Route::post('ajax/respond/json', [
-  'uses' => 'ChimpcomController@respond'
-]);
-
-Route::get('ajax/commands', [
-  'uses' => 'ChimpcomController@commandList'
-]);
-
-Route::post('ajax/commands', [
-  'uses' => 'ChimpcomController@commandList'
-]);
-
-Route::get('ajax/tabcomplete', [
-  'uses' => 'ChimpcomController@tabComplete'
-]);
-
+Route::get('/', 'ChimpcomController@index');
+Route::get('ajax/respond/json', 'ChimpcomController@respond');
+Route::post('ajax/respond/json', 'ChimpcomController@respond');
+Route::get('ajax/commands', 'ChimpcomController@commandList');
+Route::post('ajax/commands', 'ChimpcomController@commandList');
+Route::get('ajax/tabcomplete', 'ChimpcomController@tabComplete');
 
 // Password reset routes...
 Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
