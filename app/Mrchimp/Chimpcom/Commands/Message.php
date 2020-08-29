@@ -6,9 +6,8 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
 use App\User;
-use Chimpcom;
+use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Models\Message as MessageModel;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,13 +43,12 @@ class Message extends Command
      * @todo only remove names from start of content - leave them in message
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $user = Auth::user();
         $content = $input->getArgument('content');
-
         $recipient_names = [];
 
         foreach ($content as $key => $word) {
@@ -62,7 +60,8 @@ class Message extends Command
 
         if (empty($recipient_names)) {
             $output->error('You need to tell me who to send that to. Begin usernames with an @ symbol - Twitter style.');
-            return false;
+
+            return 1;
         }
 
         $body = implode(' ', $content);
@@ -75,7 +74,8 @@ class Message extends Command
             $recipient = User::where('name', $name)->first();
 
             if (!$recipient) {
-                $output->error(e($name). ' ✘<br>');
+                $output->error(e($name) . ' ✘<br>');
+
                 continue;
             }
 
@@ -95,11 +95,11 @@ class Message extends Command
         if ($name_count > 1) {
             if ($success_count === 1) {
                 $output->error('No messages were sent.');
-            } else if ($success_count === $name_count) {
+            } elseif ($success_count === $name_count) {
                 $output->alert('All messages were sent!');
             } else {
                 $success_percent = (($success_count / $name_count) * 100);
-                $output->error('Sent messages with ~'.round($success_percent, 3).'% success rate.');
+                $output->error('Sent messages with ~' . round($success_percent, 3) . '% success rate.');
             }
         } else {
             if ($success_count == 1) {
@@ -108,5 +108,7 @@ class Message extends Command
                 $output->error('Error sending message.');
             }
         }
+
+        return 0;
     }
 }

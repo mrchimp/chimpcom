@@ -1,14 +1,14 @@
 <?php
+
 /**
  * Give credit where it's due
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Session;
-use Chimpcom;
-use Mrchimp\Chimpcom\Format;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Task;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -45,13 +45,13 @@ class Done extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must log in to use this command.');
-            return false;
+            return 1;
         }
 
         $user = Auth::user();
@@ -65,12 +65,12 @@ class Done extends Command
         $task_id = Chimpcom::decodeId($input->getArgument('task_id'));
 
         $task = Task::where('id', $task_id)
-                    ->where('project_id', $project->id)
-                    ->first();
+            ->where('project_id', $project->id)
+            ->first();
 
         if (!$task) {
             $output->error('Couldn\'t find that task.');
-            return false;
+            return 2;
         }
 
         Session::put('task_to_complete', $task->id);
@@ -79,5 +79,7 @@ class Done extends Command
         $output->say($task->description);
 
         Chimpcom::setAction('done');
+
+        return 0;
     }
 }

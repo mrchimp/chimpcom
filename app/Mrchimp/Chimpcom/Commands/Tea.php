@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Decide who should make the tea
  */
@@ -33,13 +34,14 @@ class Tea extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $names = $input->getArgument('names');
         $rand = array_rand($names);
-        $output->write(ucwords($names[$rand]).' is on hot beverage duty.');
-    }
+        $output->write(ucwords($names[$rand]) . ' is on hot beverage duty.');
 
+        return 0;
+    }
 }

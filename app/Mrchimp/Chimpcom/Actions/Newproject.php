@@ -1,17 +1,16 @@
 <?php
+
 /**
  * Save the description for a new project
  */
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use Auth;
-use Session;
-use Chimpcom;
-use App\User;
-use Illuminate\Http\Request;
-use Mrchimp\Chimpcom\Models\Project;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Commands\Command;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Models\Project;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -41,14 +40,16 @@ class Newproject extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must be logged in to perform this action.');
+
             Chimpcom::resetTerminal();
-            return false;
+
+            return 1;
         }
 
         $user = Auth::user();
@@ -56,17 +57,21 @@ class Newproject extends Command
 
         if (!Session::has('current_project_id')) {
             $output->error('Oops. There was a problem. [Current project not set.]');
+
             Chimpcom::setAction('normal');
-            return false;
+
+            return 2;
         }
 
         $project = Project::find(Session::get('current_project_id'));
 
         if (!$project->id) {
             $output->error('Current project doesn\'t exist.');
+
             Session::forget('current_project_id');
-          	Chimpcom::setAction('normal');
-            return false;
+            Chimpcom::setAction('normal');
+
+            return 3;
         }
 
         $project->description = $description;
@@ -76,6 +81,9 @@ class Newproject extends Command
         $project->activeUsers()->save($user);
 
         $output->alert('Project saved and set as current project.');
+
         Chimpcom::setAction('normal');
+
+        return 0;
     }
 }

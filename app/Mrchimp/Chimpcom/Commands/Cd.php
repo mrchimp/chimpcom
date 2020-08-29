@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Change directory
  */
@@ -39,7 +40,7 @@ class Cd extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -48,14 +49,16 @@ class Cd extends Command
 
         if (!$dir) {
             $output->write('You remain here.');
-        } else if ($dir_str == 'penguin'){
+        } else if ($dir_str == 'penguin') {
             $output->write('You are inside a penguin. It is dark.');
         } else if ($dir_str == 'c:' || $dir_str == 'C:') {
             $output->write('What d\'you think this is, Windows?');
-        } else if ($dir_str == '..'){
+        } else if ($dir_str == '..') {
             $output->write('You claw at the directory above you but cannot get a purchase.');
         } else {
             $output->error('No such file or directory.');
         }
+
+        return 0;
     }
 }

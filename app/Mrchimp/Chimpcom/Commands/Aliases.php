@@ -1,12 +1,13 @@
 <?php
+
 /**
  * List all command aliases
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 use Mrchimp\Chimpcom\Format;
+use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -31,7 +32,7 @@ class Aliases extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -45,5 +46,7 @@ class Aliases extends Command
         }
 
         $output->write(Format::listToTable($out, 3, true));
+
+        return 0;
     }
 }

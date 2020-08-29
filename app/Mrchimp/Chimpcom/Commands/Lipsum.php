@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Show some lorem ipsum
  */
@@ -29,7 +30,7 @@ class Lipsum extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -39,5 +40,7 @@ class Lipsum extends Command
             <p>Mauris a velit nibh, vel consectetur felis. Nullam libero diam, accumsan sed ultrices id, molestie ac lectus. Vivamus nec metus sed orci pretium sagittis. Donec rhoncus posuere sem sit amet volutpat. Nam consequat libero eget est ultrices rhoncus. Nunc tellus dui, facilisis mollis pulvinar vitae, sollicitudin non mi. Proin risus augue, hendrerit a tempor ut, rhoncus eu est. In in metus metus, ac aliquam ipsum. Fusce justo elit, viverra eget feugiat sed, congue vel urna.</p>
             <p>Donec facilisis felis lorem. In pellentesque vulputate iaculis. Morbi iaculis, magna a dapibus commodo, mauris odio malesuada purus, ut malesuada dui quam sed tortor. Donec luctus magna elit. Pellentesque sit amet nisi nec risus mattis suscipit sed at mi. Nullam id nisi lacus, fringilla scelerisque mauris. Nullam tempus ipsum vel ante dictum tincidunt. Praesent bibendum erat in est eleifend convallis. Mauris massa mi, varius eu sodales vel, molestie eget metus. Nunc auctor, dolor at facilisis tempus, tellus ante lacinia est, id accumsan justo est id quam. In id tellus dui, id auctor ligula. Integer id eros magna, vel malesuada mauris. Aenean viverra mollis quam, quis gravida justo condimentum eget. Etiam in metus et diam aliquam commodo.</p>
             <a href="http://www.lipsum.com/" target="_blank">Get more</a>');
+
+        return 0;
     }
 }

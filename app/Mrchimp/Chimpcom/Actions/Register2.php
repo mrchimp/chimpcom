@@ -1,15 +1,14 @@
 <?php
+
 /**
  * Handle second password input and create account
  */
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use Auth;
-use Session;
-use App\User;
-use Chimpcom;
+use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Commands\Command;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,6 +34,8 @@ class Register2 extends Command
 
     /**
      * Run the command
+     *
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -48,13 +49,14 @@ class Register2 extends Command
             $output->usePasswordInput(false);
             Session::forget('register_username');
             Session::forget('register_password');
-            return;
+            return 1;
         }
 
         Session::put('register_password2', $password2);
         $output->alert('Your email address:');
         Chimpcom::setAction('register3');
         $output->usePasswordInput(false);
-    }
 
+        return 0;
+    }
 }

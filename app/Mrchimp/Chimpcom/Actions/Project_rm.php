@@ -1,17 +1,17 @@
 <?php
+
 /**
  * Delete a project
  */
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use Auth;
-use Chimpcom;
-use Session;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Booleanate;
-use Mrchimp\Chimpcom\Format;
-use Mrchimp\Chimpcom\Models\Project;
 use Mrchimp\Chimpcom\Commands\Command;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Models\Project;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,13 +40,14 @@ class Project_rm extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must be logged in to perform this action.');
-            return false;
+
+            return 1;
         }
 
         Chimpcom::setAction('normal');
@@ -56,25 +57,29 @@ class Project_rm extends Command
 
         if (!Booleanate::isAffirmative($argument)) {
             $output->error('Fair enough.');
-            return;
+
+            return 0;
         }
 
         $project = Project::where('id', Session::get('projectrm'))->first();
+
         Session::forget('projectrm');
 
         if (!$project) {
             $output->error('No active project.');
-            return;
+            return 0;
         }
 
         if ($project->user_id !== $user->id) {
             $output->error('That isn\'t yours to delete.');
-            return;
+
+            return 2;
         }
 
         $project->delete();
 
         $output->alert('Ok. It\'s gone.');
-    }
 
+        return 0;
+    }
 }

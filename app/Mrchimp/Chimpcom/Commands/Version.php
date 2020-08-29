@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Print Chimpcom version number
  */
@@ -28,11 +29,12 @@ class Version extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->write('Chimpcom ' . Chimpcom::getVersion() . ', Laravel v' . app()::VERSION);
-    }
 
+        return 0;
+    }
 }

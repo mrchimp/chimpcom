@@ -1,13 +1,13 @@
 <?php
+
 /**
  * Set the priority of todo items
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Chimpcom;
-use Mrchimp\Chimpcom\Models\Memory;
+use Illuminate\Support\Facades\Auth;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Task;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -49,13 +49,14 @@ class Priority extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must be logged in to use this command.');
-            return false;
+
+            return 1;
         }
 
         $user = Auth::user();
@@ -64,23 +65,26 @@ class Priority extends Command
 
         if (!is_numeric($priority)) {
             $output->error('Priority should be an integer.');
-            return false;
+
+            return 2;
         }
 
         $project = $user->activeProject();
 
         if (!$project) {
             $output->error('No active project. User `PROJECTS` and `PROJECT SET x`.');
-            return;
+
+            return 3;
         }
 
         $task = Task::where('id', $task_id)
-                    ->where('user_id', $user->id)
-                    ->first();
+            ->where('user_id', $user->id)
+            ->first();
 
         if (!$task) {
             $output->error('Couldn\'t find that task, or it\'s not yours to edit.');
-            return false;
+
+            return 4;
         }
 
         $task->priority = $priority;
@@ -90,5 +94,7 @@ class Priority extends Command
         } else {
             $output->error('There was a problem. Try again?');
         }
+
+        return 0;
     }
 }

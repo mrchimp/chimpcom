@@ -1,13 +1,12 @@
 <?php
+
 /**
  * Find a memory by its name
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
 use Mrchimp\Chimpcom\Format;
-use Mrchimp\Chimpcom\Chimpcom;
 use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -66,7 +65,7 @@ class Find extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -77,9 +76,9 @@ class Find extends Command
 
         if ($show_public) {
             $item_type = 'public';
-        } else if ($show_private) {
+        } elseif ($show_private) {
             $item_type = 'private';
-        } else if ($show_mine) {
+        } elseif ($show_mine) {
             $item_type = 'mine';
         } else {
             $item_type = 'both';
@@ -90,11 +89,13 @@ class Find extends Command
             ->with('user')
             ->get();
 
-        if (count($memories) === 0){
+        if (count($memories) === 0) {
             $output->error('I have no recollection of that.');
-            return;
+            return 1;
         }
 
         $output->write(Format::memories($memories));
+
+        return 0;
     }
 }

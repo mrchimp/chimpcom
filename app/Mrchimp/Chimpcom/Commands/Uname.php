@@ -1,11 +1,12 @@
 <?php
+
 /**
  * How some fake server info
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Chimpcom;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -82,7 +83,7 @@ class Uname extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -110,18 +111,20 @@ class Uname extends Command
 
         if ($input->getOption('all')) {
             $output->write(implode(' ', $bits));
-            return true;
+
+            return 1;
         }
 
         foreach ($flags as $key => $flag) {
             if ($input->getOption($flag)) {
-              $output->write($key . '<br>');
+                $output->write($key . '<br>');
                 $output->write($bits[$key]);
                 return true;
             }
         }
 
         $output->write($bits['s']);
-    }
 
+        return 0;
+    }
 }

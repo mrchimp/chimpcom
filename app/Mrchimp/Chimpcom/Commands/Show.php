@@ -2,15 +2,14 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Mrchimp\Chimpcom\Chimpcom;
-use Mrchimp\Chimpcom\Models\Memory;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Mrchimp\Chimpcom\Format;
-use DB;
+use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 // use Mrchimp\Chimpcom\Models\Tag; @todo - add tags
 
 class Show extends Command
@@ -75,7 +74,7 @@ class Show extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -92,18 +91,19 @@ class Show extends Command
             $words = [];
 
             foreach ($memories as $word) {
-                $words[] = '<span data-type="autofill" data-autofill="show '.e($word->name).'">'.e($word->name).'</span>';
+                $words[] = '<span data-type="autofill" data-autofill="show ' . e($word->name) . '">' . e($word->name) . '</span>';
             }
 
             $output->write(Format::listToTable($words, 6, false));
-            return;
+
+            return 0;
         }
 
         if ($show_public) {
             $item_type = 'public';
-        } else if ($show_private) {
+        } elseif ($show_private) {
             $item_type = 'private';
-        } else if ($show_mine) {
+        } elseif ($show_mine) {
             $item_type = 'mine';
         } else {
             $item_type = 'both';
@@ -125,9 +125,12 @@ class Show extends Command
 
         if ($memories->count() === 0) {
             $output->error('I have no recollection of that.');
-            return;
+
+            return 1;
         }
 
         $output->write(Format::memories($memories));
+
+        return 0;
     }
 }

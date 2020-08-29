@@ -2,13 +2,12 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use DB;
-use Auth;
-use Session;
-use App\User;
-use Chimpcom;
-use Mrchimp\Chimpcom\Commands\Command;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Booleanate;
+use Mrchimp\Chimpcom\Commands\Command;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Task;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,13 +34,14 @@ class Done extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must be logged in to use this command.');
-            return false;
+
+            return 1;
         }
 
         $user = Auth::user();
@@ -51,23 +51,26 @@ class Done extends Command
 
         if (!$project) {
             $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
-            return;
+
+            return 2;
         }
 
         if (!$confirmed) {
             $output->write('Fair enough.');
             Chimpcom::setAction();
             Session::forget('task_to_complete');
-            return;
+
+            return 0;
         }
 
         $task = Task::where('id', Session::get('task_to_complete'))
-                    ->where('project_id', $project->id)
-                    ->first();
+            ->where('project_id', $project->id)
+            ->first();
 
         if (!$task) {
             $output->error('Couldn\'t find that task.');
-            return;
+
+            return 3;
         }
 
         $task->completed = true;
@@ -75,7 +78,9 @@ class Done extends Command
         $task->save();
 
         Chimpcom::setAction();
-        $output->alert('Ok.');
-    }
 
+        $output->alert('Ok.');
+
+        return 0;
+    }
 }

@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Give details on the current user
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Format;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,7 +36,7 @@ class Who extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -43,36 +44,30 @@ class Who extends Command
         $part_1 = isset($inputs[0]) ? $inputs[0] : null;
         $part_2 = isset($inputs[1]) ? $inputs[1] : null;
 
-        if ($part_1 === 'are' &&
-                 ( $part_2 === 'you?' ||
-                   $part_2 === 'you' )) {
+        if ($part_1 === 'are' && ($part_2 === 'you?' || $part_2 === 'you')) {
             $output->write('I am a sentient command line. Be afraid.');
-            return true;
+
+            return 0;
         }
 
-        if ($part_1 != null &&
-            $part_1 != 'am') {
+        if ($part_1 != null && $part_1 != 'am') {
             $output->write('No idea.');
-            return false;
+            return 0;
         }
 
-        if ($part_1 === null ||
-            ($part_1 === 'am' &&
-            ( $part_2 === 'i' ||
-              $part_2 === 'i?' )) ){
-
+        if ($part_1 === null || ($part_1 === 'am' && ($part_2 === 'i' || $part_2 === 'i?'))) {
             $tbl = '<table>';
 
-            if (Auth::check()){
-              $user = Auth::user();
-              $tbl .= '<tr><td width="150">' .
-                        Format::title('USERNAME') .
-                        '</td>
-                       <td>'.e($user->name).'</td></tr>
+            if (Auth::check()) {
+                $user = Auth::user();
+                $tbl .= '<tr><td width="150">' .
+                    Format::title('USERNAME') .
+                    '</td>
+                       <td>' . e($user->name) . '</td></tr>
                        <tr><td>' .
-                        Format::title('USER ID') .
-                       '</td>
-                       <td>'.$user->id.'</td></tr>
+                    Format::title('USER ID') .
+                    '</td>
+                       <td>' . $user->id . '</td></tr>
                      <tr>
                      </tr>';
             }
@@ -81,19 +76,22 @@ class Who extends Command
             $http_user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? e($_SERVER['HTTP_USER_AGENT']) : 'ERR_NO_HTTP_USER_AGENT';
 
             $tbl .= '<tr><td width="150">' .
-                        Format::title('IP ADDRESS') .
-                      '</td>
-                     <td>'.$remote_addr.'</td></tr>
+                Format::title('IP ADDRESS') .
+                '</td>
+                     <td>' . $remote_addr . '</td></tr>
                      <tr><td>' .
-                        Format::title('USERAGENT') .
-                      '</td>
-                     <td>'.$http_user_agent.'</td></tr>
+                Format::title('USERAGENT') .
+                '</td>
+                     <td>' . $http_user_agent . '</td></tr>
                      </table>';
 
             $output->write($tbl);
-            return;
+
+            return 0;
         }
 
         $output->error('Whut?');
+
+        return 1;
     }
 }

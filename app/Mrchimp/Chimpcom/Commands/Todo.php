@@ -1,17 +1,17 @@
 <?php
+
 /**
  * Current user's todo list
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use DB;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Task;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -70,13 +70,14 @@ class Todo extends Command
      * Run the command
      *
      * @todo add ability to show dates
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must be logged in to use this command.');
-            return false;
+
+            return 1;
         }
 
         $user = Auth::user();
@@ -85,7 +86,8 @@ class Todo extends Command
 
         if (!$project) {
             $output->error('No active project. Use `PROJECTS` and `SET PROJECT x`.');
-            return;
+
+            return 2;
         }
 
         $data = [];
@@ -96,7 +98,7 @@ class Todo extends Command
 
         if ($show_all_items) {
             $completion = null;
-        } else if ($show_completed) {
+        } elseif ($show_completed) {
             $completion = true;
         } else {
             $completion = false;
@@ -125,7 +127,7 @@ class Todo extends Command
 
         if (!$tasks) {
             $output->alert('Nothing to do!');
-            return false;
+            return 3;
         }
 
         $total_task_count = Task::where('user_id', $user->id)
@@ -135,6 +137,7 @@ class Todo extends Command
 
         $output->write(Format::tasks($tasks));
         $output->write('<br>' . $total_task_count . ' tasks.');
-    }
 
+        return 0;
+    }
 }

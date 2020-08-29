@@ -1,18 +1,17 @@
 <?php
+
 /**
  * Save the description for a new project
  */
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use Auth;
-use Session;
-use Chimpcom;
-use App\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Booleanate;
-use Mrchimp\Chimpcom\Models\Memory;
 use Mrchimp\Chimpcom\Commands\Command;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -45,36 +44,39 @@ class Forget extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must log in to use this command.');
+
             Chimpcom::resetTerminal();
-            return;
+
+            return 1;
         }
 
         $user = Auth::user();
         $answer = $input->getArgument('answer');
 
         if (Booleanate::isAffirmative($answer)) {
-          $ids = Session::get('forget_id');
+            $ids = Session::get('forget_id');
 
-          $memories = Memory::where('user_id', $user->id)
-                            ->whereIn('id', $ids)
-                            ->delete();
+            $memories = Memory::where('user_id', $user->id)
+                ->whereIn('id', $ids)
+                ->delete();
 
-          $ids = Chimpcom::encodeIds($ids);
-          $output->alert((count($ids) > 0 ? 'Memories' : 'memory') .' forgotten: #' . implode(', #', $ids));
-        } else if (Booleanate::isNegative($answer)) {
-          $output->write('Action aborted.');
+            $ids = Chimpcom::encodeIds($ids);
+            $output->alert((count($ids) > 0 ? 'Memories' : 'memory') . ' forgotten: #' . implode(', #', $ids));
+        } elseif (Booleanate::isNegative($answer)) {
+            $output->write('Action aborted.');
         } else {
-          $output->write('Whatever.');
+            $output->write('Whatever.');
         }
 
         Chimpcom::setAction('normal');
         Session::forget('forget_id');
-    }
 
+        return 0;
+    }
 }

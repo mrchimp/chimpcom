@@ -21,6 +21,8 @@ class Styles extends Command
 
     /**
      * Run the command
+     *
+     * @return int
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
@@ -52,5 +54,7 @@ class Styles extends Command
 
         // @todo - Make this work
         // $this->response->cFill('This text was automatically inserted');
+
+        return 0;
     }
 }

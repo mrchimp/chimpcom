@@ -4,9 +4,12 @@ namespace Mrchimp\Chimpcom\Actions;
 
 use Auth;
 use Hash;
-use Session;
 use Mrchimp\Chimpcom\Commands\LoggedInCommand;
+use Session;
 
+/**
+ * @todo update
+ */
 class Chpass_2 extends LoggedInCommand
 {
 
@@ -45,5 +48,4 @@ class Chpass_2 extends LoggedInCommand
         $this->setAction('normal');
         $this->response->usePasswordInput(false);
     }
-
 }

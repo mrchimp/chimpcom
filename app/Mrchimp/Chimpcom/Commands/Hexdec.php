@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Convert hexadecimal to decimal
  */
@@ -36,14 +37,14 @@ class Hexdec extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $values = $input->getArgument('input');
         $output_vals = [];
 
-        foreach ($values as &$value){
+        foreach ($values as &$value) {
             $output_val = '';
             // Check for colour values
             if (substr($value, 0, 1) === '#') {
@@ -53,15 +54,15 @@ class Hexdec extends Command
                 if ($length == 3) { // FFF
                     $parts = str_split($value, 1);
                     $output_val = 'rgb(' . hexdec($parts[0] . $parts[0]) . ', ' .
-                    hexdec($parts[1] . $parts[1]) . ', ' .
-                    hexdec($parts[2] . $parts[2]) . ') ';
-                    $output_val .= '<span style="color:#'.$value.'">███████</span>';
-                } else if ($length == 6) { #FFFFFF
+                        hexdec($parts[1] . $parts[1]) . ', ' .
+                        hexdec($parts[2] . $parts[2]) . ') ';
+                    $output_val .= '<span style="color:#' . $value . '">███████</span>';
+                } elseif ($length == 6) { #FFFFFF
                     $parts = str_split($value, 2);
                     $output_val = 'rgb(' . hexdec($parts[0]) . ', ' .
-                    hexdec($parts[1]) . ', ' .
-                    hexdec($parts[2]) . ') ';
-                    $output_val .= '<span style="color:#'.$value.'">███████</span>';
+                        hexdec($parts[1]) . ', ' .
+                        hexdec($parts[2]) . ') ';
+                    $output_val .= '<span style="color:#' . $value . '">███████</span>';
                 } else {
                     $output->error('I don\'t know how to handle this.');
                     return;
@@ -74,6 +75,7 @@ class Hexdec extends Command
         }
 
         $output->write(implode('<br>', $output_vals));
-        return true;
+
+        return 0;
     }
 }

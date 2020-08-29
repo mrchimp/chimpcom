@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Decode a string in base64
  */
@@ -14,34 +15,37 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Base64decode extends Command
 {
-  /**
-   * Configure the command
-   *
-   * @return void
-   */
-  protected function configure()
-  {
-      $this->setName('base64decode');
-      $this->setDescription('Decodes a base64 encoded string.');
-      $this->setHelp('If the resulting output is binary it will not be displayed.');
-      $this->addArgument(
-          'input',
-          InputArgument::REQUIRED,
-          'A base 64 encoded string.'
-      );
-  }
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('base64decode');
+        $this->setDescription('Decodes a base64 encoded string.');
+        $this->setHelp('If the resulting output is binary it will not be displayed.');
+        $this->addArgument(
+            'input',
+            InputArgument::REQUIRED,
+            'A base 64 encoded string.'
+        );
+    }
 
-  /**
-   * Run the command
-   *
-   * @param  InputInterface  $input
-   * @param  OutputInterface $output
-   * @return void
-   */
-  protected function execute(InputInterface $input, OutputInterface $output)
-  {
-    $encoded = $input->getArgument('input');
-    $decoded = base64_decode($encoded);
-    $output->write(e($decoded));
-  }
+    /**
+     * Run the command
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return int
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $encoded = $input->getArgument('input');
+        $decoded = base64_decode($encoded);
+
+        $output->write(e($decoded));
+
+        return 0;
+    }
 }

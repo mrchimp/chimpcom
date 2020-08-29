@@ -1,12 +1,11 @@
 <?php
+
 /**
  * Change your password
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use App\User;
 use Mrchimp\Chimpcom\Commands\LoggedInCommand;
 
 /**
@@ -24,5 +23,4 @@ class Chpass extends LoggedInCommand
         $this->response->usePasswordInput(true);
         $this->response->alert('Enter your new password. Type cancel to cancel.');
     }
-
 }

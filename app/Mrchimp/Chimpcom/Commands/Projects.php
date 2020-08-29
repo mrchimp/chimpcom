@@ -36,7 +36,7 @@ class Projects extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
@@ -44,13 +44,15 @@ class Projects extends Command
 
         if (!Auth::check()) {
             $output->error('You must log in to use this command.');
-            return;
+
+            return 1;
         }
 
         // Report result
         if (count($user->projects) === 0) {
             $output->error('No projects.');
-            return false;
+
+            return 0;
         }
 
         $output_chunks = [];
@@ -60,5 +62,7 @@ class Projects extends Command
         }
 
         $output->write(implode('<br>', $output_chunks));
+
+        return 0;
     }
 }

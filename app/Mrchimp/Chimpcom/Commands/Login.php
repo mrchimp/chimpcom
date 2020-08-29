@@ -1,14 +1,14 @@
 <?php
+
 /**
  * Log in to Chimpcom
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Session;
 use App\User;
-use Mrchimp\Chimpcom\Format;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -36,39 +36,46 @@ class Login extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         if (Auth::check()) {
             $user = Auth::user();
-            $output->alert('You are already logged in as '.htmlspecialchars($user->name).'.');
-            return;
+            $output->alert('You are already logged in as ' . htmlspecialchars($user->name) . '.');
+            return 1;
         }
 
         $username = $input->getArgument('username');
 
         if (!$username) {
             $output->alert('Provide a username.');
-            return;
+            return 2;
         }
 
         $user = User::where('name', $username)->get();
 
         // User doesn't exist
         if (count($user) === 0) {
-            $output->error('You fail. The username '.htmlspecialchars($username).' does not exist.
+            $output->error('You fail. The username ' . htmlspecialchars($username) . ' does not exist.
                             Create a new account by using the register command.');
+
             // $this->response->cFill("register $username"); // @todo
+
             $output->usePasswordInput(false);
+
             Session::put('action', 'normal');
-            return;
+
+            return 3;
         }
 
         Session::put('login_username', trim($username));
 
         $output->alert('Password:');
         $output->usePasswordInput();
+
         Session::put('action', 'password');
+
+        return 0;
     }
 }

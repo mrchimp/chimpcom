@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Show a random tetromino
  */
@@ -27,21 +28,22 @@ class Tetris extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tetrinos = [
-          '&#x25A0;&#x25A0;&#x25A0;&#x25A0;',                     // Line
-          '&#x25A0;<br>&#x25A0;<br>&#x25A0;&#x25A0;',             // J
-          '&nbsp;&#x25A0;<br>&nbsp;&#x25A0;<br>&#x25A0;&#x25A0;', // L
-          '&#x25A0;&#x25A0;<br>&#x25A0;&#x25A0;',                 // Square
-          '&nbsp;&#x25A0;<br>&#x25A0;&#x25A0;&#x25A0;',           // T
-          '&#x25A0;&#x25A0;<br>&nbsp;&#x25A0;&#x25A0;',           // Z
-          '&nbsp;&#x25A0;&#x25A0;<br>&#x25A0;&#x25A0;'            // S
+            '&#x25A0;&#x25A0;&#x25A0;&#x25A0;',                     // Line
+            '&#x25A0;<br>&#x25A0;<br>&#x25A0;&#x25A0;',             // J
+            '&nbsp;&#x25A0;<br>&nbsp;&#x25A0;<br>&#x25A0;&#x25A0;', // L
+            '&#x25A0;&#x25A0;<br>&#x25A0;&#x25A0;',                 // Square
+            '&nbsp;&#x25A0;<br>&#x25A0;&#x25A0;&#x25A0;',           // T
+            '&#x25A0;&#x25A0;<br>&nbsp;&#x25A0;&#x25A0;',           // Z
+            '&nbsp;&#x25A0;&#x25A0;<br>&#x25A0;&#x25A0;'            // S
         ];
 
         $output->write('<div class="tetris">' . $tetrinos[rand(0, count($tetrinos) - 1)] . '</div>');
-    }
 
+        return 0;
+    }
 }

@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Get current username
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -28,7 +29,7 @@ class Whoami extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -37,5 +38,7 @@ class Whoami extends Command
         } else {
             $output->write('Guest');
         }
+
+        return 0;
     }
 }

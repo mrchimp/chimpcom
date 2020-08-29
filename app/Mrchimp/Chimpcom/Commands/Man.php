@@ -1,18 +1,17 @@
 <?php
+
 /**
  * Read the manual
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Mrchimp\Chimpcom\Chimpcom;
+use Mrchimp\Chimpcom\Format;
+
+use Mrchimp\Chimpcom\Models\Alias;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use Mrchimp\Chimpcom\Chimpcom;
-use Mrchimp\Chimpcom\ChimpcomAlias;
-use Mrchimp\Chimpcom\Format;
-use Mrchimp\Chimpcom\Models\Man as ManPage;
-use Mrchimp\Chimpcom\Models\Alias;
 
 /**
  * Read the manualChimpcom
@@ -50,31 +49,35 @@ class Man extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('commands')) {
             $commands = Chimpcom::getCommandList();
             $output->write(Format::listToTable($commands, 3, true));
-            return;
+
+            return 0;
         }
 
         if (!$input->getArgument('command_name')) {
             $output->write('This is how you get help. Type <code>man man</code> for more help on the help.');
-            return;
+
+            return 0;
         }
 
         $page_name = Alias::lookup($input->getArgument('command_name'));
         $command = Chimpcom::instantiateCommand($page_name);
 
         if (!$command) {
-          $output->write(Format::error('No man page found'));
-          return;
+            $output->write(Format::error('No man page found'));
+
+            return 1;
         }
 
         $text = $command->generateHelp();
         $output->write($text);
-        return;
+
+        return 0;
     }
 }

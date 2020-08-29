@@ -39,20 +39,20 @@ class Addshortcut extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must be logged in to use this command.');
-            return false;
+            return 1;
         }
 
         $user = Auth::user();
 
         if (!$user->is_admin) {
             $output->error('No.');
-            return false;
+            return 1;
         }
 
         $name = $input->getArgument('name');
@@ -84,7 +84,7 @@ class Addshortcut extends Command
 
         if ($validator->fails()) {
             $output->writeErrors($validator);
-            return;
+            return 0;
         }
 
         $shortcut = new Shortcut();
@@ -96,5 +96,7 @@ class Addshortcut extends Command
         } else {
             $output->error('There was an error. Try again.');
         }
+
+        return 0;
     }
 }

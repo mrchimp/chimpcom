@@ -2,12 +2,14 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use Session;
 use Mrchimp\Chimpcom\Commands\LoggedInCommand;
+use Session;
 
+/**
+ * @todo Update!
+ */
 class Chpass_1 extends LoggedInCommand
 {
-
     public function process()
     {
         $password = $this->input->get(0);
@@ -24,5 +26,4 @@ class Chpass_1 extends LoggedInCommand
         $this->response->usePasswordInput(true);
         $this->response->alert('Enter password again. Type cancel to cancel.');
     }
-
 }

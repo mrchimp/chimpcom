@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Read Reddit descretely
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Mrchimp\Chimpcom\Reddit as Api;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -61,22 +62,21 @@ class Reddit extends Command
     }
 
     /**
+     * Run the command
+     *
      * Wastes time
      * reddit                              <frontpage>
      * reddit -r --reddit subreddit        <subreddit>
      * reddit -c --comments 12345 [12345]  <post/comment>
      * reddit -l --list                    <reddits>
      * reddit -s --self                    show self text
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return int
      */
-     /**
-      * Run the command
-      *
-      * @param  InputInterface  $input
-      * @param  OutputInterface $output
-      * @return void
-      */
-     protected function execute(InputInterface $input, OutputInterface $output)
-     {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $cache_time    = 10;
         $indent        = 5;
         $post_id       = $input->getArgument('post');
@@ -92,13 +92,13 @@ class Reddit extends Command
 
         if ($input->getOption('reddit')) {
             $action = 'subreddit';
-        } else if ($input->getOption('comments')) {
+        } elseif ($input->getOption('comments')) {
             if ($comment_id !== false) {
                 $action = 'comment';
             } else {
                 $action = 'post';
             }
-        } else if ($input->getOption('list')) {
+        } elseif ($input->getOption('list')) {
             $action = 'reddits';
         } else {
             $action = 'frontpage';
@@ -107,6 +107,7 @@ class Reddit extends Command
         $html = $reddit->get($action, $post_id, $comment_id);
         $output->write($html);
 
+        return 0;
         // @todo - Make this work
         // if ($this->user->isAdmin()) {
         //   $output->write('<br>'.($use_cache ? 'Using cache.' : 'Not using cache.'));

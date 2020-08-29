@@ -6,14 +6,13 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Chimpcom;
-use Mrchimp\Chimpcom\Format;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Project as ProjectModel;
-use Session;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Validator;
 
 /**
  * Manage projects
@@ -56,13 +55,14 @@ class Project extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must log in to use this command.');
-            return;
+
+            return 1;
         }
 
         $user = Auth::user();
@@ -81,7 +81,8 @@ class Project extends Command
 
             if ($validator->fails()) {
                 $output->writeErrors($validator);
-                return false;
+
+                return 2;
             }
 
             $project = new ProjectModel();
@@ -99,7 +100,7 @@ class Project extends Command
             $output->write('Please add a description:');
             Chimpcom::setAction('newproject');
 
-            return;
+            return 0;
         }
 
         // Set current project
@@ -110,13 +111,13 @@ class Project extends Command
 
             if (!$project) {
                 $output->error('That project ID is invalid.');
-                return;
+                return 3;
             }
 
             $project->activeUsers()->save($user);
             $output->alert(e($project->name) . ' is now the current project.');
 
-            return;
+            return 0;
         }
 
         // remove project etc
@@ -128,18 +129,21 @@ class Project extends Command
             $output->title('Are you sure you want to delete the project `' . e($project->name) . '`?');
             Session::put('projectrm', $project->id);
             Chimpcom::setAction('project_rm');
-            return;
+
+            return 0;
         }
 
         $project = $user->activeProject;
 
         if (!$project) {
             $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
-            return;
+            return 4;
         }
 
         // Show info about current project
         $output->say('Current project: ' . $project->name);
+
+        return 0;
     }
 
     /**

@@ -1,12 +1,12 @@
 <?php
+
 /**
  * View messages sent by other users
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Chimpcom;
+use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Message as MessageModel;
 use Symfony\Component\Console\Input\InputArgument;
@@ -68,13 +68,14 @@ class Mail extends Command
      * @todo fix read status
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must be logged in to use this command.');
-            return false;
+
+            return 1;
         }
 
         $user = Auth::user();
@@ -85,7 +86,8 @@ class Mail extends Command
 
             if (empty($message_ids)) {
                 $output->error('No message IDs given.');
-                return false;
+
+                return 2;
             }
 
             $result = MessageModel::where('recipient_id', $user->id)
@@ -93,12 +95,12 @@ class Mail extends Command
                 ->delete();
 
             if ($result) {
-              $output->alert('Message(s) deleted.');
+                $output->alert('Message(s) deleted.');
             } else {
-              $output->error('There was a problem.');
+                $output->error('There was a problem.');
             }
 
-            return;
+            return 0;
         }
 
         $showAll = $input->getOption('all');
@@ -110,7 +112,7 @@ class Mail extends Command
 
         if (count($messages) === 0) {
             $output->write('No messages');
-            return;
+            return 0;
         }
 
         $output->write(Format::messages($messages));
@@ -121,5 +123,7 @@ class Mail extends Command
                 $message->save();
             }
         }
+
+        return 0;
     }
 }

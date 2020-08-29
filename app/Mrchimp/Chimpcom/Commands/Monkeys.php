@@ -1,4 +1,5 @@
 <?php
+
 /**
  * A finite amount of artificial monkeys
  */
@@ -29,7 +30,7 @@ class Monkeys extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -47,7 +48,7 @@ class Monkeys extends Command
         $apechat  = '';
 
         for ($x = 1; $x < 1000; $x++) {
-            $rand = mt_rand(0, $size-1);
+            $rand = mt_rand(0, $size - 1);
             $apechat  = $apechat  . $alphabet[$rand];
         }
 
@@ -56,21 +57,28 @@ class Monkeys extends Command
             $apechat = str_replace($target, $this->alert($target, [], true), $apechat);
             $output->alert('<br>SUCCESS!<br><br>');
             $output->write($apechat);
-            return true;
+
+            return 0;
         }
 
-        $search  = ['to',
-                   'be',
-                   'or',
-                   'not'];
+        $search  = [
+            'to',
+            'be',
+            'or',
+            'not'
+        ];
 
-        $replace = ['<span class="blue_highlight">to</span>',
-                    '<span class="blue_highlight">be</span>',
-                    '<span class="blue_highlight">or</span>',
-                    '<span class="blue_highlight">not</span>'];
+        $replace = [
+            '<span class="blue_highlight">to</span>',
+            '<span class="blue_highlight">be</span>',
+            '<span class="blue_highlight">or</span>',
+            '<span class="blue_highlight">not</span>'
+        ];
 
         $apechat  = str_replace($search, $replace, $apechat);
 
         $output->write($apechat);
+
+        return 0;
     }
 }

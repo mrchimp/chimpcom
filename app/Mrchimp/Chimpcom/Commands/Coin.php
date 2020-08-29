@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flip a coin
  */
@@ -29,10 +30,12 @@ class Coin extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->write((mt_rand(0,1) ? 'Heads' : 'Tails'));
+        $output->write((mt_rand(0, 1) ? 'Heads' : 'Tails'));
+
+        return 0;
     }
 }

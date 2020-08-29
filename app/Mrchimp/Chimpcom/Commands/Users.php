@@ -1,13 +1,13 @@
 <?php
+
 /**
  * Get a list of users
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use DB;
-use App\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,18 +30,20 @@ class Users extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must log in to use this command.');
-            return;
+
+            return 1;
         }
 
         if (!Auth::user()->is_admin) {
             $output->error('No.');
-            return;
+
+            return 2;
         }
 
         $users = DB::table('users')
@@ -66,15 +68,17 @@ class Users extends Command
         $output->title('Tasks');
         $output->say('</td></tr>');
 
-        foreach($users as $user){
-            $output->say('<tr><td>'.$user->id.'</td>
-                        <td>'.$user->name.'</td>
-                        <td>'.$user->last_seen.'</td>
-                        <td>'.$user->memory_count.'</td>
-                        <td>'.$user->project_count.'</td>
-                        <td>'.$user->task_count.'</td></tr>');
+        foreach ($users as $user) {
+            $output->say('<tr><td>' . $user->id . '</td>
+                        <td>' . $user->name . '</td>
+                        <td>' . $user->last_seen . '</td>
+                        <td>' . $user->memory_count . '</td>
+                        <td>' . $user->project_count . '</td>
+                        <td>' . $user->task_count . '</td></tr>');
         }
 
         $output->say('</table>');
+
+        return 0;
     }
 }

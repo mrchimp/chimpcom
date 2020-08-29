@@ -3,14 +3,14 @@
 namespace Mrchimp\Chimpcom\Actions;
 
 use App\User;
-use Auth;
-use Chimpcom;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 use Mrchimp\Chimpcom\Commands\Command;
-use Session;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Validator;
 
 /**
  * Handle email input and create an account
@@ -30,6 +30,8 @@ class Register3 extends Command
 
     /**
      * Run the command
+     *
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -54,7 +56,7 @@ class Register3 extends Command
         if ($validator->fails()) {
             $output->writeErrors($validator, 'Something went wrong. Please try again.');
             Chimpcom::setAction('normal');
-            return false;
+            return 1;
         }
 
         Auth::login($this->create($data));
@@ -66,6 +68,8 @@ class Register3 extends Command
         $output->write('Hello, ' . e($data['name']) . '! Welcome to Chimpcom.');
         Chimpcom::setAction('normal');
         $output->usePasswordInput(false);
+
+        return 0;
     }
 
     /**

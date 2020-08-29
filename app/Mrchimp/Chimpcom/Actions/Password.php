@@ -1,18 +1,17 @@
 <?php
+
 /**
  * Handle password input after 'login username'
  */
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use Hash;
-use Auth;
-use Session;
-use App\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Commands\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Handle password input after 'login username'
@@ -34,28 +33,32 @@ class Password extends Command
 
     /**
      * Run the command
+     *
+     * @return int
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         if (Auth::check()) {
             $user = Auth::user();
-            $output->error('You are already logged in as '.htmlspecialchars($user->name).'. How did you do that?');
-            return;
+            $output->error('You are already logged in as ' . htmlspecialchars($user->name) . '. How did you do that?');
+            return 1;
         }
 
         $username = Session::get('login_username');
         $password = $input->getArgument('password');
+
         Session::forget('login_username');
         Session::put('action', 'normal');
 
         if (!$password) {
             $this->error('No password given. Start again.');
-            return;
+
+            return 1;
         }
 
         if (!$username) {
             $this->error('I forgot your name, sorry. Start again.');
-            return;
+            return 2;
         }
 
         if (Auth::attempt([
@@ -67,6 +70,7 @@ class Password extends Command
         } else {
             $output->error('Hmmmm... No.');
         }
-    }
 
+        return 0;
+    }
 }

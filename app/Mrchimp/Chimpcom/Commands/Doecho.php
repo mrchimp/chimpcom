@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Echo echo echo
  */
@@ -35,14 +36,18 @@ class Doecho extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $word = $input->getArgument('echo');
 
-        if (!$word) { $word = 'echo'; }
+        if (!$word) {
+            $word = 'echo';
+        }
 
         $output->write("$word <span style=\"font-size: 75%\">$word</span> <span style=\"font-size: 50%\">$word</span> <span style=\"font-size: 25%\">$word</span>");
+
+        return 0;
     }
 }

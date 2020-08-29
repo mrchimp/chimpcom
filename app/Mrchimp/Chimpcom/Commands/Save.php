@@ -1,15 +1,13 @@
 <?php
+
 /**
  * Create a memory item
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-
 use Auth;
 use Mrchimp\Chimpcom\Models\Memory;
-use Mrchimp\Chimpcom\Models\Tag;
-use Mrchimp\Chimpcom\Format;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,8 +33,7 @@ To make it visible to other users add the --public or -p flag or after saving,
 use the SETPUBLIC command.<br><br>
 Once the memory has been saved you can search for it using FIND or SHOW and
 delete it with FORGET command.
-DESC
-        );
+DESC);
         $this->addUsage('chimpcom A command line website.');
         $this->addRelated('forget');
         $this->addRelated('show');
@@ -68,13 +65,14 @@ DESC
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must log in to use this command.');
-            return;
+
+            return 1;
         }
 
         $user = Auth::user();
@@ -104,6 +102,7 @@ DESC
         // }
 
         $output->alert('Memory saved. Id: ' . $memory->id);
-    }
 
+        return 0;
+    }
 }

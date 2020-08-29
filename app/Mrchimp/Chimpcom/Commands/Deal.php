@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Deals a card from a pack
  */
@@ -7,8 +8,8 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Cards\Deck;
 use Mrchimp\Chimpcom\Format;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -39,11 +40,12 @@ class Deal extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $count = $input->getOption('count');
+
         if (!$count) {
             $count = 6;
         }
@@ -53,12 +55,16 @@ class Deal extends Command
 
         // Output ten per line
         $x = 0;
+
         foreach ($hand as $card) {
             if ($x % 10 == 0 && $x > 0) {
                 $output->write('<br>');
             }
+
             $output->write(Format::style($card->getSuit() . $card->getRank(), 'card ' . $card->getColor()));
             $x++;
         }
+
+        return 0;
     }
 }

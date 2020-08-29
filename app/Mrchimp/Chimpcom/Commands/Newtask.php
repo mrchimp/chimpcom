@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Create a new task on the current project
  */
@@ -6,8 +7,6 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
-use Mrchimp\Chimpcom\Format;
-use Mrchimp\Chimpcom\Models\Project;
 use Mrchimp\Chimpcom\Models\Task;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,13 +43,14 @@ class Newtask extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must be logged in to use this command.');
-            return false;
+
+            return 1;
         }
 
         $user = Auth::user();
@@ -59,7 +59,8 @@ class Newtask extends Command
 
         if (!$project) {
             $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
-            return;
+
+            return 1;
         }
 
         $task = new Task();
@@ -84,5 +85,7 @@ class Newtask extends Command
         // $project_id = \R::store($task);
 
         $output->alert('Ok.');
+
+        return 0;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Get some answers
  */
@@ -38,16 +39,16 @@ class Are extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $words = $input->getArgument('question');
         $question = implode(' ', $words);
 
-        if (substr($question, -1) != '?'){
+        if (substr($question, -1) != '?') {
             $output->write('Questions end with question marks.');
-            return;
+            return 1;
         }
 
         if ($this->setAndEqual($words, 0, 'you')) {
@@ -56,16 +57,22 @@ class Are extends Command
             } else if ($this->setAndEqual($words, 1, 'human?')) {
                 $output->write('What does it look like?');
             }
-            return;
+
+            return 1;
         }
 
-        $answers = ['I\'m not sure yet. ',
-                    'No way. ',
-                    'Definitely. ',
-                    'It depends on your point of view. '];
+        $answers = [
+            'I\'m not sure yet. ',
+            'No way. ',
+            'Definitely. ',
+            'It depends on your point of view. '
+        ];
 
-        $rand = floor(rand(0,count($answers) - 1));
+        $rand = floor(rand(0, count($answers) - 1));
+
         $output->write($answers[$rand]);
+
+        return 0;
     }
 
     /**

@@ -22,7 +22,7 @@ class Shortcuts extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -30,12 +30,14 @@ class Shortcuts extends Command
 
         if (count($shortcuts) === 0) {
             $output->error('The are currently no shortcuts.');
-            return;
+
+            return 1;
         }
 
         foreach ($shortcuts as $shortcut) {
             $output->write($shortcut->name . ' - ' . $shortcut->url . '<br>');
         }
-    }
 
+        return 0;
+    }
 }

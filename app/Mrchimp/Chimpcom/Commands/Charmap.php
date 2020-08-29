@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Show some characters
  */
@@ -6,8 +7,8 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Chimpcom\Format;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -45,11 +46,12 @@ class Charmap extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $count = $input->getOption('count');
+
         if (!$count) {
             $count = 128;
         }
@@ -63,5 +65,7 @@ class Charmap extends Command
                 $output->write("&#$x; ");
             }
         }
+
+        return 0;
     }
 }

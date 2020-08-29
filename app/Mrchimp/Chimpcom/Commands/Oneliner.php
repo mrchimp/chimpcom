@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Create a new witty oneliner
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Models\Oneliner as OnelinerModel;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,20 +43,22 @@ class Oneliner extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must log in to use this command.');
-            return;
+
+            return 1;
         }
 
         $user = Auth::user();
 
         if (!$user->is_admin) {
             $output->error('No.');
-            return;
+
+            return 2;
         }
 
         $command = $input->getArgument('command');
@@ -67,5 +70,7 @@ class Oneliner extends Command
         $oneliner->save();
 
         $output->alert('Ok.');
+
+        return 0;
     }
 }

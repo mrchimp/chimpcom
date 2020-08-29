@@ -1,15 +1,14 @@
 <?php
+
 /**
  * Read RSS feeds
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Validator;
+use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Feed;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -51,7 +50,7 @@ class Feeds extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -59,7 +58,7 @@ class Feeds extends Command
 
         if (!Auth::check()) {
             $output->error('You must be logged in to use this command.');
-            return false;
+            return 1;
         }
 
         $user = Auth::user();
@@ -71,7 +70,7 @@ class Feeds extends Command
         if ($subcommand === 'add') {
             if (!$url) {
                 $output->error('You need to provide a url.');
-                return false;
+                return 2;
             }
 
             $data = [
@@ -85,13 +84,14 @@ class Feeds extends Command
             ];
 
             if (!$this->validateOrDie($data, $rules)) {
-                return;
+                return 3;
             }
 
             $feed = new Feed($data);
             $user->feeds()->save($feed);
             $output->alert('Ok');
-            return;
+
+            return 0;
         }
 
 
@@ -100,32 +100,32 @@ class Feeds extends Command
 
             if (count($feeds) === 0) {
                 $output->error('No feeds. use `FEED ADD ...`');
-                return;
+                return 4;
             }
 
             foreach ($feeds as $feed) {
                 $output->write(
-                    Format::title(e($feed->name)) .': ' . e($feed->url).'<br>'
+                    Format::title(e($feed->name)) . ': ' . e($feed->url) . '<br>'
                 );
             }
 
-            return;
+            return 0;
         }
 
 
         if ($subcommand == 'remove') {
             if ($name === false) {
                 $output->error('You must provide a feed name.');
-                return;
+                return 5;
             }
 
             $feed = Feed::where('name', $name)
-                        ->where('user_id', $user->id)
-                        ->first();
+                ->where('user_id', $user->id)
+                ->first();
 
             if (!$feed) {
                 $output->error('Could not find feed or it isn\'t yours to remove.');
-                return;
+                return 6;
             }
 
             $result = $feed->delete();
@@ -136,14 +136,14 @@ class Feeds extends Command
                 $output->error('Problem removing feed.');
             }
 
-            return;
+            return 0;
         }
 
 
         // ============= Get feeds ============================
         if (!$user->feeds) {
             $output->write('Couldn\'t get feed list.');
-            return;
+            return 7;
         }
 
         foreach ($user->feeds as $feed) {
@@ -151,5 +151,7 @@ class Feeds extends Command
 
             $output->write(Format::feed($the_feed));
         }
+
+        return 0;
     }
 }

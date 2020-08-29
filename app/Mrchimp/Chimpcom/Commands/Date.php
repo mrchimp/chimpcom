@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Get the date
  */
@@ -50,18 +51,20 @@ class Date extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
-        {
+    {
         if ($input->getOption('date')) {
             $output->write(date('l jS \of F Y'));
-        } else if ($input->getOption('time')) {
+        } elseif ($input->getOption('time')) {
             $output->write(date('h:i:s A'));
-        } else if ($input->getOption('iso')) {
+        } elseif ($input->getOption('iso')) {
             $output->write(date('c'));
         } else {
             $output->write(date('l jS \of F Y h:i:s A e'));
         }
+
+        return 0;
     }
 }

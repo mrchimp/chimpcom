@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Add a command alias
  */
@@ -6,12 +7,12 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
-use Validator;
-use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 use Mrchimp\Chimpcom\Format;
+use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Validator;
 
 /**
  * Add a command alias
@@ -44,20 +45,20 @@ class Alias extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must be logged in to use this command.');
-            return false;
+            return 1;
         }
 
         $user = Auth::user();
 
         if (!$user->is_admin) {
             $output->error('No.');
-            return false;
+            return 1;
         }
 
         $alias_name   = $input->getArgument('alias');
@@ -74,7 +75,7 @@ class Alias extends Command
             }
 
             $output->write(Format::listToTable($out, 3, true));
-            return;
+            return 2;
         }
 
         $validator = Validator::make([
@@ -87,7 +88,7 @@ class Alias extends Command
 
         if ($validator->fails()) {
             $output->writeErrors($validator);
-            return false;
+            return 3;
         }
 
         // @todo Fix these column names
@@ -100,5 +101,7 @@ class Alias extends Command
         } else {
             $output->error('There was a problem. Try again.');
         }
+
+        return 0;
     }
 }

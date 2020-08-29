@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Make memories public/private
  */
@@ -8,10 +9,10 @@ namespace Mrchimp\Chimpcom\Commands;
 use Auth;
 use Mrchimp\Chimpcom\Chimpcom;
 use Mrchimp\Chimpcom\Models\Memory;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Make memories public/private
@@ -50,13 +51,14 @@ class Setpublic extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must log in to use this command.');
-            return;
+
+            return 1;
         }
 
         $id = Chimpcom::decodeId($input->getArgument('id'));
@@ -64,17 +66,21 @@ class Setpublic extends Command
 
         if (!$memory) {
             $output->error('That memory doesn\'t exist.');
-            return;
+
+            return 2;
         }
 
         if (!$memory->isMine()) {
             $output->error('That isn\'t your memory to change.');
-            return;
+
+            return 3;
         }
 
         $memory->public = ($input->getOption('private') ? 0 : 1);
         $memory->save();
 
         $output->alert('Ok.');
+
+        return 0;
     }
 }

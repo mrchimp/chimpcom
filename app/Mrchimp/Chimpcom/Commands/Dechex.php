@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Convert decimal to hexadecimal
  */
@@ -26,8 +27,7 @@ class Dechex extends Command
         $this->setHelp(<<<EOT
 Values can be plain decimals or rgb values (e.g. rgb(0,128,255)) as long as the
 values do not include spaces.
-EOT
-        );
+EOT);
 
         $this->addArgument(
             'input',
@@ -41,7 +41,7 @@ EOT
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -51,9 +51,11 @@ EOT
             if (substr($value, 0, 4) === 'rgb(') {
                 $value = substr($value, 4, -1);
                 $chunks = explode(',', $value);
+
                 foreach ($chunks as &$chunk) {
                     $chunk = dechex($chunk);
                 }
+
                 $value = '#' . implode('', $chunks);
                 $value .= ' <span style="color:' . $value . '">███████</span>';
             } else {
@@ -62,5 +64,7 @@ EOT
         }
 
         $output->write(implode('<br>', $values));
+
+        return 0;
     }
 }

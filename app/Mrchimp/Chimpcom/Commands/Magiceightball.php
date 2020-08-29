@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Get an answer
  */
@@ -35,7 +36,7 @@ class Magiceightball extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -86,5 +87,7 @@ class Magiceightball extends Command
         }
 
         $output->write($answers[mt_rand(0, (count($answers) - 1))]);
+
+        return 0;
     }
 }

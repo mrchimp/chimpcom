@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Go to a given URL
  */
@@ -31,7 +32,7 @@ class Go extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -42,5 +43,7 @@ class Go extends Command
         }
 
         $output->redirect($url);
+
+        return 0;
     }
 }

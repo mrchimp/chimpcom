@@ -1,12 +1,13 @@
 <?php
+
 /**
  * Get Chimpcom statistics
  */
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
 use App\User;
+use Auth;
 use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 use Mrchimp\Chimpcom\Models\Feed;
 use Mrchimp\Chimpcom\Models\Memory;
@@ -39,7 +40,7 @@ class Stats extends Command
     /**
      * Run the command
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -53,7 +54,8 @@ class Stats extends Command
 
             if (!$user) {
                 $output->error('That username does not exist.');
-                return false;
+
+                return 1;
             }
 
             $memory_count = $user->memories()->count();
@@ -68,5 +70,7 @@ class Stats extends Command
 
         $output->write("Memories: $memory_count<br>");
         $output->write("Feeds: $feed_count<br>");
+
+        return 0;
     }
 }
