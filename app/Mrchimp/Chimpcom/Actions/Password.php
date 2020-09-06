@@ -26,7 +26,7 @@ class Password extends Command
 
         $this->addArgument(
             'password',
-            InputArgument::REQUIRED,
+            InputArgument::REQUIRED | InputArgument::IS_ARRAY,
             'Your password.'
         );
     }
@@ -45,7 +45,7 @@ class Password extends Command
         }
 
         $username = Session::get('login_username');
-        $password = $input->getArgument('password');
+        $password = implode(' ', $input->getArgument('password'));
 
         Session::forget('login_username');
         Session::put('action', 'normal');
@@ -58,6 +58,7 @@ class Password extends Command
 
         if (!$username) {
             $this->error('I forgot your name, sorry. Start again.');
+
             return 2;
         }
 

@@ -2,10 +2,10 @@
 
 namespace Tests\Commands;
 
-use Faker;
-use Tests\TestCase;
 use App\User;
+use Faker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class CommandTestTemplate extends TestCase
 {
@@ -25,41 +25,63 @@ class CommandTestTemplate extends TestCase
 
     protected function getGuestResponse($cmd_in)
     {
-        return $this->post($this->response_path, [
-            'cmd_in' => $cmd_in
-        ]);
+        return $this->post(
+            $this->response_path,
+            [
+                'cmd_in' => $cmd_in
+            ],
+            [
+                'HTTP_X-Requested-With' => 'XMLHttpRequest'
+            ]
+        );
     }
 
     protected function getUserResponse($cmd_in)
     {
-        $this->user = User::create([
-            'name' => $this->faker->name,
-            'email' => $this->faker->safeEmail,
-            'password' => bcrypt($this->faker->password),
-            'is_admin' => false,
-        ]);
+        if (!$this->user) {
+            $this->user = User::create([
+                'name' => $this->faker->name,
+                'email' => $this->faker->safeEmail,
+                'password' => bcrypt($this->faker->password),
+                'is_admin' => false,
+            ]);
+        }
 
         return $this
             ->actingAs($this->user)
-            ->post($this->response_path, [
-                'cmd_in' => $cmd_in
-            ]);
+            ->post(
+                $this->response_path,
+                [
+                    'cmd_in' => $cmd_in
+                ],
+                [
+                    'HTTP_X-Requested-With' => 'XMLHttpRequest'
+                ]
+            );
     }
 
     protected function getAdminResponse($cmd_in)
     {
-        $this->admin = new User([
-            'name' => $this->faker->name,
-            'email' => $this->faker->safeEmail,
-            'password' => bcrypt($this->faker->password),
-        ]);
-        $this->admin->is_admin = true;
-        $this->admin->save();
+        if (!$this->admin) {
+            $this->admin = new User([
+                'name' => $this->faker->name,
+                'email' => $this->faker->safeEmail,
+                'password' => bcrypt($this->faker->password),
+            ]);
+            $this->admin->is_admin = true;
+            $this->admin->save();
+        }
 
         return $this
             ->actingAs($this->admin)
-            ->post($this->response_path, [
-                'cmd_in' => $cmd_in
-            ]);
+            ->post(
+                $this->response_path,
+                [
+                    'cmd_in' => $cmd_in
+                ],
+                [
+                    'HTTP_X-Requested-With' => 'XMLHttpRequest'
+                ]
+            );
     }
 }

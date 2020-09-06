@@ -52,7 +52,9 @@ class Chimpcom
         'project_rm',
         'register',
         'register2',
-        'register3'
+        'register3',
+        'chpass_1',
+        'chpass_2',
     ];
 
     /**
@@ -197,6 +199,7 @@ class Chimpcom
         }
 
         $this->cmd_in = $cmd_in;
+
         if ($cmd_in === 'clearaction') {
             $this->setAction('normal');
             $output = new Output();
@@ -239,6 +242,7 @@ class Chimpcom
         $output = new Output();
         $this->log->error('Invalid command: ' . $cmd_in);
         $output->error('Invalid command: ' . htmlspecialchars($cmd_name));
+        $output->setResponseCode(404);
         return $output;
     }
 

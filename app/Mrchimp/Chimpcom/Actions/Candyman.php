@@ -18,7 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Candyman extends Command
 {
-
     protected function configure()
     {
         $this->setName('candyman');

@@ -2,12 +2,14 @@
 
 namespace Mrchimp\Chimpcom\Console;
 
-use Symfony\Component\Console\Output\Output as SymfonyOutput;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Output\Output as SymfonyOutput;
 
 class Output extends SymfonyOutput
 {
+    protected $response_code = 200;
+
     /**
      * Response array. This is what will eventually be returned.
      *
@@ -70,58 +72,63 @@ class Output extends SymfonyOutput
     }
 
     /**
-     * Format a string and then say() it.
+     * Format a string and then write() it.
      *
      * @param  string $str
      */
     public function error($str)
     {
-        $this->say(Format::error($str));
+        $this->write(Format::error($str));
     }
 
     /**
-     * Format a string and then say() it.
+     * Format a string and then write() it.
      *
      * @param  string $str
      */
     public function alert($str)
     {
-        $this->say(Format::alert($str));
+        $this->write(Format::alert($str));
     }
 
     /**
-     * Format a string and then say() it.
+     * Format a string and then write() it.
      *
      * @param  string $str
      */
     public function grey($str)
     {
-        $this->say(Format::grey($str));
+        $this->write(Format::grey($str));
     }
 
     /**
-     * Format a string and then say() it.
+     * Format a string and then write() it.
      *
      * @param  string $str
      */
     public function title($str)
     {
-        $this->say(Format::title($str));
+        $this->write(Format::title($str));
     }
 
     /**
      * Get output in JSON format
      * @return string JSON Command response
      */
-    public function getJson() {
-        return json_encode($this->out);
+    public function getJsonResponse()
+    {
+        return response()->json(
+            $this->out,
+            $this->response_code
+        );
     }
 
     /**
      * Return the output HTML only.
      * @return string Response HTML
      */
-    public function getTextOutput() {
+    public function getTextOutput()
+    {
         return $this->out['cmd_out'];
     }
 
@@ -129,7 +136,8 @@ class Output extends SymfonyOutput
      * Change client input to password input
      * @param  boolean $on If true, use password input. Otherwise normal text input.
      */
-    public function usePasswordInput($on = true) {
+    public function usePasswordInput($on = true)
+    {
         $this->out['show_pass'] = !!$on;
     }
 
@@ -137,7 +145,8 @@ class Output extends SymfonyOutput
      * Output a string to the client's console
      * @param  string $str
      */
-    public function log($str) {
+    public function log($str)
+    {
         $this->out['log'] .= $str;
     }
 
@@ -146,7 +155,8 @@ class Output extends SymfonyOutput
      * You probably don't need to call this. You probably want say().
      * @param string $str The new cmd_out
      */
-    public function setCmdOut($str) {
+    public function setCmdOut($str)
+    {
         $this->out['cmd_out'] = htmlspecialchars($str);
     }
 
@@ -155,21 +165,24 @@ class Output extends SymfonyOutput
      *
      * @param string $str The string to be inserted
      */
-    public function cFill($str) {
+    public function cFill($str)
+    {
         $this->out['cmd_fill'] .= $str;
     }
 
     /**
      * Redirect the browser
      */
-    public function redirect($url) {
+    public function redirect($url)
+    {
         $this->out['redirect'] = $url;
     }
 
     /**
      * Open a new browser window
      */
-    public function openWindow($url, $specs = ''){
+    public function openWindow($url, $specs = '')
+    {
         $this->out['openWindow'] = $url;
         $this->out['openWindowSpecs'] = $specs;
     }
@@ -186,7 +199,8 @@ class Output extends SymfonyOutput
     /**
      * Get user details from session. This only needs to be called after user logs in/out.
      */
-    public function getUserDetails() {
+    public function getUserDetails()
+    {
         if (Auth::check()) {
             $this->user = Auth::user();
             $this->out['user']['id'] = $this->user->id;
@@ -212,5 +226,21 @@ class Output extends SymfonyOutput
         foreach ($errors->all() as $message) {
             $this->error(' &bullet; ' . $message . '<br>');
         }
+    }
+
+    /**
+     * Set HTTP Response Code
+     */
+    public function setResponseCode(int $code): void
+    {
+        $this->response_code = $code;
+    }
+
+    /**
+     * Get HTTP Response Code
+     */
+    public function getResponseCode(): int
+    {
+        return $this->response_code;
     }
 }

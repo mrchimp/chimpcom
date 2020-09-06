@@ -2,40 +2,65 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use Auth;
-use Hash;
-use Mrchimp\Chimpcom\Commands\LoggedInCommand;
-use Session;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+use Mrchimp\Chimpcom\Commands\Command;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @todo update
- */
-class Chpass_2 extends LoggedInCommand
+class Chpass_2 extends Command
 {
-
-    public function process()
+    protected function configure()
     {
-        $password = $this->input->get(0);
+        $this->setName('chpass_2');
+        $this->setDescription('Password change stage 2.');
+        $this->addArgument(
+            'password',
+            InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+            'User\'s password.'
+        );
+    }
 
-        if (!$password || $password === 'cancel') {
-            $this->response->error('Abandoning.');
-            $this->response->usePasswordInput(false);
-            $this->setAction('normal');
-            Session::forget('chpass_1');
-            return;
+    /**
+     * Run the command
+     *
+     * @return int
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!Auth::check()) {
+            $output->error('You must log in to use this command.');
+
+            return 1;
         }
 
-        $data = [
+        $password = implode(' ', $input->getArgument('password'));
+
+        if (!$password || $password === 'cancel') {
+            $output->error('Abandoning.');
+            $output->usePasswordInput(false);
+            Chimpcom::setAction('normal');
+            Session::forget('chpass_1');
+            return 0;
+        }
+
+        $validator = Validator::make([
             'password' => Session::get('chpass_1'),
             'password_confirmation' => $password
-        ];
-
-        $rules = [
+        ], [
             'password' => 'required|confirmed|min:6'
-        ];
+        ]);
 
-        if (!$this->validateOrDie($data, $rules)) {
-            return;
+        if ($validator->fails()) {
+            $output->error('Passwords did not match. Aborting.');
+            $output->usePasswordInput(false);
+            Chimpcom::setAction('normal');
+            Session::forget('chpass_1');
+            return 1;
         }
 
         $user = Auth::user();
@@ -44,8 +69,10 @@ class Chpass_2 extends LoggedInCommand
 
         Session::forget('chpass_1');
 
-        $this->response->alert('Ok then. All done.');
-        $this->setAction('normal');
-        $this->response->usePasswordInput(false);
+        $output->alert('Ok then. All done.');
+        Chimpcom::setAction('normal');
+        $output->usePasswordInput(false);
+
+        return 0;
     }
 }

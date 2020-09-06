@@ -3,11 +3,7 @@
 namespace App\Http\Controllers;
 
 use Chimpcom;
-// use Mrchimp\Chimpcom\Chimpcom;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Mrchimp\Chimpcom\Input;
-use Symfony\Component\Console\Input\StringInput;
 
 /**
  * Handle Chimpcom HTTP requests
@@ -36,7 +32,7 @@ class ChimpcomController extends Controller
         $response = Chimpcom::respond($input);
 
         if ($request->ajax()) {
-            return $response->getJson();
+            return $response->getJsonResponse();
         } else {
             return $response->getTextOutput();
         }
