@@ -340,10 +340,10 @@ class Format
             $output .= 'Author: ' . e($author->get_name());
         }
 
-        $output .= e($item->get_date('Y-m-d H:i:s')) . '<br>';
+        $output .= self::grey(e($item->get_date('Y-m-d H:i:s'))) . '<br>';
         // @todo sanitize output rather than just escaping it
         $output .= e($item->get_description());
-        $output .= '<br>';
+        $output .= '<br><br>';
 
         return $output;
     }

@@ -5,22 +5,26 @@
 
 namespace Mrchimp\Chimpcom\Models;
 
-use SimplePie;
 use Illuminate\Database\Eloquent\Model;
+use SimplePie;
 
 /**
  * Database model for RSS Feeds
  */
 class Feed extends Model
 {
+    protected $fillable = [
+        'name',
+        'url'
+    ];
 
-    protected $fillable = ['name', 'url'];
-
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('app\User');
     }
 
-    public function getFeed() {
+    public function getFeed()
+    {
         if (!$this->url) {
             return false;
         }
@@ -32,5 +36,4 @@ class Feed extends Model
 
         return $feed;
     }
-
 }

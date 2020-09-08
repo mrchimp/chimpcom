@@ -39,7 +39,7 @@ class CommandTestTemplate extends TestCase
     protected function getUserResponse($cmd_in, $user = null)
     {
         if (!$this->user && is_null($user)) {
-            $this->user = User::create([
+            $this->user = factory(User::class)->create([
                 'name' => $this->faker->name,
                 'email' => $this->faker->safeEmail,
                 'password' => bcrypt($this->faker->password),
@@ -63,7 +63,7 @@ class CommandTestTemplate extends TestCase
     protected function getAdminResponse($cmd_in)
     {
         if (!$this->admin) {
-            $this->admin = new User([
+            $this->admin = factory(User::class)->create([
                 'name' => $this->faker->name,
                 'email' => $this->faker->safeEmail,
                 'password' => bcrypt($this->faker->password),

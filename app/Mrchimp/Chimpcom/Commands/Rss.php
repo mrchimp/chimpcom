@@ -7,6 +7,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Feed;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Read RSS feeds
  */
-class Feeds extends Command
+class Rss extends Command
 {
     /**
      * Configure the command
@@ -24,8 +25,8 @@ class Feeds extends Command
      */
     protected function configure()
     {
-        $this->setName('feeds');
-        $this->setDescription('Reads RSS feeds.');
+        $this->setName('rss');
+        $this->setDescription('Read RSS feeds.');
         $this->addUsage('');
         $this->addUsage('add example http://example.com/rss_url.xml');
         $this->addUsage('list');
@@ -54,22 +55,27 @@ class Feeds extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
-
         if (!Auth::check()) {
             $output->error('You must be logged in to use this command.');
+            $output->setResponseCode(401);
             return 1;
         }
 
         $user = Auth::user();
-
         $subcommand = $input->getArgument('subcommand');
         $name = $input->getArgument('name');
         $url = $input->getArgument('url');
 
         if ($subcommand === 'add') {
+            if (!$name) {
+                $output->error('You need to provide a name.');
+                $output->setResponseCode(422);
+                return 2;
+            }
+
             if (!$url) {
-                $output->error('You need to provide a url.');
+                $output->error('You need to provide a URL.');
+                $output->setResponseCode(422);
                 return 2;
             }
 
@@ -83,23 +89,25 @@ class Feeds extends Command
                 'url' => 'required|active_url',
             ];
 
-            if (!$this->validateOrDie($data, $rules)) {
+            $validator = Validator::make($data, $rules);
+
+            if ($validator->fails()) {
+                $output->error('There was a problem with that.');
+                $output->setResponseCode(422);
                 return 3;
             }
 
-            $feed = new Feed($data);
-            $user->feeds()->save($feed);
-            $output->alert('Ok');
+            $user->feeds()->create($data);
+            $output->alert('Ok.');
 
             return 0;
         }
-
 
         if ($subcommand === 'list') {
             $feeds = $user->feeds;
 
             if (count($feeds) === 0) {
-                $output->error('No feeds. use `FEED ADD ...`');
+                $output->error('No feeds. use `RSS ADD ...`');
                 return 4;
             }
 
@@ -112,10 +120,10 @@ class Feeds extends Command
             return 0;
         }
 
-
         if ($subcommand == 'remove') {
-            if ($name === false) {
+            if (!$name) {
                 $output->error('You must provide a feed name.');
+                $output->setResponseCode(422);
                 return 5;
             }
 
@@ -124,32 +132,26 @@ class Feeds extends Command
                 ->first();
 
             if (!$feed) {
-                $output->error('Could not find feed or it isn\'t yours to remove.');
+                $output->error(e('Could not find feed or it isn\'t yours to remove.'));
+                $output->setResponseCode(422);
                 return 6;
             }
 
-            $result = $feed->delete();
+            $feed->delete();
 
-            if ($result) {
-                $output->alert('Feed removed.');
-            } else {
-                $output->error('Problem removing feed.');
-            }
+            $output->alert('Feed removed.');
 
             return 0;
         }
 
-
         // ============= Get feeds ============================
         if (!$user->feeds) {
-            $output->write('Couldn\'t get feed list.');
+            $output->write(e('Couldn\'t get feed list.'));
             return 7;
         }
 
         foreach ($user->feeds as $feed) {
-            $the_feed = $feed->getFeed(); // Well shit this is getting confusing
-
-            $output->write(Format::feed($the_feed));
+            $output->write(Format::feed($feed->getFeed()));
         }
 
         return 0;

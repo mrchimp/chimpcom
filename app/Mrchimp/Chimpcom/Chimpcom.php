@@ -7,7 +7,6 @@
 namespace Mrchimp\Chimpcom;
 
 use Auth;
-use DB;
 use Mrchimp\Chimpcom\Console\Command;
 use Mrchimp\Chimpcom\Console\Output;
 use Mrchimp\Chimpcom\Log;
@@ -85,7 +84,6 @@ class Chimpcom
         'doecho',
         // 'email',
         // 'episode',
-        'feeds',
         // 'files',
         'find',
         'forget',
@@ -112,6 +110,7 @@ class Chimpcom
         'projects',
         // 'reddit',
         'register',
+        'rss',
         'save',
         'scale',
         'setpublic',
@@ -146,7 +145,7 @@ class Chimpcom
      * @param  string $name
      * @return Command
      */
-    static public function instantiateCommand($name)
+    public static function instantiateCommand($name)
     {
         if (!in_array($name, self::$available_commands)) {
             return null;
@@ -163,7 +162,7 @@ class Chimpcom
      * @param  string $name
      * @return Command
      */
-    static public function instantiateAction($name)
+    public static function instantiateAction($name)
     {
         if (!in_array($name, self::$available_actions)) {
             return null;
@@ -360,7 +359,7 @@ class Chimpcom
      * @param  integer $id Decoded id
      * @return string      Encoded id
      */
-    static function encodeId($id)
+    public static function encodeId($id)
     {
         return dechex($id);
     }
@@ -371,7 +370,7 @@ class Chimpcom
      * @param  array $ids [description]
      * @return [type]      [description]
      */
-    static function encodeIds(array $ids)
+    public static function encodeIds(array $ids)
     {
         foreach ($ids as &$id) {
             $id = self::encodeId($id);
@@ -386,7 +385,7 @@ class Chimpcom
      * @param  string $id Encoded id
      * @return integer    Decoded id
      */
-    static function decodeId($id)
+    public static function decodeId($id)
     {
         return hexdec($id);
     }
@@ -397,7 +396,7 @@ class Chimpcom
      * @param  array $id
      * @return array
      */
-    static function decodeIds(array $ids)
+    public static function decodeIds(array $ids)
     {
         foreach ($ids as &$id) {
             $id = self::decodeId($id);
@@ -411,7 +410,7 @@ class Chimpcom
      *
      * @return string
      */
-    static function welcomeMessage()
+    public static function welcomeMessage()
     {
         $output = '';
 
@@ -445,7 +444,7 @@ class Chimpcom
      *
      * @return array All command names
      */
-    static public function getCommandList()
+    public static function getCommandList()
     {
         return self::$available_commands;
     }
