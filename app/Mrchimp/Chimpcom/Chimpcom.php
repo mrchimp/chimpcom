@@ -124,7 +124,6 @@ class Chimpcom
         // 'this',
         'todo',
         'uname',
-        'updateman',
         'users',
         'version',
         // 'weather',
