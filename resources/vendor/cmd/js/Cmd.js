@@ -170,13 +170,6 @@ export default class Cmd {
    * Take an input string and output it to the screen
    */
   displayInput(cmd_in) {
-    cmd_in = cmd_in
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-
     const prompt = document.createElement('span');
     prompt.classList.add('prompt');
     prompt.appendChild(document.createTextNode(this.prompt_str));
