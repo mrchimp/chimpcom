@@ -60,4 +60,79 @@ class FindTest extends CommandTestTemplate
             ->assertStatus(200)
             ->assertSee('Memory Content');
     }
+
+    /** @test */
+    public function find_commands_public_flag_shows_only_public_memories()
+    {
+        $user = factory(User::class)->create();
+
+        factory(Memory::class)->create([
+            'name' => 'memory_name',
+            'content' => 'Private Memory',
+            'user_id' => $user->id,
+        ]);
+
+        factory(Memory::class)->states('public')->create([
+            'name' => 'memory_name',
+            'content' => 'Public Memory',
+            'user_id' => $user->id,
+        ]);
+
+        $this
+            ->getUserResponse('find memory_name --public', $user)
+            ->assertStatus(200)
+            ->assertSee('Public Memory')
+            ->assertDontSee('Private Memory');
+    }
+
+    /** @test */
+    public function find_commands_private_flag_shows_only_private_memories()
+    {
+        $user = factory(User::class)->create();
+
+        factory(Memory::class)->create([
+            'name' => 'memory_name',
+            'content' => 'Private Memory',
+            'user_id' => $user->id,
+        ]);
+
+        factory(Memory::class)->states('public')->create([
+            'name' => 'memory_name',
+            'content' => 'Public Memory',
+            'user_id' => $user->id,
+        ]);
+
+        $this
+            ->getUserResponse('find memory_name --private', $user)
+            ->assertStatus(200)
+            ->assertSee('Private Memory')
+            ->assertDontSee('Public Memory');
+    }
+
+    /** @test */
+    public function find_commands_mine_flag_only_shows_memories_owned_by_the_current_user()
+    {
+        $user = factory(User::class)->create();
+        $other_user = factory(User::class)->create();
+
+        factory(Memory::class)->create([
+            'name' => 'memory_name',
+            'content' => 'My Memory',
+            'user_id' => $user->id,
+        ]);
+
+        factory(Memory::class)->create([
+            'name' => 'memory_name',
+            'content' => 'Other Persons Memory',
+            'user_id' => $other_user->id,
+        ]);
+
+        $response = $this
+            ->getUserResponse('find memory_name --mine',  $user)
+            ->assertStatus(200)
+            ->assertSee('My Memory')
+            ->assertDontSee('Other Persons Memory');
+
+            // dd($response->getcontent());
+    }
 }

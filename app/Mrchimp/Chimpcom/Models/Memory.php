@@ -5,10 +5,9 @@
 
 namespace Mrchimp\Chimpcom\Models;
 
-use Auth;
 use App\User;
+use Auth;
 use Illuminate\Database\Eloquent\Model;
-use Mrchimp\Chimpcom\Models\Tag as Tag;
 
 /**
  * Memory model
@@ -43,7 +42,7 @@ class Memory extends Model
         if (Auth::check()) {
             $user_id = Auth::user()->id;
         } else {
-            if ($type != 'mine') {
+            if ($type !== 'mine') {
                 $type = 'public';
             }
         }
@@ -54,7 +53,7 @@ class Memory extends Model
                 break;
             case 'private':
                 $query->where('public', 0)
-                      ->where('user_id', $user_id);
+                    ->where('user_id', $user_id);
                 break;
             case 'mine':
                 $query->where('user_id', $user_id);
@@ -80,7 +79,7 @@ class Memory extends Model
     public function scopeSearch($query, $search_str)
     {
         return $query->where(function ($query) use ($search_str) {
-            $query->where('name',    'LIKE', $search_str)
+            $query->where('name', 'LIKE', $search_str)
                 ->orWhere('content', 'LIKE', $search_str);
         });
     }
@@ -96,6 +95,7 @@ class Memory extends Model
         }
 
         $user = Auth::user();
+
         return $user->id === $this->user_id;
     }
 }
