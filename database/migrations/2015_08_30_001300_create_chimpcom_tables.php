@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateChimpcomTables extends Migration
 {
@@ -121,16 +121,16 @@ class CreateChimpcomTables extends Migration
      */
     public function down()
     {
-        Schema::dropTable('aliases');
-        Schema::dropTable('cities');
-        Schema::dropTable('feeds');
-        Schema::dropTable('mans');
-        Schema::dropTable('memories');
-        Schema::dropTable('messages');
-        Schema::dropTable('oneliners');
-        Schema::dropTable('projects');
-        Schema::dropTable('shortcuts');
-        Schema::dropTable('tasks');
-        Schema::dropTable('users');
+        Schema::dropIfExists('aliases');
+        Schema::dropIfExists('cities');
+        Schema::dropIfExists('feeds');
+        Schema::dropIfExists('mans');
+        Schema::dropIfExists('memories');
+        Schema::dropIfExists('messages');
+        Schema::dropIfExists('oneliners');
+        Schema::dropIfExists('projects');
+        Schema::dropIfExists('shortcuts');
+        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('users');
     }
 }
