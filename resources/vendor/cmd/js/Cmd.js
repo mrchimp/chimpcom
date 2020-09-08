@@ -382,10 +382,10 @@ export default class Cmd {
         this.input.value = this.cmd_stack.next();
         break;
       case 27: // esc
-        if (this.container.css('opacity') > 0.5) {
-          this.container.animate({ opacity: 0 }, 300);
+        if (this.container.style.opacity > 0.5) {
+          this.container.style.opacity = 0;
         } else {
-          this.container.animate({ opacity: 1 }, 300);
+          this.container.style.opacity = 1;
         }
         break;
     }
