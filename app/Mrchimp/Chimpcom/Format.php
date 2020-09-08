@@ -6,7 +6,6 @@
 
 namespace Mrchimp\Chimpcom;
 
-use App\User;
 use Auth;
 
 /**
@@ -230,14 +229,14 @@ class Format
     {
         $pattern  = '#\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#';
 
-        //@todo don't use create_function
-        $callback = create_function('$matches', '
+        $callback = function ($matches) {
             $url       = array_shift($matches);
             $url_parts = parse_url($url);
 
             $text = preg_replace("/^www./", "", $url_parts["host"]) . (isset($url_parts["path"]) ? "/..." : "");
 
-            return sprintf(\'<a rel="nofollow" href="%s">%s</a>\', $url, $text);');
+            return sprintf('<a rel="nofollow" href="%s">%s</a>', $url, $text);
+        };
 
         return preg_replace_callback($pattern, $callback, $text);
     }
