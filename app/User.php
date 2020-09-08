@@ -2,10 +2,10 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Mrchimp\Chimpcom\Models\Memory;
+use Illuminate\Notifications\Notifiable;
 use Mrchimp\Chimpcom\Models\Feed;
+use Mrchimp\Chimpcom\Models\Memory;
 
 class User extends Authenticatable
 {
@@ -25,24 +25,28 @@ class User extends Authenticatable
      */
     protected $hidden = ['password', 'remember_token'];
 
-    public function memories() {
+    public function memories()
+    {
         return $this->hasMany('Mrchimp\Chimpcom\Models\Memory');
     }
 
-    public function projects() {
+    public function projects()
+    {
         return $this->hasMany('Mrchimp\Chimpcom\Models\Project');
     }
 
-    public function activeProject() {
+    public function activeProject()
+    {
         return $this->belongsTo('Mrchimp\Chimpcom\Models\Project', 'active_project_id');
     }
 
-    public function tasks() {
+    public function tasks()
+    {
         return $this->hasMany('Mrchimp\Chimpcom\Models\Task');
     }
 
-    public function feeds() {
+    public function feeds()
+    {
         return $this->hasMany('Mrchimp\Chimpcom\Models\Feed');
     }
-
 }
