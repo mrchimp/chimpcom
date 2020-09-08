@@ -222,7 +222,7 @@ class Chimpcom
 
         // Do we have a witty oneliner?
         $oneliner = Oneliner::where('command', $cmd_name)
-            ->orderBy(DB::raw('RAND()'))
+            ->inRandomOrder()
             ->first();
 
         if (!empty($oneliner)) {
