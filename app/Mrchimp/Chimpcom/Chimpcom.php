@@ -77,7 +77,6 @@ class Chimpcom
         'charmap',
         'chpass',
         'coin',
-        'credits',
         'date',
         'deal',
         'dechex',
