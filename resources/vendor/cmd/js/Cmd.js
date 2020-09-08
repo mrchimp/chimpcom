@@ -160,9 +160,6 @@ export default class Cmd {
 
     this.cmd_stack.reset();
 
-    this.input.value = '';
-    this.input.removeAttribute('disabled');
-
     this.enableInput();
     this.focusOnInput();
     this.activateAutofills();
@@ -336,7 +333,7 @@ export default class Cmd {
 
     this.displayOutput(response.cmd_out);
 
-    if (response.cmd_fill !== '') {
+    if (response.cmd_fill) {
       let cmd_in = this.wrapper.querySelector('.cmd-container').querySelector('.cmd-in');
 
       cmd_in.value = response.cmd_fill;
