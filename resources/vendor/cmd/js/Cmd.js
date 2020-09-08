@@ -162,6 +162,7 @@ export default class Cmd {
 
     this.enableInput();
     this.focusOnInput();
+    this.scrollToBottom();
     this.activateAutofills();
   }
 
@@ -520,8 +521,14 @@ export default class Cmd {
    * scroll to the bottom of the page
    */
   focusOnInput() {
-    this.wrapper.scrollTop = this.wrapper.scrollHeight;
     this.input.focus();
+  }
+
+  /**
+   * Scroll the output to the bottom
+   */
+  scrollToBottom() {
+    this.wrapper.scrollTop = this.wrapper.scrollHeight;
   }
 
   /**
