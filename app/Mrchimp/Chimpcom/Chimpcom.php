@@ -185,7 +185,7 @@ class Chimpcom
             $cmd_in = "message $cmd_in";
         }
 
-        $parts = explode(' ', trim($cmd_in), 2); // @todo - efficiency!
+        $parts = explode(' ', trim($cmd_in), 2);
 
         $cmd_name = ChimpcomAlias::lookup($parts[0]);
 
