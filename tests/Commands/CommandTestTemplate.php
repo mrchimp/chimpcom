@@ -36,9 +36,9 @@ class CommandTestTemplate extends TestCase
         );
     }
 
-    protected function getUserResponse($cmd_in)
+    protected function getUserResponse($cmd_in, $user = null)
     {
-        if (!$this->user) {
+        if (!$this->user && is_null($user)) {
             $this->user = User::create([
                 'name' => $this->faker->name,
                 'email' => $this->faker->safeEmail,
@@ -48,7 +48,7 @@ class CommandTestTemplate extends TestCase
         }
 
         return $this
-            ->actingAs($this->user)
+            ->actingAs($user ? $user : $this->user)
             ->post(
                 $this->response_path,
                 [

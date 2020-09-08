@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
+
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -15,7 +17,15 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->email,
-        'password' => bcrypt(str_random(10)),
-        'remember_token' => str_random(10),
+        'password' => bcrypt(Str::random(10)),
+        'remember_token' => Str::random(10),
+        'active_project_id' => 0,
+        'is_admin' => 0,
+    ];
+});
+
+$factory->state(App\User::class, 'admin', function (Faker\Generator $faker) {
+    return [
+        'is_admin' => 1,
     ];
 });
