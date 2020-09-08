@@ -41,7 +41,9 @@ class Styles extends Command
                 ]
             ) . '<br>'
         );
-        $output->write('<a href="#">This is a link</a><br>');
+        $output->write(Format::link('This is a link', 'https://example.com', [
+            'data-foo' => 'bar',
+        ]) . '<br>');
         $output->write(
             Format::listToTable(
                 [

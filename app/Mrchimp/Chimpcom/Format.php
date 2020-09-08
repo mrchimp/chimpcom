@@ -21,23 +21,9 @@ class Format
      * @param  array  $attr  An array of HTML attributes for the span
      * @return string        The wrapped content.
      */
-    public static function style($str, $class, array $attr = array())
+    public static function style($str, $class, array $attr = [])
     {
-        if (!empty($attr)) {
-            $bits = array();
-
-            foreach ($attr as $key => $value) {
-                $bits[] = "$key = \"$value\"";
-            }
-
-            $attr_str = implode(' ', $bits);
-        } else {
-            $attr_str = '';
-        }
-
-        $str = "<span class=\"$class\" $attr_str>$str</span>";
-
-        return $str;
+        return '<span class="' . $class . '" ' . static::attrsToString($attr) . '>' . $str . '</span>';
     }
 
     /**
@@ -47,7 +33,7 @@ class Format
      * @param  array  $attr  An array of HTML attributes for the span
      * @return string        The wrapped content.
      */
-    public static function error($str, array $attr = array())
+    public static function error($str, array $attr = [])
     {
         return self::style($str, 'red_highlight', $attr);
     }
@@ -59,7 +45,7 @@ class Format
      * @param  array  $attr  An array of HTML attributes for the span
      * @return string        The wrapped content.
      */
-    public static function grey($str, array $attr = array())
+    public static function grey($str, array $attr = [])
     {
         return self::style($str, 'grey_text', $attr);
     }
@@ -71,7 +57,7 @@ class Format
      * @param  array  $attr  An array of HTML attributes for the span
      * @return string        The wrapped content.
      */
-    public static function alert($str, array $attr = array())
+    public static function alert($str, array $attr = [])
     {
         return self::style($str, 'green_highlight', $attr);
     }
@@ -83,9 +69,22 @@ class Format
      * @param  array  $attr  An array of HTML attributes for the span
      * @return string        The wrapped content.
      */
-    public static function title($str, array $attr = array())
+    public static function title($str, array $attr = [])
     {
         return self::style($str, 'blue_highlight', $attr);
+    }
+
+    /**
+     * Format a link
+     *
+     * @param string $str
+     * @param string $url
+     * @param array $attr
+     * @return string
+     */
+    public static function link($str, $url, array $attr = [])
+    {
+        return '<a href="' . $url . '" ' . static::attrsToString($attr) . '>' . $str . '</a>';
     }
 
     /**
@@ -341,10 +340,39 @@ class Format
         }
 
         $output .= self::grey(e($item->get_date('Y-m-d H:i:s'))) . '<br>';
-        // @todo sanitize output rather than just escaping it
         $output .= e($item->get_description());
-        $output .= '<br><br>';
+
+        $url = $item->get_permalink();
+
+        if ($url) {
+            $output .= '<br>' . self::link('[ Read more ]', $url, [
+                'target' => '_blank',
+            ]) . '<br>';
+        }
+
+        $output .= '<br>';
 
         return $output;
+    }
+
+    /**
+     * Convert an array of key value pairs to HTML attributes
+     *
+     * @param array $attrs
+     * @return string
+     */
+    protected static function attrsToString($attrs = [])
+    {
+        if (!empty($attrs)) {
+            $bits = [];
+
+            foreach ($attrs as $key => $value) {
+                $bits[] = "$key = \"$value\"";
+            }
+
+            return implode(' ', $bits);
+        } else {
+            return '';
+        }
     }
 }
