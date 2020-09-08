@@ -58,29 +58,25 @@ class Addshortcut extends Command
         $name = $input->getArgument('name');
         $url = $input->getArgument('url');
 
-        $available_commands = Chimpcom::getCommandList();
-
-        $rules = [
-            'name' => [
-                'required',
-                Rule::notIn($available_commands),
+        $validator = Validator::make(
+            [
+                'name' => $name,
+                'url' => $url,
             ],
-            'url' => [
-                'required',
-                'url',
+            [
+                'name' => [
+                    'required',
+                    Rule::notIn(Chimpcom::getCommandList()),
+                ],
+                'url' => [
+                    'required',
+                    'url',
+                ],
             ],
-        ];
-
-        $data = [
-            'name' => $name,
-            'url' => $url,
-        ];
-
-        $messages = [
-            'not_in' => 'Shortcut name must not match other shortcut or command names.',
-        ];
-
-        $validator = Validator::make($data, $rules, $messages);
+            [
+                'not_in' => 'Shortcut name must not match other shortcut or command names.',
+            ]
+        );
 
         if ($validator->fails()) {
             $output->writeErrors($validator);
