@@ -48,12 +48,14 @@ class Cd extends Command
         $dir_str = implode(' ', $dir);
 
         if (!$dir) {
+            $output->write('You go home.');
+        } elseif ($dir_str === '.') {
             $output->write('You remain here.');
-        } else if ($dir_str == 'penguin') {
+        } elseif ($dir_str == 'penguin') {
             $output->write('You are inside a penguin. It is dark.');
-        } else if ($dir_str == 'c:' || $dir_str == 'C:') {
+        } elseif ($dir_str == 'c:' || $dir_str == 'C:') {
             $output->write('What d\'you think this is, Windows?');
-        } else if ($dir_str == '..') {
+        } elseif ($dir_str == '..') {
             $output->write('You claw at the directory above you but cannot get a purchase.');
         } else {
             $output->error('No such file or directory.');
