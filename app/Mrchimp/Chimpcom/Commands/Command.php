@@ -2,12 +2,15 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Illuminate\Support\Facades\Log as ErrorLog;
+use Mrchimp\Chimpcom\Console\Output;
+use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Log;
+use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use Symfony\Component\Console\Exception\ExceptionInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
-use Mrchimp\Chimpcom\Format;
 
 class Command extends SymfonyCommand
 {
@@ -127,13 +130,38 @@ class Command extends SymfonyCommand
     /**
      * Return tab completion options for the current command input
      *
-     * @todo
-     * @param  Input  $input
      * @return string
      */
     public function tabComplete(InputInterface $input)
     {
-        return '';
+        // force the creation of the synopsis before the merge with the app definition
+        $this->getSynopsis(true);
+        $this->getSynopsis(false);
+
+        // add the application arguments and options
+        $this->mergeApplicationDefinition();
+
+        // bind the input against the command specific arguments/options
+        try {
+            $input->bind($this->getDefinition());
+        } catch (ExceptionInterface $e) {
+            ErrorLog::error($e);
+            return response()->json([], 500);
+        }
+
+        $this->initialize($input, new Output);
+
+        return $this->tab($input);
+    }
+
+    /**
+     * Run tab complete logic
+     *
+     * @return array
+     */
+    public function tab(InputInterface $input)
+    {
+        return [];
     }
 
     /**

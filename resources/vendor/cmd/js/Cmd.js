@@ -31,8 +31,10 @@ export default class Cmd {
     this.local_commands = ['clear', 'clr', 'cls', 'clearhistory', 'shh', 'talk', 'theme'];
     this.themes = ['default', 'light', 'solarized', 'solarized-light'];
     this.theme = 'default';
-    this.remote_autocomplete_cache = {};
     this.autocompletion_attempted = false;
+    this.tab_mode = false;
+    this.tab_index = 0;
+    this.tab_completions = [];
 
     this.options = Object.assign(this.options, user_config);
 
@@ -386,6 +388,7 @@ export default class Cmd {
 
     if (keyCode !== 9) {
       this.autocompletion_attempted = false;
+      this.tab_mode = false;
 
       if (this.autocomplete_controller) {
         this.autocomplete_controller.abort();
@@ -423,12 +426,22 @@ export default class Cmd {
   tabComplete(str) {
     // If we have a space then offload to external processor
     if (str.indexOf(' ') !== -1) {
-      if (typeof this.remote_autocomplete_cache[str] !== 'undefined') {
-        this.input.value = this.remote_autocomplete_cache[str];
+      if (this.tab_mode && this.tab_completions.length !== 0) {
+        this.tab_index++;
+
+        if (this.tab_index > this.tab_completions.length - 1) {
+          this.tab_index = 0;
+        }
+
+        this.input.value = this.tab_completions[this.tab_index];
+
         return;
       }
 
       if (this.options.tabcomplete_url) {
+        this.resetTabInput();
+        this.tab_mode = true;
+
         if (this.autocomplete_controller) {
           this.autocomplete_controller.abort();
         }
@@ -454,8 +467,19 @@ export default class Cmd {
         fetch(request)
           .then((response) => response.json())
           .then((data) => {
-            if (data) {
-              this.input.value = data;
+            if (!data) {
+              this.resetTabInput();
+              return;
+            }
+
+            if (data.length === 0) {
+              this.resetTabInput();
+            } else if (data.length === 1) {
+              this.resetTabInput();
+              this.input.value = data[0];
+            } else {
+              this.tab_completions = data;
+              this.input.value = data[0];
             }
           })
           .catch((error) => {
@@ -484,6 +508,12 @@ export default class Cmd {
         this.autocompletion_attempted = true;
       }
     }
+  }
+
+  resetTabInput() {
+    this.tab_mode = false;
+    this.tab_index = 0;
+    this.tab_completions = [];
   }
 
   // ====== Helpers ===============================

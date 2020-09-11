@@ -14,6 +14,7 @@ use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 use Mrchimp\Chimpcom\Models\Message;
 use Mrchimp\Chimpcom\Models\Oneliner;
 use Mrchimp\Chimpcom\Models\Shortcut;
+use Psy\Exception\FatalErrorException;
 use Session;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\StringInput;
@@ -118,6 +119,7 @@ class Chimpcom
         'shortcuts',
         'stats',
         'styles',
+        'tabtest',
         'tea',
         'tetris',
         // 'thing',
@@ -152,6 +154,7 @@ class Chimpcom
 
         $name = ucfirst($name);
         $command_name = "Mrchimp\Chimpcom\Commands\\" . $name;
+
         return new $command_name;
     }
 
