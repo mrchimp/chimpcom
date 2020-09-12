@@ -27,12 +27,14 @@ class Save extends Command
         $this->setName('save');
         $this->setDescription(<<<DESC
 Save a memory. Each memory consists of a name and some content. The name must be a
-single word and does not have to be unique. The description can be a word, a
-sentence, a URL or whatever. By default the memory will only be visible by you.
-To make it visible to other users add the --public or -p flag or after saving,
-use the SETPUBLIC command.<br><br>
+single word and does NOT have to be unique. The description can be a word, a
+sentence, a URL or whatever.<br><br>
 Once the memory has been saved you can search for it using FIND or SHOW and
-delete it with FORGET command.
+delete it with FORGET command.<br><br>
+You may need to encase your description in quotes in order for it to pass as expected.<br><br>
+By default the memory will only be visible by you.
+To make it visible to other users add the --public or -p flag or after saving,
+use the SETPUBLIC command.
 DESC);
         $this->addUsage('chimpcom A command line website.');
         $this->addRelated('forget');
@@ -76,7 +78,7 @@ DESC);
         }
 
         $user = Auth::user();
-
+// dd($input->getArgument('content'));
         $name      = $input->getArgument('name');
         $content   = implode(' ', $input->getArgument('content'));
         $is_public = $input->getOption('public');
