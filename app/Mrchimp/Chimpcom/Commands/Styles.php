@@ -54,8 +54,7 @@ class Styles extends Command
             )
         );
 
-        // @todo - Make this work
-        // $this->response->cFill('This text was automatically inserted');
+        $output->cFill('This text was automatically inserted');
 
         return 0;
     }
