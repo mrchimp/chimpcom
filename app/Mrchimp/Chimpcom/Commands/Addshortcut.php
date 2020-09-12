@@ -30,7 +30,7 @@ class Addshortcut extends Command
         $this->addArgument(
             'url',
             InputArgument::REQUIRED,
-            'Search URL. Should be a valid URL with %PARAM placeholder for search term'
+            'Search URL. Should be a valid URL with an optional %PARAM placeholder for search term'
         );
     }
 
@@ -61,7 +61,7 @@ class Addshortcut extends Command
         $validator = Validator::make(
             [
                 'name' => $name,
-                'url' => $url,
+                'url' => str_replace('%PARAM', 'X', $url),
             ],
             [
                 'name' => [
