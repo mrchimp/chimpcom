@@ -97,7 +97,11 @@ export default class Cmd {
     this.clearScreen(); // adds output, input and prompt
 
     window.addEventListener('resize', this.resizeInput.bind(this));
-    this.wrapper.addEventListener('click', this.focusOnInput.bind(this));
+    this.wrapper.addEventListener('click', (e) => {
+      if (window.getSelection().type !== 'Range') {
+        this.focusOnInput();
+      }
+    });
     this.wrapper.addEventListener('keydown', this.handleKeyDown.bind(this));
     this.wrapper.addEventListener('keyup', this.handleKeyUp.bind(this));
     this.wrapper.addEventListener('keydown', this.handleKeyPress.bind(this));
@@ -544,6 +548,7 @@ export default class Cmd {
    * scroll to the bottom of the page
    */
   focusOnInput() {
+    console.log('focusingg...', this.input);
     this.input.focus();
   }
 
