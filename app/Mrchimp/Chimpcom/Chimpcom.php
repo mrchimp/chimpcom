@@ -17,6 +17,7 @@ use Mrchimp\Chimpcom\Models\Shortcut;
 use Psy\Exception\FatalErrorException;
 use Session;
 use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\StringInput;
 
 /**
@@ -218,7 +219,7 @@ class Chimpcom
         $shortcut = Shortcut::where('name', $cmd_name)->take(1)->first();
 
         if (!empty($shortcut)) {
-            return $this->handleShortcut($shortcut, $cmd_in);
+            return $this->handleShortcut($shortcut, $cmd_name, $arguments);
         }
 
         // Do we have a witty oneliner?
@@ -278,29 +279,26 @@ class Chimpcom
 
     /**
      * Respond to a given shortcut command
-     *
-     * @param  string $shortcut name of the shortcut
-     * @param  string $cmd_in   full command string
-     * @return Output           [description]
      */
-    private function handleShortcut($shortcut, $cmd_in)
+    private function handleShortcut(Shortcut $shortcut, string $cmd_in, string $args): Output
     {
-        // @todo - this!
-        $url = str_replace('%PARAM', urlencode($this->input->get(1)), $shortcut->url);
+        $input = new StringInput($args);
+        $output = new Output();
 
-        $response = new Response();
+        $search = $input->getFirstArgument();
+        $url = str_replace('%PARAM', urlencode($search), $shortcut->url);
 
         $this->log->info('Shortcut: ' . $cmd_in);
 
-        if ($this->input->isFlagSet(array('--blank', '-b'))) {
-            $response->openWindow($url);
+        if ($input->hasParameterOption('--blank') || $input->hasParameterOption('-b')) {
+            $output->openWindow($url);
         } else {
-            $response->redirect($url);
+            $output->redirect($url);
         }
 
-        $response->alert('Redirecting...');
+        $output->alert('Redirecting...');
 
-        return $response;
+        return $output;
     }
 
     /**
