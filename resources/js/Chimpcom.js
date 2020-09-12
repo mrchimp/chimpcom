@@ -98,7 +98,7 @@ export default class Chimpcom {
 
         // autofill cmd_in from PHP
         if (data.cmd_fill !== '') {
-          document.getElementById('cmd_in').value = data.cmd_fill;
+          this.cmd.input.value = data.cmd_fill;
         }
       })
       .catch((error) => {

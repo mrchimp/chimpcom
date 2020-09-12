@@ -60,7 +60,7 @@ class Login extends Command
             $output->error('You fail. The username ' . htmlspecialchars($username) . ' does not exist.
                             Create a new account by using the register command.');
 
-            // $this->response->cFill("register $username"); // @todo
+            $output->cFill('register ' . $username);
 
             $output->usePasswordInput(false);
 
