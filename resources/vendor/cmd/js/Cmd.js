@@ -15,7 +15,7 @@ export default class Cmd {
     this.speech_synth_support =
       'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
     this.options = {
-      busy_text: 'Communicating...',
+      busy_text: '...',
       external_processor: function() {},
       history_id: 'cmd_history',
       remote_cmd_list_url: '',
