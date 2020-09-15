@@ -90,8 +90,6 @@ class Todo extends Command
             return 2;
         }
 
-        $data = [];
-
         $show_all_items    = $input->getOption('all');
         $show_all_projects = $input->getOption('allprojects');
         $show_completed    = $input->getOption('completed');
@@ -117,7 +115,7 @@ class Todo extends Command
         $search_term = implode(' ', $input->getArgument('searchterm'));
 
         $tasks = $tasks->search($search_term)
-            ->project($show_all_projects ? null : $user->activeProject->id)
+            ->forProject($show_all_projects ? null : $user->activeProject->id)
             ->completed($completion)
             ->orderBy('completed', 'ASC')
             ->orderBy('priority', 'DESC')
@@ -131,9 +129,29 @@ class Todo extends Command
         }
 
         $total_task_count = Task::where('user_id', $user->id)
-            ->project($show_all_projects ? null : $user->activeProject->id)
+            ->forProject($show_all_projects ? null : $user->activeProject->id)
             ->completed($completion)
             ->count();
+
+        if (!$show_all_projects) {
+            $all_count = Task::forProject($user->activeProject->id)->count();
+            $completed_count = Task::forProject($user->activeProject->id)->completed(true)->count();
+            $chunks = 20;
+            $done_chunks = ($completed_count / $all_count) * $chunks;
+            $completed_str = $completed_count . ' / ' . $all_count . ' tasks complete.';
+
+            $done_pips = '';
+            for ($i=0; $i < $done_chunks; $i++) {
+                $done_pips .= '▰';
+            }
+
+            $not_done_pips = '';
+            for ($i=0; $i < $chunks - $done_chunks; $i++) {
+                $not_done_pips .= '▱';
+            }
+
+            $output->write('<br>' . $completed_str . '<br>' . $done_pips . Format::grey($not_done_pips) . '<br><br>');
+        }
 
         $output->write(Format::tasks($tasks));
         $output->write('<br>' . $total_task_count . ' tasks.');

@@ -53,7 +53,7 @@ class Task extends Model
     /**
      * Filter projects by project ID
      */
-    public function scopeProject($query, $value = null) {
+    public function scopeForProject($query, $value = null) {
         if (is_null($value)) {
             return $query;
         }
