@@ -102,8 +102,8 @@ export default class Cmd {
         this.focusOnInput();
       }
     });
-    this.wrapper.addEventListener('keydown', this.handleKeyDown.bind(this));
-    this.wrapper.addEventListener('keyup', this.handleKeyUp.bind(this));
+    // this.wrapper.addEventListener('keydown', this.handleKeyDown.bind(this));
+    // this.wrapper.addEventListener('keyup', this.handleKeyUp.bind(this));
     this.wrapper.addEventListener('keydown', this.handleKeyPress.bind(this));
   }
 
@@ -349,9 +349,15 @@ export default class Cmd {
 
     switch (keyCode) {
       case 9: // tab
+        // For accessability reasons, don't tabcomplete when input is empty
+        if (this.input.value === '') {
+          return;
+        }
         this.tabComplete(input_str);
         break;
       case 13: // enter
+        e.preventDefault();
+
         if (this.input.getAttribute('disabled')) {
           return false;
         }
@@ -371,6 +377,8 @@ export default class Cmd {
         }
         break;
       case 38: // up arrow
+        e.preventDefault();
+
         if (input_str !== '' && this.cmd_stack.cur === this.cmd_stack.getSize() - 1) {
           this.cmd_stack.push(input_str);
         }
@@ -379,9 +387,13 @@ export default class Cmd {
 
         break;
       case 40: // down arrow
+        e.preventDefault();
+
         this.input.value = this.cmd_stack.next();
         break;
       case 27: // esc
+        e.preventDefault();
+
         if (this.container.style.opacity > 0.5) {
           this.container.style.opacity = 0;
         } else {
@@ -398,30 +410,6 @@ export default class Cmd {
         this.autocomplete_controller.abort();
       }
     }
-  }
-
-  /**
-   * Prevent default action of special keys
-   */
-  handleKeyUp(e) {
-    if (this.keys_array.includes(e.which)) {
-      e.preventDefault();
-      return false;
-    }
-
-    return true;
-  }
-
-  /**
-   * Prevent default action of special keys
-   */
-  handleKeyDown(e) {
-    if (this.keys_array.includes(e.which)) {
-      e.preventDefault();
-
-      return false;
-    }
-    return true;
   }
 
   /**
