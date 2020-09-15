@@ -24,11 +24,12 @@ export default class Cmd {
       talk: false,
       unknown_cmd: 'Unrecognised command',
       typewriter_time: 32,
+      volume: 1,
     };
     this.voices = false;
     this.remote_commands = [];
     this.all_commands = [];
-    this.local_commands = ['clear', 'clr', 'cls', 'clearhistory', 'shh', 'talk', 'theme'];
+    this.local_commands = ['clear', 'clr', 'cls', 'clearhistory', 'shh', 'talk', 'theme', 'volume'];
     this.themes = ['default', 'light', 'solarized', 'solarized-light'];
     this.theme = 'default';
     this.autocompletion_attempted = false;
@@ -233,7 +234,7 @@ export default class Cmd {
         this.displayOutput('');
         break;
       case 'clear':
-      case 'cls':
+        volume;
       case 'clr':
         this.clearScreen();
         break;
@@ -261,7 +262,11 @@ export default class Cmd {
         }
 
         this.options.talk = !this.options.talk;
-        this.displayOutput(this.options.talk ? 'Talk mode enabled.' : 'Talk mode disabled.');
+        this.displayOutput(
+          this.options.talk
+            ? 'Talk mode enabled. Type "shh" to silence the voice. Type "talk" again to turn talk mode off.'
+            : 'Talk mode disabled.'
+        );
         break;
       case 'theme':
         if (typeof cmd_array[1] === 'undefined') {
@@ -276,6 +281,13 @@ export default class Cmd {
         }
         this.setTheme(cmd_array[1]);
         this.displayOutput('Ok.');
+        break;
+      case 'volume':
+        let vol = parseFloat(cmd_array[1]);
+        vol = Math.min(vol, 1);
+        vol = Math.max(vol, 0);
+        this.options.volume = vol;
+        this.displayOutput('Volume set to ' + this.options.volume);
         break;
       default:
         if (typeof this.options.external_processor !== 'function') {
@@ -625,7 +637,10 @@ export default class Cmd {
   speakOutput(output) {
     var msg = new SpeechSynthesisUtterance();
 
-    msg.volume = 1; // 0 - 1
+    var el = new DOMParser().parseFromString(output, 'text/html');
+    output = el.body.textContent || '';
+
+    msg.volume = this.options.volume; // 0 - 1
     msg.rate = 1; // 0.1 - 10
     msg.pitch = 2; // 0 - 2
     msg.lang = 'en-UK';
