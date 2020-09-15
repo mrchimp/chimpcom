@@ -365,6 +365,8 @@ export default class Cmd {
         if (this.input.value === '') {
           return;
         }
+
+        e.preventDefault();
         this.tabComplete(input_str);
         break;
       case 13: // enter
