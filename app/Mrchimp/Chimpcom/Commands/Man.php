@@ -6,9 +6,9 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Illuminate\Support\Str;
 use Mrchimp\Chimpcom\Chimpcom;
 use Mrchimp\Chimpcom\Format;
-
 use Mrchimp\Chimpcom\Models\Alias;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -79,5 +79,27 @@ class Man extends Command
         $output->write($text);
 
         return 0;
+    }
+
+
+    /**
+     * Return tab completion options for the current command input
+     *
+     * @param  Input  $input
+     * @return string
+     */
+    public function tab(InputInterface $input)
+    {
+        $command_name = $input->getArgument('command_name');
+        $commands = collect(Chimpcom::getCommandList());
+
+        return $commands
+            ->filter(function ($name) use ($command_name) {
+                return Str::startsWith($name, $command_name);
+            })
+            ->transform(function ($item) {
+                return 'man ' . $item;
+            })
+            ->values();
     }
 }
