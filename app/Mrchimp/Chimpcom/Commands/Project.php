@@ -160,7 +160,7 @@ class Project extends Command
         $subcommand = $input->getArgument('subcommand');
         $incomplete_name = $input->getArgument('project');
 
-        if ($subcommand === 'set') {
+        if ($subcommand === 'set' || $subcommand === 'rm') {
             $projects = $user->projects()->get();
 
             return $projects
@@ -168,8 +168,8 @@ class Project extends Command
                 ->filter(function ($project_name) use ($incomplete_name) {
                     return Str::startsWith($project_name, $incomplete_name);
                 })
-                ->transform(function ($item) {
-                    return 'project set ' . $item;
+                ->transform(function ($item) use ($subcommand) {
+                    return 'project ' . $subcommand . ' ' . $item;
                 })
                 ->values();
         }
