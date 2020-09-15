@@ -9,6 +9,7 @@ namespace Mrchimp\Chimpcom\Commands;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Project as ProjectModel;
 use Symfony\Component\Console\Input\InputInterface;
@@ -147,27 +148,32 @@ class Project extends Command
     }
 
     /**
-     * Return tab completion result
+     * Return tab completion options for the current command input
      *
-     * @param  InputInterface $input
-     * @return String
+     * @param  Input  $input
+     * @return string
      */
-    public function tabcomplete(InputInterface $input)
+    public function tab(InputInterface $input)
     {
         $user = Auth::user();
 
         $subcommand = $input->getArgument('subcommand');
+        $incomplete_name = $input->getArgument('project');
 
         if ($subcommand === 'set') {
-            $projects = $user->projects()->select('name')->get();
+            $projects = $user->projects()->get();
 
-            foreach ($projects as $project) {
-                if (strrpos($project->name, $this->input->get(2))) {
-                    return 'project set ' . $project->name;
-                }
-            }
+            return $projects
+                ->pluck('name')
+                ->filter(function ($project_name) use ($incomplete_name) {
+                    return Str::startsWith($project_name, $incomplete_name);
+                })
+                ->transform(function ($item) {
+                    return 'project set ' . $item;
+                })
+                ->values();
         }
 
-        return '';
+        return [];
     }
 }
