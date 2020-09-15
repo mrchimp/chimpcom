@@ -92,14 +92,6 @@ export default class Chimpcom {
       .then((response) => response.json())
       .then((data) => {
         this.cmd.handleResponse(data);
-
-        const prompts = document.getElementsByClassName('prompt');
-        prompts[prompts.length - 1].textContent = data.user.name + ' $ ';
-
-        // autofill cmd_in from PHP
-        if (data.cmd_fill !== '') {
-          this.cmd.input.value = data.cmd_fill;
-        }
       })
       .catch((error) => {
         var cmd_out;

@@ -11,7 +11,7 @@ export default class Cmd {
     this.keys_array = [9, 13, 38, 40, 27];
     this.style = 'dark';
     this.popup = false;
-    this.prompt_str = '$ ';
+    this.prompt_str = '%USERNAME% $ ';
     this.speech_synth_support =
       'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
     this.options = {
@@ -36,6 +36,7 @@ export default class Cmd {
     this.tab_mode = false;
     this.tab_index = 0;
     this.tab_completions = [];
+    this.username = 'guest';
 
     this.options = Object.assign(this.options, user_config);
 
@@ -98,13 +99,13 @@ export default class Cmd {
     this.clearScreen(); // adds output, input and prompt
 
     window.addEventListener('resize', this.resizeInput.bind(this));
+
     this.wrapper.addEventListener('click', (e) => {
       if (window.getSelection().type !== 'Range') {
         this.focusOnInput();
       }
     });
-    // this.wrapper.addEventListener('keydown', this.handleKeyDown.bind(this));
-    // this.wrapper.addEventListener('keyup', this.handleKeyUp.bind(this));
+
     this.wrapper.addEventListener('keydown', this.handleKeyPress.bind(this));
   }
 
@@ -179,7 +180,7 @@ export default class Cmd {
   displayInput(cmd_in) {
     const prompt = document.createElement('span');
     prompt.classList.add('prompt');
-    prompt.appendChild(document.createTextNode(this.prompt_str));
+    prompt.appendChild(document.createTextNode(this.makePrompt()));
 
     const input = document.createElement('span');
     input.classList.add('grey_text');
@@ -187,19 +188,15 @@ export default class Cmd {
 
     this.output.appendChild(prompt);
     this.output.appendChild(input);
+
+    this.prompt_elem.innerText = this.makePrompt();
   }
 
   /**
-   * Set the prompt string
-   * @param {string} new_prompt The new prompt string
+   * Make the prompt string
    */
-  setPrompt(new_prompt) {
-    if (typeof new_prompt !== 'string') {
-      throw 'Cmd error: invalid prompt string.';
-    }
-
-    this.prompt_str = new_prompt;
-    this.prompt_elem.html(this.prompt_str);
+  makePrompt() {
+    return this.prompt_str.replace('%USERNAME%', this.username);
   }
 
   /**
@@ -234,8 +231,8 @@ export default class Cmd {
         this.displayOutput('');
         break;
       case 'clear':
-        volume;
       case 'clr':
+      case 'cls':
         this.clearScreen();
         break;
       case 'clearhistory':
@@ -345,10 +342,13 @@ export default class Cmd {
 
     this.displayOutput(response.cmd_out);
 
-    if (response.cmd_fill) {
-      let cmd_in = this.wrapper.querySelector('.cmd-container').querySelector('.cmd-in');
+    if (response.user && response.user.name) {
+      this.username = response.user.name;
+      this.prompt_elem.innerText = this.makePrompt();
+    }
 
-      cmd_in.value = response.cmd_fill;
+    if (response.cmd_fill) {
+      this.input.value = response.cmd_fill;
     }
   }
 
