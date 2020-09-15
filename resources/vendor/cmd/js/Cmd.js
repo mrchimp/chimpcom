@@ -548,7 +548,6 @@ export default class Cmd {
    * scroll to the bottom of the page
    */
   focusOnInput() {
-    console.log('focusingg...', this.input);
     this.input.focus();
   }
 
