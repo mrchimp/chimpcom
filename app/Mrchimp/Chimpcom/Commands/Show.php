@@ -67,7 +67,14 @@ class Show extends Command
             'count',
             'c',
             InputOption::VALUE_REQUIRED,
-            'Number of results to display.'
+            'Number of results to display. Default: 20'
+        );
+
+        $this->addOption(
+            'last',
+            'l',
+            null,
+            'Show latest memories for any word.'
         );
     }
 
@@ -78,13 +85,17 @@ class Show extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $user = Auth::user();
-        $name         = $input->getArgument('name');
-        $show_public  = $input->getOption('public');
+        $name = $input->getArgument('name');
+        $show_public = $input->getOption('public');
         $show_private = $input->getOption('private');
-        $show_mine    = $input->getOption('mine');
-        $show_words   = $input->getOption('words');
-        $count        = $input->getOption('count');
+        $show_mine = $input->getOption('mine');
+        $show_words = $input->getOption('words');
+        $count = $input->getOption('count');
+        $last = $input->getOption('last');
+
+        if (!$count || !is_numeric($count) || $count < 0) {
+            $count = 20;
+        }
 
         if ($show_words) {
             $memories = DB::select('SELECT DISTINCT name FROM memories');
@@ -109,19 +120,23 @@ class Show extends Command
             $item_type = 'both';
         }
 
-        $memories = Memory::visibility($item_type)
+        $query = Memory::query()
+            ->visibility($item_type)
             ->orderBy('name')
             ->orderBy('id')
-            ->with('user');
+            ->with('user')
+            ->limit($count);
 
-        if (is_numeric($name)) {
+        if ($last) {
+            $query->orderBy('created_at');
+        } elseif (is_numeric($name)) {
             $memory_id = $name;
-            $memories = $memories->where('id', $memory_id);
+            $query->where('id', $memory_id);
         } else {
-            $memories = $memories->where('name', $name);
+            $query->where('name', $name);
         }
 
-        $memories = $memories->get();
+        $memories = $query->get();
 
         if ($memories->count() === 0) {
             $output->error('I have no recollection of that.');
