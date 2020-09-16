@@ -57,8 +57,7 @@ class Task extends Model
     public function scopeForProject(Builder $query, int $value = null): void
     {
         if (!is_null($value)) {
-            return $query->where('project_id', $value);
+            $query->where('project_id', $value);
         }
     }
-
 }
