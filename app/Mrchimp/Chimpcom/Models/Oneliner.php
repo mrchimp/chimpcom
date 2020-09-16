@@ -14,7 +14,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Oneliner extends Model
 {
-
-
-
+    //
 }

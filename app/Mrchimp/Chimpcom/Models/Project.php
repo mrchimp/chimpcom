@@ -7,6 +7,9 @@
 namespace Mrchimp\Chimpcom\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder;
 use Mrchimp\Chimpcom\Models\Task;
 
 /**
@@ -14,36 +17,34 @@ use Mrchimp\Chimpcom\Models\Task;
  */
 class Project extends Model
 {
-
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo('app\User');
     }
 
-    public function activeUsers()
+    public function activeUsers(): HasMany
     {
         return $this->hasMany('app\User', 'active_project_id');
     }
 
-    public function tasks()
+    public function tasks(): HasMany
     {
         return $this->hasMany('Mrchimp\Chimpcom\Models\Task');
     }
 
-    public function delete()
+    public function delete(): ?bool
     {
         Task::where('project_id', $this->id)->delete();
+
         return parent::delete();
     }
 
-    public function scopeNameOrId($query, $identifier)
+    public function scopeNameOrId(Builder $query, $identifier): void
     {
         if (is_numeric($identifier)) {
             $query->where('id', $identifier);
         } else {
             $query->where('name', $identifier);
         }
-
-        return $query;
     }
 }

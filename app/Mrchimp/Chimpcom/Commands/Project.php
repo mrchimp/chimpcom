@@ -106,7 +106,8 @@ class Project extends Command
 
         // Set current project
         if ($subcommand === 'set') {
-            $project = $user->projects()
+            $project = $user
+                ->projects()
                 ->nameOrId($project_id)
                 ->first();
 

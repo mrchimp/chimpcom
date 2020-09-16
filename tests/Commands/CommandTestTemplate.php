@@ -4,15 +4,14 @@ namespace Tests\Commands;
 
 use App\User;
 use Faker;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class CommandTestTemplate extends TestCase
 {
-    use DatabaseTransactions;
+    use DatabaseMigrations;
 
     protected $response_path = 'ajax/respond/json';
-
     protected $user;
     protected $admin;
 
@@ -20,7 +19,7 @@ class CommandTestTemplate extends TestCase
     {
         parent::__construct();
 
-        $this->faker = $faker = Faker\Factory::create();
+        $this->faker = Faker\Factory::create();
     }
 
     protected function getGuestResponse($cmd_in)

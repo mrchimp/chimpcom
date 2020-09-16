@@ -6,7 +6,7 @@
 
 namespace Mrchimp\Chimpcom;
 
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 use Mrchimp\Chimpcom\Format as Format;
 
@@ -52,11 +52,8 @@ class Reddit
 
     /**
      * Get a JSON file from Reddit.
-     *
-     * @param  string $url URL to get
-     * @return string      JSON response
      */
-    private function get_content($url)
+    private function getContent(string $url): string
     {
         $client = new \GuzzleHttp\Client();
         $res = $client->request('GET', $url);
@@ -64,15 +61,9 @@ class Reddit
     }
 
     /**
-     * [get description]
-     * @param  string  $action     Type of reddit data to get.
-     *                             Possible values are subreddit, post, comment,
-     *                             reddits, frontpage(default).
-     * @param  integer $post_id    Post ID
-     * @param  integer $comment_id Comment ID
-     * @return string
+     * Get a chunk of Reddit data
      */
-    public function get($action = 'frontpage', $post_id = null, $comment_id = null)
+    public function get(string $action = 'frontpage', int $post_id = null, int $comment_id = null): string
     {
         $this->post_id = $post_id;
         $this->comment_id = $comment_id;
@@ -107,15 +98,15 @@ class Reddit
         if (Cache::has($cache_file)) {
             $content = Cache::get($cache_file);
         } else {
-            $content = $this->get_content($remote_file);
-            Cache::put($cache_file, $content, now()->>addSeconts($this->cache_time));
+            $content = $this->getContent($remote_file);
+            Cache::put($cache_file, $content, now()->addSeconds($this->cache_time));
         }
 
         $file = json_decode($content, true);
 
         if (isset($file['kind'])) {
             return $this->renderReddit($file);
-        } else if (gettype($file) == 'array') {
+        } elseif (gettype($file) == 'array') {
             $output = '';
 
             foreach ($file as $node) {
@@ -136,7 +127,7 @@ class Reddit
      * @param  integer $depth Nesting amount
      * @return string         Rendered output
      */
-    function renderReddit($node, $depth = 0)
+    protected function renderReddit($node, $depth = 0)
     {
         View::share([
             'indent'        => $this->indent,

@@ -6,6 +6,7 @@
 namespace Mrchimp\Chimpcom\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SimplePie;
 
 /**
@@ -18,15 +19,15 @@ class Feed extends Model
         'url'
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo('app\User');
     }
 
-    public function getFeed()
+    public function getFeed(): ?SimplePie
     {
         if (!$this->url) {
-            return false;
+            return null;
         }
 
         $feed = new SimplePie();

@@ -3,7 +3,6 @@
 namespace Tests\Commands;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class ChpassTest extends CommandTestTemplate
 {

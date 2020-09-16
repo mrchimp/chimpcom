@@ -6,8 +6,11 @@
 namespace Mrchimp\Chimpcom\Models;
 
 use App\User;
-use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Memory model
@@ -17,27 +20,23 @@ class Memory extends Model
     /**
      * Memories can have multiple tags
      */
-    public function tags()
+    public function tags(): MorphToMany
     {
         return $this->morphToMany('Mrchimp\Chimpcom\Models\Tag', 'taggable');
     }
 
     /**
      * The owner/creator of this memory
-     * @return App\User
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
     /**
      * Filter by visibility
-     * @param  [type] $query [description]
-     * @param  string $type  [description]
-     * @return [type]        [description]
      */
-    public function scopeVisibility($query, $type = 'both')
+    public function scopeVisibility(Builder $query, string $type = 'both'): void
     {
         if (Auth::check()) {
             $user_id = Auth::user()->id;
@@ -65,20 +64,14 @@ class Memory extends Model
                 });
                 break;
         }
-
-        return $query;
     }
 
     /**
      * Filter memories by fuzzy searching name and description
-     *
-     * @param  Query $query
-     * @param  String $search_str
-     * @return Query
      */
-    public function scopeSearch($query, $search_str)
+    public function scopeSearch(Builder $query, string $search_str): void
     {
-        return $query->where(function ($query) use ($search_str) {
+        $query->where(function ($query) use ($search_str) {
             $query->where('name', 'LIKE', $search_str)
                 ->orWhere('content', 'LIKE', $search_str);
         });
@@ -86,9 +79,8 @@ class Memory extends Model
 
     /**
      * Checks whether the memory belongs to the current user
-     * @return boolean True if memory is users
      */
-    public function isMine()
+    public function isMine(): bool
     {
         if (!Auth::check()) {
             return false;

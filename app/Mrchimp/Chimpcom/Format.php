@@ -6,7 +6,9 @@
 
 namespace Mrchimp\Chimpcom;
 
-use Auth;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Mrchimp\Chimpcom\Models\Feed;
 
 /**
  * Wrap strings in spans
@@ -14,88 +16,57 @@ use Auth;
 class Format
 {
     /**
-     * Wrap text in a span with attributes.
-     *
-     * @param  string $str   The text to wrap
-     * @param  string $class The wrapping span's class
-     * @param  array  $attr  An array of HTML attributes for the span
-     * @return string        The wrapped content.
+     * Wrap text in a span with a class and attributes.
      */
-    public static function style($str, $class, array $attr = [])
+    public static function style($str, $class, array $attr = []): string
     {
         return '<span class="' . $class . '" ' . static::attrsToString($attr) . '>' . $str . '</span>';
     }
 
     /**
-     * Append a red error to the output buffer.
-     *
-     * @param  string $str   The text to wrap
-     * @param  array  $attr  An array of HTML attributes for the span
-     * @return string        The wrapped content.
+     * Format a string as an error
      */
-    public static function error($str, array $attr = [])
+    public static function error($str, array $attr = []): string
     {
         return self::style($str, 'red_highlight', $attr);
     }
 
     /**
-     * Append a red error to the output buffer.
-     *
-     * @param  string $str   The text to wrap
-     * @param  array  $attr  An array of HTML attributes for the span
-     * @return string        The wrapped content.
+     * Format a string as faded text
      */
-    public static function grey($str, array $attr = [])
+    public static function grey($str, array $attr = []): string
     {
         return self::style($str, 'grey_text', $attr);
     }
 
     /**
-     * Append a green alert to the output buffer.
-     *
-     * @param  string $str   The text to wrap
-     * @param  array  $attr  An array of HTML attributes for the span
-     * @return string        The wrapped content.
+     * Format a string as an alert
      */
-    public static function alert($str, array $attr = [])
+    public static function alert($str, array $attr = []): string
     {
         return self::style($str, 'green_highlight', $attr);
     }
 
     /**
-     * Append a blue title to the output buffer.
-     *
-     * @param  string $str   The text to wrap
-     * @param  array  $attr  An array of HTML attributes for the span
-     * @return string        The wrapped content.
+     * Format a string as a title
      */
-    public static function title($str, array $attr = [])
+    public static function title($str, array $attr = []): string
     {
         return self::style($str, 'blue_highlight', $attr);
     }
 
     /**
-     * Format a link
-     *
-     * @param string $str
-     * @param string $url
-     * @param array $attr
-     * @return string
+     * Wrap a string in a link
      */
-    public static function link($str, $url, array $attr = [])
+    public static function link($str, $url, array $attr = []): string
     {
         return '<a href="' . $url . '" ' . static::attrsToString($attr) . '>' . $str . '</a>';
     }
 
     /**
      * Converts an dimensional array into an html table
-     *
-     * @param array   $list      the array to be converted
-     * @param integer $cols      number of columns in table
-     * @param boolean $sort_list if true list will be sorted alphabetically
-     * @return string
      */
-    public static function listToTable(array $list, $cols = 1, $sort_list = false)
+    public static function listToTable(array $list, int $cols = 1, bool $sort_list = false): string
     {
         if (!is_array($list)) {
             trigger_error('That wasn\'t an array.', E_USER_NOTICE);
@@ -132,9 +103,8 @@ class Format
     /**
      * Output memories
      */
-    public static function memories($memories)
+    public static function memories(Collection $memories): string
     {
-        // Output memories
         $previous_name = '';
         $chunks = [];
         $output = '';
@@ -220,11 +190,8 @@ class Format
 
     /**
      * Replace URLs in text with html links.
-     *
-     * @param  string $text
-     * @return string
      */
-    public static function autoLink($text)
+    public static function autoLink(string $text): string
     {
         $pattern  = '#\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#';
 
@@ -242,10 +209,8 @@ class Format
 
     /**
      * Format todo list tasks
-     * @param  Collection $tasks Tasks to format
-     * @return string            Formatted output
      */
-    public static function tasks($tasks)
+    public static function tasks(Collection $tasks): string
     {
         $output = '';
 
@@ -290,10 +255,8 @@ class Format
 
     /**
      * Format PMs
-     * @param  Collection $messages
-     * @return string
      */
-    public static function messages($messages)
+    public static function messages(Collection $messages): string
     {
         $output = '<table>
                   <tr>
@@ -316,7 +279,10 @@ class Format
         return $output;
     }
 
-    public static function feed($feed)
+    /**
+     * Format a Feed as a string
+     */
+    public static function feed(Feed $feed): string
     {
         $output = '';
         $output .= self::alert('<br>' . $feed->get_title()) . '<br><br>';
@@ -330,7 +296,7 @@ class Format
         return $output;
     }
 
-    public static function feedItem($item)
+    public static function feedItem($item): string
     {
         $output = self::title(e($item->get_title())) . '<br>';
         $author = $item->get_author();
@@ -357,11 +323,8 @@ class Format
 
     /**
      * Convert an array of key value pairs to HTML attributes
-     *
-     * @param array $attrs
-     * @return string
      */
-    protected static function attrsToString($attrs = [])
+    protected static function attrsToString(array $attrs = []): string
     {
         if (!empty($attrs)) {
             $bits = [];

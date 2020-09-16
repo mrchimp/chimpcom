@@ -6,8 +6,9 @@
 
 namespace Mrchimp\Chimpcom;
 
-use Auth;
-use Mrchimp\Chimpcom\Console\Command;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Console\Output;
 use Mrchimp\Chimpcom\Log;
 use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
@@ -15,9 +16,7 @@ use Mrchimp\Chimpcom\Models\Message;
 use Mrchimp\Chimpcom\Models\Oneliner;
 use Mrchimp\Chimpcom\Models\Shortcut;
 use Psy\Exception\FatalErrorException;
-use Session;
 use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\StringInput;
 
 /**
@@ -30,13 +29,6 @@ class Chimpcom
      * Chimpcom verion number
      */
     const VERSION = 'v7.0b';
-
-    /**
-     * Command input
-     *
-     * @var ChimpcomInput
-     */
-    private $input;
 
     /**
      * Available actions. Actions are alternative command modes used to accept
@@ -70,7 +62,6 @@ class Chimpcom
         'alias',
         'aliases',
         'are',
-        // 'ascii',
         'base64decode',
         'base64encode',
         'candyman',
@@ -84,20 +75,14 @@ class Chimpcom
         'does',
         'done',
         'doecho',
-        // 'email',
-        // 'episode',
-        // 'files',
         'find',
         'forget',
         'go',
-        // 'hash',
-        // 'help',
         'hexdec',
         'hi',
         'lipsum',
         'login',
         'logout',
-        // 'look',
         'magiceightball',
         'mail',
         'man',
@@ -105,12 +90,10 @@ class Chimpcom
         'monkeys',
         'newtask',
         'oneliner',
-        // 'phpinfo',
         'parser',
         'priority',
         'project',
         'projects',
-        // 'reddit',
         'register',
         'rss',
         'save',
@@ -123,13 +106,10 @@ class Chimpcom
         'tabtest',
         'tea',
         'tetris',
-        // 'thing',
-        // 'this',
         'todo',
         'uname',
         'users',
         'version',
-        // 'weather',
         'whoami',
         'who'
     ];
@@ -143,11 +123,8 @@ class Chimpcom
 
     /**
      * Get an instance of the appropriate command
-     *
-     * @param  string $name
-     * @return Command
      */
-    public static function instantiateCommand($name)
+    public static function instantiateCommand(string $name): ?Command
     {
         if (!in_array($name, self::$available_commands)) {
             return null;
@@ -162,10 +139,10 @@ class Chimpcom
     /**
      * Get an instance of the appropriate action
      *
-     * @param  string $name
+     * @param string $name
      * @return Command
      */
-    public static function instantiateAction($name)
+    public static function instantiateAction(string $name): ?Command
     {
         if (!in_array($name, self::$available_actions)) {
             return null;
@@ -178,11 +155,8 @@ class Chimpcom
 
     /**
      * Take an input string and return a response array
-     *
-     * @param  string $input the user input string.
-     * @return ChimpcomResponse        Response object
      */
-    public function respond($cmd_in)
+    public function respond(string $cmd_in): Output
     {
         // Catch "@username foo" messages shorthand
         if (substr($cmd_in, 0, 1) === '@') {
@@ -249,12 +223,8 @@ class Chimpcom
 
     /**
      * Execute a normal command
-     *
-     * @param  string $cmd_name name of command
-     * @param  string $cmd_in   whole input string
-     * @return Mrchimp\Chimpcom\Console\Output
      */
-    private function handleCommand($cmd_name, $cmd_in)
+    private function handleCommand(string $cmd_name, string $cmd_in): Output
     {
         $input = new StringInput($cmd_in);
         $output = new Output();
@@ -303,19 +273,15 @@ class Chimpcom
 
     /**
      * Execute an action
-     *
-     * @param  string $action_name name of action
-     * @param  string $cmd_in      whole input string
-     * @return Mrchimp\Chimpcom\Console\Output
      */
-    private function handleAction($action_name, $cmd_in)
+    private function handleAction(string $action_name, string $cmd_in): Output
     {
         $input = new StringInput($cmd_in);
         $output = new Output();
 
         try {
             $action = $this->instantiateAction($action_name);
-        } catch (FaralErrorException $e) {
+        } catch (FatalErrorException $e) {
             $this->log->error('Failed to load action: ' . $action_name);
             $output->error('Failed to load action.');
             return $output;
@@ -334,10 +300,8 @@ class Chimpcom
     /**
      * Returns the action to perform.
      * The action bypasses the normal command processing. e.g. for passwords
-     *
-     * @return string the name of the action to take. Default: 'normal'.
      */
-    public function getAction()
+    public function getAction(): string
     {
         return Session::get('action', 'normal');
     }
@@ -345,8 +309,6 @@ class Chimpcom
     /**
      * Sets the action - i.e. what to expect from the next command.
      * If they've just entered a username, we're gonna expect a password.
-     *
-     * @param string $str the name of the action to expect
      */
     public function setAction($str = 'normal')
     {
@@ -359,18 +321,15 @@ class Chimpcom
      * @param  integer $id Decoded id
      * @return string      Encoded id
      */
-    public static function encodeId($id)
+    public static function encodeId(int $id): string
     {
         return dechex($id);
     }
 
     /**
      * Encode an array of Ids
-     *
-     * @param  array $ids [description]
-     * @return [type]      [description]
      */
-    public static function encodeIds(array $ids)
+    public static function encodeIds(array $ids): array
     {
         foreach ($ids as &$id) {
             $id = self::encodeId($id);
@@ -381,22 +340,16 @@ class Chimpcom
 
     /**
      * Convert front-facing id to integer
-     *
-     * @param  string $id Encoded id
-     * @return integer    Decoded id
      */
-    public static function decodeId($id)
+    public static function decodeId(string $id): int
     {
         return hexdec($id);
     }
 
     /**
      * Decode an array of IDs
-     *
-     * @param  array $id
-     * @return array
      */
-    public static function decodeIds(array $ids)
+    public static function decodeIds(array $ids): array
     {
         foreach ($ids as &$id) {
             $id = self::decodeId($id);
@@ -407,10 +360,8 @@ class Chimpcom
 
     /**
      * Render a welcome message
-     *
-     * @return string
      */
-    public static function welcomeMessage()
+    public static function welcomeMessage(): string
     {
         $output = '';
 
@@ -441,10 +392,8 @@ class Chimpcom
 
     /**
      * Return the available_commands array
-     *
-     * @return array All command names
      */
-    public static function getCommandList()
+    public static function getCommandList(): array
     {
         return self::$available_commands;
     }
@@ -454,7 +403,7 @@ class Chimpcom
      *
      * @return string
      */
-    public function getVersion()
+    public function getVersion(): string
     {
         return self::VERSION;
     }

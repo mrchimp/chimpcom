@@ -4,6 +4,7 @@ namespace Mrchimp\Chimpcom\Console;
 
 use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Format;
+use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Output\Output as SymfonyOutput;
 
 class Output extends SymfonyOutput

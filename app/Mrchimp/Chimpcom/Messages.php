@@ -10,7 +10,5 @@ namespace Mrchimp\Chimpcom;
  */
 class Messages
 {
-
-	
-	
+    //
 }

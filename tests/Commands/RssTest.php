@@ -3,13 +3,10 @@
 namespace Tests\Commands;
 
 use App\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mrchimp\Chimpcom\Models\Feed;
 
 class RssTest extends CommandTestTemplate
 {
-    use DatabaseMigrations;
-
     /** @test */
     public function guest_user_cant_do_much_with_this_command()
     {

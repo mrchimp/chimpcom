@@ -2,10 +2,10 @@
 
 namespace Mrchimp\Chimpcom;
 
-use Auth;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
+use Illuminate\Support\Facades\Auth;
 use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 class Log
 {
@@ -21,7 +21,7 @@ class Log
 
         $stream = new StreamHandler(storage_path().'/logs/chimpcom.log');
         $stream->setFormatter($formatter);
-        
+
         $this->log = new Logger(__METHOD__);
         $this->log->pushHandler($stream);
     }

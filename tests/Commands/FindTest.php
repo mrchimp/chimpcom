@@ -3,13 +3,10 @@
 namespace Tests\Commands;
 
 use App\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mrchimp\Chimpcom\Models\Memory;
 
 class FindTest extends CommandTestTemplate
 {
-    use DatabaseMigrations;
-
     /** @test */
     public function find_command_finds_memory_by_name()
     {
@@ -127,12 +124,10 @@ class FindTest extends CommandTestTemplate
             'user_id' => $other_user->id,
         ]);
 
-        $response = $this
+        $this
             ->getUserResponse('find memory_name --mine',  $user)
             ->assertStatus(200)
             ->assertSee('My Memory')
             ->assertDontSee('Other Persons Memory');
-
-            // dd($response->getcontent());
     }
 }

@@ -1,7 +1,4 @@
 <?php
-/**
- * Database model for command aliases.
- */
 
 namespace Mrchimp\Chimpcom\Models;
 
@@ -12,11 +9,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Alias extends Model
 {
+    public static function lookup(string $cmd_name): string
+    {
+        $alias = self::where('name', $cmd_name)->take(1)->first();
 
-    public static function lookup($cmd_name) {
-      $alias = self::where('name', $cmd_name)->take(1)->first();
-
-      return ($alias ? $alias->alias : $cmd_name);
+        return ($alias ? $alias->alias : $cmd_name);
     }
-
 }

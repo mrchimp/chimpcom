@@ -16,9 +16,9 @@ class IndexTest extends TestCase
      */
     public function testPageLoads()
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
-        $response->assertSee('<div id="chimpcom"></div>', false);
+        $this
+            ->get('/')
+            ->assertStatus(200)
+            ->assertSee('<div id="chimpcom"></div>', false);
     }
 }
