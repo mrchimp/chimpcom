@@ -5,9 +5,9 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Session;
 use Chimpcom;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -52,7 +52,7 @@ class Forget extends Command
     {
         if (!Auth::check()) {
             $output->error('You must log in to use this command.');
-            return;
+            return 1;
         }
 
         $user = Auth::user();
@@ -66,12 +66,12 @@ class Forget extends Command
         $ids = Chimpcom::decodeIds($mem_ids);
 
         $memories = Memory::where('user_id', $user->id)
-                          ->whereIn('id', $ids)
-                          ->get();
+                        ->whereIn('id', $ids)
+                        ->get();
 
         if (empty($memories)) {
             $output->error('Couldn\'t find that memory or it\'s not yours to forget.');
-            return;
+            return 1;
         }
 
         $output->title('Are you sure you want to forget these memories?<br>');
@@ -85,5 +85,7 @@ class Forget extends Command
 
         Session::put('forget_id', $ids);
         Chimpcom::setAction('forget');
+
+        return 0
     }
 }
