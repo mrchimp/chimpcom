@@ -66,6 +66,7 @@ class Register3 extends Command
         Session::forget('register_password2');
 
         $output->write('Hello, ' . e($data['name']) . '! Welcome to Chimpcom.');
+        $output->populateUserDetails();
         Chimpcom::setAction('normal');
         $output->usePasswordInput(false);
 
