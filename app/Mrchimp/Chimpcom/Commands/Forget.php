@@ -86,6 +86,6 @@ class Forget extends Command
         Session::put('forget_id', $ids);
         Chimpcom::setAction('forget');
 
-        return 0
+        return 0;
     }
 }
