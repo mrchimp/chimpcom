@@ -35,8 +35,4 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
-    'ga' => [
-        'code' => env('GA_CODE')
-    ],
-
 ];
