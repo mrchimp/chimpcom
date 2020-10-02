@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Commands;
+namespace Tests\Feature\Commands;
 
 use App\User;
 use Faker;
@@ -38,12 +38,7 @@ class CommandTestTemplate extends TestCase
     protected function getUserResponse($cmd_in, $user = null)
     {
         if (!$this->user && is_null($user)) {
-            $this->user = factory(User::class)->create([
-                'name' => $this->faker->name,
-                'email' => $this->faker->safeEmail,
-                'password' => bcrypt($this->faker->password),
-                'is_admin' => false,
-            ]);
+            $this->user = factory(User::class)->create();
         }
 
         return $this
@@ -62,12 +57,7 @@ class CommandTestTemplate extends TestCase
     protected function getAdminResponse($cmd_in)
     {
         if (!$this->admin) {
-            $this->admin = factory(User::class)->create([
-                'name' => $this->faker->name,
-                'email' => $this->faker->safeEmail,
-                'password' => bcrypt($this->faker->password),
-            ]);
-            $this->admin->is_admin = true;
+            $this->admin = factory(User::class)->states('admin')->create();
             $this->admin->save();
         }
 

@@ -4,8 +4,6 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Mrchimp\Chimpcom\Models\Feed;
-use Mrchimp\Chimpcom\Models\Memory;
 
 class User extends Authenticatable
 {

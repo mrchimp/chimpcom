@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Commands;
+namespace Tests\Feature\Commands;
 
 use App\User;
 use Mrchimp\Chimpcom\Models\Memory;

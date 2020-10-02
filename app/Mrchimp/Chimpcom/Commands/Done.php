@@ -75,7 +75,7 @@ class Done extends Command
 
         Session::put('task_to_complete', $task->id);
 
-        $output->alert('Are you sure you want to delete this task?<br>');
+        $output->alert('Are you sure you want to mark this as complete?<br>');
         $output->say($task->description);
 
         Chimpcom::setAction('done');

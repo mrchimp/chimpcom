@@ -6,6 +6,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use App\Mrchimp\Chimpcom\ProgressBar;
 use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Task;
@@ -35,7 +36,7 @@ class Todo extends Command
         $this->addRelated('done');
         $this->addRelated('priority');
         $this->addArgument(
-            'searchterm',
+            'search',
             InputArgument::IS_ARRAY,
             'Show only tasks that contain this.'
         );
@@ -52,13 +53,19 @@ class Todo extends Command
             'List tasks from all of your projects.'
         );
         $this->addOption(
-            'completed',
+            'complete',
             'c',
             null,
             'List completed tasks.'
         );
         $this->addOption(
-            'num_tasks',
+            'dates',
+            'd',
+            null,
+            'Show creation and completion dates.'
+        );
+        $this->addOption(
+            'number',
             'n',
             InputOption::VALUE_REQUIRED,
             'Number of tasks to show.',
@@ -69,91 +76,79 @@ class Todo extends Command
     /**
      * Run the command
      *
-     * @todo add ability to show dates
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
             $output->error('You must be logged in to use this command.');
+            $output->setResponseCode(404);
 
             return 1;
         }
 
         $user = Auth::user();
-
         $project = $user->activeProject;
 
         if (!$project) {
             $output->error('No active project. Use `PROJECTS` and `SET PROJECT x`.');
+            $output->setResponseCode(200);
 
             return 2;
         }
 
-        $show_all_items    = $input->getOption('all');
-        $show_all_projects = $input->getOption('allprojects');
-        $show_completed    = $input->getOption('completed');
-
-        if ($show_all_items) {
+        if ($input->getOption('all')) {
             $completion = null;
-        } elseif ($show_completed) {
+        } elseif ($input->getOption('complete')) {
             $completion = true;
         } else {
             $completion = false;
         }
 
-        $tasks = Task::where('user_id', $user->id);
+        $show_all_projects = $input->getOption('allprojects');
 
-        if ($show_all_projects) {
-            $output->write('Showing task from all projects.<br>');
-        } else {
-            $output->write('Current project: ' . e($project->name) . '<br>');
-        }
-
-        $num_tasks = $input->getOption('num_tasks');
-
-        $search_term = implode(' ', $input->getArgument('searchterm'));
-
-        $tasks = $tasks->search($search_term)
+        $tasks = Task::query()
+            ->where('user_id', $user->id)
+            ->search(implode(' ', $input->getArgument('search')))
             ->forProject($show_all_projects ? null : $user->activeProject->id)
             ->completed($completion)
             ->orderBy('completed', 'ASC')
             ->orderBy('priority', 'DESC')
             ->orderBy('created_at', 'DESC')
-            ->take($num_tasks)
+            ->take($input->getOption('number'))
             ->get();
 
-        if (!$tasks) {
-            $output->alert('Nothing to do!');
-            return 3;
-        }
-
-        $total_task_count = Task::where('user_id', $user->id)
+        $total_task_count = Task::query()
+            ->where('user_id', $user->id)
             ->forProject($show_all_projects ? null : $user->activeProject->id)
             ->completed($completion)
             ->count();
 
-        if (!$show_all_projects) {
+        if ($show_all_projects) {
+            $output->write('Showing task from all projects.<br>');
+        } else {
+            $output->write('Current project: ' . e($project->name) . '<br>');
+
             $all_count = Task::forProject($user->activeProject->id)->count();
             $completed_count = Task::forProject($user->activeProject->id)->completed(true)->count();
-            $chunks = 20;
-            $done_chunks = ($completed_count / $all_count) * $chunks;
             $completed_str = $completed_count . ' / ' . $all_count . ' tasks complete.';
 
-            $done_pips = '';
-            for ($i=0; $i < $done_chunks; $i++) {
-                $done_pips .= '▰';
-            }
-
-            $not_done_pips = '';
-            for ($i=0; $i < $chunks - $done_chunks; $i++) {
-                $not_done_pips .= '▱';
-            }
-
-            $output->write('<br>' . $completed_str . '<br>' . $done_pips . Format::grey($not_done_pips) . '<br><br>');
+            $output->write('<br>' . $completed_str . '<br>');
+            $output->write(ProgressBar::make($completed_count, $all_count)->toString(20) . '<br><br>');
         }
 
-        $output->write(Format::tasks($tasks));
+
+        if ($tasks->isEmpty()) {
+            if ($completed_count > 0) {
+                $output->alert('All done!');
+            } else {
+                $output->alert('Nothing to do! Use NEWTASK to create a task.');
+            }
+
+            return 3;
+        }
+
+        $output->write(Format::tasks($tasks, $input->getOption('dates'), $show_all_projects));
         $output->write('<br>' . $total_task_count . ' tasks.');
 
         return 0;

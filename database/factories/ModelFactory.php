@@ -16,8 +16,8 @@ use Illuminate\Support\Str;
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
-        'email' => $faker->email,
-        'password' => bcrypt(Str::random(10)),
+        'email' => $faker->safeEmail,
+        'password' => bcrypt($faker->password),
         'remember_token' => Str::random(10),
         'active_project_id' => 0,
         'is_admin' => 0,

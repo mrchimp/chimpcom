@@ -20,7 +20,7 @@ class Format
      */
     public static function style($str, $class, array $attr = []): string
     {
-        return '<span class="' . $class . '" ' . static::attrsToString($attr) . '>' . $str . '</span>';
+        return '<span class="' . $class . '"' . static::attrsToString($attr) . '>' . $str . '</span>';
     }
 
     /**
@@ -210,14 +210,19 @@ class Format
     /**
      * Format todo list tasks
      */
-    public static function tasks(Collection $tasks): string
+    public static function tasks(Collection $tasks, $show_dates = false, $show_project = false): string
     {
-        $output = '';
+        $output = 'ID Priority Description';
+
+        $output .= Format::grey(
+            ($show_dates ? ' Created' : '') . ' Completed' .
+            ($show_project ? ', Project' : '') . '<br><br>'
+        );
 
         foreach ($tasks as $task) {
             $hex_id = Chimpcom::encodeId($task->id);
 
-            $output .= Format::style(" $hex_id " . ($task->completed ? '&#10004;' : ''), '', [
+            $output .= Format::style(($task->completed ? '&#10004;' : '') . " $hex_id ", '', [
                 'data-type' => 'autofill',
                 'data-autofill' => "done $hex_id"
             ]);
@@ -241,12 +246,19 @@ class Format
 
             if ($task->completed) {
                 $output .= Format::grey(' ' . e($task->description));
-                $output .= Format::grey(' (Completed: ' . $task->time_completed . ')');
+                $output .= Format::grey(' (' . $task->time_completed . ')');
             } else {
                 $output .= ' ' . e($task->description); // @todo - set this a block title instead
             }
 
-            $output .= Format::grey(' (' . $task->project->name . ')');
+            if ($show_dates) {
+                $output .= Format::grey(' (' . $task->created_at . ')');
+            }
+
+            if ($show_project) {
+                $output .= Format::grey(' (' . $task->project->name . ')');
+            }
+
             $output .= '<br>';
         }
 
@@ -330,10 +342,10 @@ class Format
             $bits = [];
 
             foreach ($attrs as $key => $value) {
-                $bits[] = "$key = \"$value\"";
+                $bits[] = $key . '="' . $value . '"';
             }
 
-            return implode(' ', $bits);
+            return ' ' . implode(' ', $bits);
         } else {
             return '';
         }
