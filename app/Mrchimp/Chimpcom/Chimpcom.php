@@ -172,7 +172,7 @@ class Chimpcom
      */
     protected function isShortcut(): ?Shortcut
     {
-        return Shortcut::where('name', $this->cmd_name)->take(1)->first();
+        return Shortcut::where('name', strtolower($this->cmd_name))->take(1)->first();
     }
 
     /**
@@ -181,7 +181,7 @@ class Chimpcom
     protected function getOneliner(): ?Oneliner
     {
         return Oneliner::query()
-            ->where('command', $this->cmd_name)
+            ->where('command', strtolower($this->cmd_name))
             ->inRandomOrder()
             ->first();
     }
