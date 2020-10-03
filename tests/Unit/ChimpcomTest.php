@@ -40,4 +40,14 @@ class ChimpcomTest extends TestCase
 
         $this->assertNull($action);
     }
+
+    /** @test */
+    public function command_names_are_case_insensitive()
+    {
+        $this->assertInstanceOf(Hi::class, Chimpcom::instantiateCommand('Hi'));
+        $this->assertTrue(Chimpcom::commandExists('Hi'));
+
+        $this->assertInstanceOf(Candyman::class, Chimpcom::instantiateAction('Candyman'));
+        $this->assertTrue(Chimpcom::actionExists('Candyman'));
+    }
 }

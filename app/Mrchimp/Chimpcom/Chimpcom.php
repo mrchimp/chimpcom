@@ -63,7 +63,7 @@ class Chimpcom
     public static function instantiateCommand(string $name): ?Command
     {
         if (static::commandExists($name)) {
-            $command_class = config('chimpcom.commands.' . $name);
+            $command_class = config('chimpcom.commands.' . strtolower($name));
 
             return new $command_class;
         }
@@ -76,7 +76,7 @@ class Chimpcom
      */
     public static function commandExists(string $name): Bool
     {
-        return !!config('chimpcom.commands.' . $name);
+        return !!config('chimpcom.commands.' . strtolower($name));
     }
 
     /**
@@ -85,7 +85,7 @@ class Chimpcom
     public static function instantiateAction(string $name): ?Action
     {
         if (static::actionExists($name)) {
-            $action_class = config('chimpcom.actions.' . $name);
+            $action_class = config('chimpcom.actions.' . strtolower($name));
 
             return new $action_class;
         }
@@ -98,7 +98,7 @@ class Chimpcom
      */
     public static function actionExists(string $name): Bool
     {
-        return !!config('chimpcom.actions.' . $name);
+        return !!config('chimpcom.actions.' . strtolower($name));
     }
 
     /**
