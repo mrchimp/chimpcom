@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Create a new witty oneliner
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;

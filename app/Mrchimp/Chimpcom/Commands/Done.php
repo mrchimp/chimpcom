@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Give credit where it's due
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;

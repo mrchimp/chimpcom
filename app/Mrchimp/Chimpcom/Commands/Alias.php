@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Add a command alias
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;

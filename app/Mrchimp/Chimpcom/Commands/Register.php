@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Takes a username and asks for a password
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;

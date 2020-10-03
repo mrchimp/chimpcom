@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Get current username
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;

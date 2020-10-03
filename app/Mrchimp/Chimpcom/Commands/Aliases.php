@@ -1,9 +1,5 @@
 <?php
 
-/**
- * List all command aliases
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Chimpcom\Format;

@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Convert decimal to hexadecimal
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputArgument;

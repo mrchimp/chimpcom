@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Parser test
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Chimpcom\Chimpcom;

@@ -1,7 +1,4 @@
 <?php
-/**
- * Check if a string is affirmative or negative.
- */
 
 namespace Mrchimp\Chimpcom;
 

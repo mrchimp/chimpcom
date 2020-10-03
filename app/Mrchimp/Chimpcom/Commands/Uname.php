@@ -1,9 +1,5 @@
 <?php
 
-/**
- * How some fake server info
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Chimpcom\Facades\Chimpcom;

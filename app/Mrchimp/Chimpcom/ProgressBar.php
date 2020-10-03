@@ -4,6 +4,9 @@ namespace App\Mrchimp\Chimpcom;
 
 use Mrchimp\Chimpcom\Format;
 
+/**
+ * Render a progress bar string from a value and total
+ */
 class ProgressBar
 {
     /**

@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Read RSS feeds
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;

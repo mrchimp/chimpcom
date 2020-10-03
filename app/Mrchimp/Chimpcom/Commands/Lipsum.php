@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Show some lorem ipsum
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;

@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Flip a coin
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;

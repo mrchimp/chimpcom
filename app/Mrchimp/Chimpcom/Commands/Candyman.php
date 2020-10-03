@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Candyman!
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Chimpcom;

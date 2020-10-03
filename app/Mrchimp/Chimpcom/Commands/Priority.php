@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Set the priority of todo items
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;

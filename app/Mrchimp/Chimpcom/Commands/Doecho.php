@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Echo echo echo
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputArgument;

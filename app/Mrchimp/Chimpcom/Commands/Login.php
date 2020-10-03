@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Log in to Chimpcom
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use App\User;

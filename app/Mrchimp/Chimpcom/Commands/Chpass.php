@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Change your password
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Chimpcom;

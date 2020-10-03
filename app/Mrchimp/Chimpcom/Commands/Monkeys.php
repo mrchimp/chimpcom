@@ -1,9 +1,5 @@
 <?php
 
-/**
- * A finite amount of artificial monkeys
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;

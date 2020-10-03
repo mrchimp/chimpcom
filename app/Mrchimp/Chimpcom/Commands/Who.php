@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Give details on the current user
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;

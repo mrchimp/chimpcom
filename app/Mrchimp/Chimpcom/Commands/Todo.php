@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Current user's todo list
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use App\Mrchimp\Chimpcom\ProgressBar;

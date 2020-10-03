@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Answer questions beginning with "does"
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputArgument;

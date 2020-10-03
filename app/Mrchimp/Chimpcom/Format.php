@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Wrap strings in spans
- */
-
 namespace Mrchimp\Chimpcom;
 
 use Illuminate\Support\Collection;
@@ -73,7 +69,9 @@ class Format
             return false;
         }
 
-        $cols = ($cols < 1 ? 1 : $cols);
+        $cols = ($cols < 1 ? 1 : $cols);/**
+ * Check if a string is affirmative or negative.
+ */
 
         if ($sort_list) {
             sort($list);

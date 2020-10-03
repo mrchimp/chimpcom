@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Send a message to another user
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use App\User;

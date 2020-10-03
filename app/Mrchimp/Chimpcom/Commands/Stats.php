@@ -1,17 +1,10 @@
 <?php
 
-/**
- * Get Chimpcom statistics
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use App\User;
-use Auth;
-use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 use Mrchimp\Chimpcom\Models\Feed;
 use Mrchimp\Chimpcom\Models\Memory;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

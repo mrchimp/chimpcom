@@ -1,9 +1,5 @@
 <?php
 
-/**
- * View messages sent by other users
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;

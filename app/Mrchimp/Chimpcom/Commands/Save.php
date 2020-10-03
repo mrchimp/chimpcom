@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Create a memory item
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;

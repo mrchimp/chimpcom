@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Get data from Reddit.
- */
-
 namespace Mrchimp\Chimpcom;
 
 use Illuminate\Support\Facades\Cache;

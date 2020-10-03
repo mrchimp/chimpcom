@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Your basic common or garden Chimpcom function
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Chimpcom\Chimpcom;

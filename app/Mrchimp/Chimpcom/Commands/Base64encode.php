@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Encode a string in base64
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputArgument;

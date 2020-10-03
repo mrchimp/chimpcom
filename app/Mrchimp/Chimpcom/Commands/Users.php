@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Get a list of users
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;

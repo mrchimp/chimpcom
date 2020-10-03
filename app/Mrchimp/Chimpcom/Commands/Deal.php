@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Deals a card from a pack
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Cards\Deck;

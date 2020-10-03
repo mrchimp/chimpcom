@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Read the manual
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Str;

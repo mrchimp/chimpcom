@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Get the date
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;

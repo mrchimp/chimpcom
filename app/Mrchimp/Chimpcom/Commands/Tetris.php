@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Show a random tetromino
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;

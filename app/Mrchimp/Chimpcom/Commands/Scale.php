@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Show musical scales
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;

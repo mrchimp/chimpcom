@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Create a new task on the current project
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;

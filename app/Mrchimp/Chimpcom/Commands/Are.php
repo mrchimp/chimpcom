@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Get some answers
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;

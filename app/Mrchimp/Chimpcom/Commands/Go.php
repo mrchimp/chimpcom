@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Go to a given URL
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputArgument;

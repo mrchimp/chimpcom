@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Get an answer
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;

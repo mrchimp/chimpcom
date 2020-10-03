@@ -1,7 +1,4 @@
 <?php
-/**
- * Triggers action_forget
- */
 
 namespace Mrchimp\Chimpcom\Commands;
 

@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Decide who should make the tea
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Symfony\Component\Console\Input\InputArgument;

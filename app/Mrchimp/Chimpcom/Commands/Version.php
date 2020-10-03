@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Print Chimpcom version number
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Chimpcom;

@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Find a memory by its name
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Chimpcom\Format;

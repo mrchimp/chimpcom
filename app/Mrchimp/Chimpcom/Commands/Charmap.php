@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Show some characters
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Chimpcom\Format;

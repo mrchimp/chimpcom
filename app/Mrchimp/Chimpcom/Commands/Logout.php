@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Log out of Chimpcom
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;

@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Change directory
- */
-
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
