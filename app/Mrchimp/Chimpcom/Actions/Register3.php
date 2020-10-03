@@ -2,11 +2,11 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
+use App\Mrchimp\Chimpcom\Actions\Action;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Handle email input and create an account
  */
-class Register3 extends Command
+class Register3 extends Action
 {
     protected function configure()
     {

@@ -3,8 +3,9 @@
 namespace Tests\Feature\Commands;
 
 use Illuminate\Support\Facades\Auth;
+use Tests\TestCase;
 
-class ChpassTest extends CommandTestTemplate
+class ChpassTest extends TestCase
 {
     /** @test */
     public function chpass_isnt_useable_by_guests()

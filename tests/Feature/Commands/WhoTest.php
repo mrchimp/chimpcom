@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Commands;
 
-class WhoTest extends CommandTestTemplate
+use Tests\TestCase;
+
+class WhoTest extends TestCase
 {
     public function testGuestResponse()
     {

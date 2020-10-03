@@ -4,8 +4,9 @@ namespace Tests\Feature\Commands;
 
 use App\User;
 use Mrchimp\Chimpcom\Models\Feed;
+use Tests\TestCase;
 
-class RssTest extends CommandTestTemplate
+class RssTest extends TestCase
 {
     /** @test */
     public function guest_user_cant_do_much_with_this_command()

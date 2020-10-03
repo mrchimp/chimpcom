@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Commands;
 
-class HiTest extends CommandTestTemplate
+use Tests\TestCase;
+
+class HiTest extends TestCase
 {
     public function testResponse()
     {

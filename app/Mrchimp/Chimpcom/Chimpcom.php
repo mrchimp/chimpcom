@@ -1,17 +1,15 @@
 <?php
 
-/**
- * Main Chimpcom object.
- */
-
 namespace Mrchimp\Chimpcom;
 
+use App\Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Console\Output;
+use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Log;
-use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
+use Mrchimp\Chimpcom\Models\Alias;
 use Mrchimp\Chimpcom\Models\Message;
 use Mrchimp\Chimpcom\Models\Oneliner;
 use Mrchimp\Chimpcom\Models\Shortcut;
@@ -19,10 +17,6 @@ use Psy\Exception\FatalErrorException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\StringInput;
 
-/**
- * Main Chimpcom object.
- * Any wrappers or ports should be based around this class.
- */
 class Chimpcom
 {
     /**
@@ -31,90 +25,32 @@ class Chimpcom
     const VERSION = 'v7.0b';
 
     /**
-     * Available actions. Actions are alternative command modes used to accept
-     * special input. Normal operation is to have action set to 'normal'.
+     * Log handler
+     *
+     * @var Log
+     */
+    protected $log;
+
+    /**
+     * Input string
+     *
+     * @var string
+     */
+    protected $cmd_in;
+
+    /**
+     * Name of the current command
+     *
+     * @var string
+     */
+    protected $cmd_name;
+
+    /**
+     * Array of arguments
      *
      * @var array
      */
-    private static $available_actions = [
-        'candyman',
-        'done',
-        'forget',
-        'newproject',
-        'password',
-        'project_rm',
-        'register',
-        'register2',
-        'register3',
-        'chpass_1',
-        'chpass_2',
-    ];
-
-    /**
-     * Available Chimpcom commands. Used to compare input against for security.
-     *
-     * @todo rather than comparing to array, should probably use something like
-     *      have 'cmd' => Cmd::class
-     * @var  array
-     */
-    private static $available_commands = [
-        'addshortcut',
-        'alias',
-        'aliases',
-        'are',
-        'base64decode',
-        'base64encode',
-        'candyman',
-        'cd',
-        'charmap',
-        'chpass',
-        'coin',
-        'date',
-        'deal',
-        'dechex',
-        'does',
-        'done',
-        'doecho',
-        'find',
-        'forget',
-        'go',
-        'hexdec',
-        'hi',
-        'lipsum',
-        'login',
-        'logout',
-        'magiceightball',
-        'mail',
-        'man',
-        'message',
-        'monkeys',
-        'newtask',
-        'oneliner',
-        'parser',
-        'priority',
-        'project',
-        'projects',
-        'register',
-        'rss',
-        'save',
-        'scale',
-        'setpublic',
-        'show',
-        'shortcuts',
-        'stats',
-        'styles',
-        'tabtest',
-        'tea',
-        'tetris',
-        'todo',
-        'uname',
-        'users',
-        'version',
-        'whoami',
-        'who'
-    ];
-
-    protected $log;
+    protected $arguments;
 
     public function __construct()
     {
@@ -126,31 +62,43 @@ class Chimpcom
      */
     public static function instantiateCommand(string $name): ?Command
     {
-        if (!in_array($name, self::$available_commands)) {
-            return null;
+        if (static::commandExists($name)) {
+            $command_class = config('chimpcom.commands.' . $name);
+
+            return new $command_class;
         }
 
-        $name = ucfirst($name);
-        $command_name = "Mrchimp\Chimpcom\Commands\\" . $name;
+        return null;
+    }
 
-        return new $command_name;
+    /**
+     * Check if a command exists by name
+     */
+    public static function commandExists(string $name): Bool
+    {
+        return !!config('chimpcom.commands.' . $name);
     }
 
     /**
      * Get an instance of the appropriate action
-     *
-     * @param string $name
-     * @return Command
      */
-    public static function instantiateAction(string $name): ?Command
+    public static function instantiateAction(string $name): ?Action
     {
-        if (!in_array($name, self::$available_actions)) {
-            return null;
+        if (static::actionExists($name)) {
+            $action_class = config('chimpcom.actions.' . $name);
+
+            return new $action_class;
         }
 
-        $name = ucfirst($name);
-        $action_name = "Mrchimp\Chimpcom\Actions\\" . $name;
-        return new $action_name;
+        return null;
+    }
+
+    /**
+     * Check if an action exists by name
+     */
+    public static function actionExists(string $name): Bool
+    {
+        return !!config('chimpcom.actions.' . $name);
     }
 
     /**
@@ -158,65 +106,105 @@ class Chimpcom
      */
     public function respond(string $cmd_in): Output
     {
-        // Catch "@username foo" messages shorthand
-        if (substr($cmd_in, 0, 1) === '@') {
-            $cmd_in = "message $cmd_in";
-        }
-
-        $parts = explode(' ', trim($cmd_in), 2);
-
-        $cmd_name = ChimpcomAlias::lookup($parts[0]);
-
-        if (isset($parts[1])) {
-            $arguments = $parts[1];
-        } else {
-            $arguments = '';
-        }
-
         $this->cmd_in = $cmd_in;
 
-        if ($cmd_in === 'clearaction') {
-            $this->setAction('normal');
-            $output = new Output();
-            $output->write(Format::alert('Ok.'));
-            return $output;
+        // Catch "@username foo" messages shorthand
+        if (substr($this->cmd_in, 0, 1) === '@') {
+            $this->cmd_in = 'message ' . $this->cmd_in;
         }
 
-        // Do check for non-normal action
+        $parts = explode(' ', trim($this->cmd_in), 2);
+
+        $this->cmd_name = Alias::lookup($parts[0]);
+
+        if (isset($parts[1])) {
+            $this->arguments = $parts[1];
+        } else {
+            $this->arguments = '';
+        }
+
+        if ($this->cmd_in === 'clearaction') {
+            return $this->doClearAction();
+        }
+
+        if ($this->isSpecialAction()) {
+            return $this->handleAction();
+        }
+
+        if ($shortcut = $this->isShortcut()) {
+            return $this->handleShortcut($shortcut, $this->cmd_name, $this->arguments);
+        }
+
+        if ($oneliner = $this->getOneliner()) {
+            return $this->handleOneliner($oneliner);
+        }
+
+        if ($this->commandExists($this->cmd_name)) {
+            return $this->handleCommand($this->cmd_name, $this->arguments);
+        }
+
+        return $this->handleInvalidCommand();
+    }
+
+    /**
+     * Clear the current action
+     */
+    protected function doClearAction(): Output
+    {
+        $this->setAction('normal');
+        $output = new Output();
+        $output->write(Format::alert('Ok.'));
+        return $output;
+    }
+
+    /**
+     * If the current action is not 'normal
+     */
+    protected function isSpecialAction(): bool
+    {
         $action = $this->getAction();
 
-        if ($action !== 'normal' && in_array($action, self::$available_actions)) {
-            return $this->handleAction($action, $cmd_in);
-        }
+        return $action !== 'normal' && $this->actionExists($action);
+    }
 
-        // Check for shortcuts?
-        $shortcut = Shortcut::where('name', $cmd_name)->take(1)->first();
+    /**
+     * Whether there is a matching shortcut
+     */
+    protected function isShortcut(): ?Shortcut
+    {
+        return Shortcut::where('name', $this->cmd_name)->take(1)->first();
+    }
 
-        if (!empty($shortcut)) {
-            return $this->handleShortcut($shortcut, $cmd_name, $arguments);
-        }
-
-        // Do we have a witty oneliner?
-        $oneliner = Oneliner::where('command', $cmd_name)
+    /**
+     * Get a oneliner from an input
+     */
+    protected function getOneliner(): ?Oneliner
+    {
+        return Oneliner::query()
+            ->where('command', $this->cmd_name)
             ->inRandomOrder()
             ->first();
+    }
 
-        if (!empty($oneliner)) {
-            $output = new Output();
-            $output->write($oneliner->response);
-            $this->log->info('Oneliner: ' . $cmd_name);
-            return $output;
-        }
-
-        // Normal command?
-        if (in_array($cmd_name, self::$available_commands)) {
-            return $this->handleCommand($cmd_name, $arguments);
-        }
-
-        // I give up
+    /**
+     * Handle a oneliner
+     */
+    protected function handleOneliner(Oneliner $oneliner): Output
+    {
         $output = new Output();
-        $this->log->error('Invalid command: ' . $cmd_in);
-        $output->error('Invalid command: ' . htmlspecialchars($cmd_name));
+        $output->write($oneliner->response);
+        $this->log->info('Oneliner: ' . $this->cmd_name);
+        return $output;
+    }
+
+    /**
+     * Handle an unhandleable request
+     */
+    protected function handleInvalidCommand(): Output
+    {
+        $output = new Output();
+        $this->log->error('Invalid command: ' . $this->cmd_in);
+        $output->error('Invalid command: ' . htmlspecialchars($this->cmd_name));
         $output->setResponseCode(404);
         return $output;
     }
@@ -224,7 +212,7 @@ class Chimpcom
     /**
      * Execute a normal command
      */
-    private function handleCommand(string $cmd_name, string $cmd_in): Output
+    protected function handleCommand(string $cmd_name, string $cmd_in): Output
     {
         $input = new StringInput($cmd_in);
         $output = new Output();
@@ -250,7 +238,7 @@ class Chimpcom
     /**
      * Respond to a given shortcut command
      */
-    private function handleShortcut(Shortcut $shortcut, string $cmd_in, string $args): Output
+    protected function handleShortcut(Shortcut $shortcut, string $cmd_in, string $args): Output
     {
         $input = new StringInput($args);
         $output = new Output();
@@ -274,9 +262,10 @@ class Chimpcom
     /**
      * Execute an action
      */
-    private function handleAction(string $action_name, string $cmd_in): Output
+    protected function handleAction(): Output
     {
-        $input = new StringInput($cmd_in);
+        $action_name = $this->getAction();
+        $input = new StringInput($this->cmd_in);
         $output = new Output();
 
         try {
@@ -391,11 +380,11 @@ class Chimpcom
     }
 
     /**
-     * Return the available_commands array
+     * Return list of command names
      */
     public static function getCommandList(): array
     {
-        return self::$available_commands;
+        return array_keys(config('chimpcom.commands'));
     }
 
     /**

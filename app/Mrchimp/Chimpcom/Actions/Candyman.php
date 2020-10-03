@@ -6,7 +6,7 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use Mrchimp\Chimpcom\Commands\Command;
+use App\Mrchimp\Chimpcom\Actions\Action;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Candyman!
  * @action candyman
  */
-class Candyman extends Command
+class Candyman extends Action
 {
     protected function configure()
     {

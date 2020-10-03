@@ -6,9 +6,9 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
+use App\Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Mrchimp\Chimpcom\Commands\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Handle password input after 'login username'
  */
-class Password extends Command
+class Password extends Action
 {
 
     public function configure()

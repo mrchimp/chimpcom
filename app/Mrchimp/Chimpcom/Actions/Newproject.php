@@ -6,9 +6,9 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
+use App\Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Project;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Save the description for a new project
  * @action normal
  */
-class Newproject extends Command
+class Newproject extends Action
 {
     /**
      * Configure the command

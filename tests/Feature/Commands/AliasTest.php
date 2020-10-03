@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Commands;
 
-class AliasTest extends CommandTestTemplate
+use Tests\TestCase;
+
+class AliasTest extends TestCase
 {
     public function testGuestResponse()
     {

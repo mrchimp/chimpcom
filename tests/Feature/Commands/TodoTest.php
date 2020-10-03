@@ -3,11 +3,11 @@
 namespace Tests\Feature\Commands;
 
 use App\User;
-use Carbon\Carbon;
 use Mrchimp\Chimpcom\Models\Project;
 use Mrchimp\Chimpcom\Models\Task;
+use Tests\TestCase;
 
-class TodoTest extends CommandTestTemplate
+class TodoTest extends TestCase
 {
     protected $other_user;
 

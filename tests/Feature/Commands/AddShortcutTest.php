@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Commands;
 
-class AddShortcutTest extends CommandTestTemplate
+use Tests\TestCase;
+
+class AddShortcutTest extends TestCase
 {
     public function testGuestResponse()
     {

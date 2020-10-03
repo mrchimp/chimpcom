@@ -6,10 +6,10 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
+use App\Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Booleanate;
-use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Project;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Delete a project
  */
-class Project_rm extends Command
+class Project_rm extends Action
 {
     /**
      * Configure the command

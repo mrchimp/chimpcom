@@ -6,11 +6,8 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use App\User;
-use Auth;
+use App\Mrchimp\Chimpcom\Actions\Action;
 use Chimpcom;
-use Illuminate\Http\Request;
-use Mrchimp\Chimpcom\Commands\Command;
 use Session;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @action register2
  * @action normal
  */
-class Register extends Command
+class Register extends Action
 {
     protected function configure()
     {

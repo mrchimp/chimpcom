@@ -4,8 +4,9 @@ namespace Tests\Feature\Commands;
 
 use App\User;
 use Mrchimp\Chimpcom\Models\Memory;
+use Tests\TestCase;
 
-class FindTest extends CommandTestTemplate
+class FindTest extends TestCase
 {
     /** @test */
     public function find_command_finds_memory_by_name()
