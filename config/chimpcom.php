@@ -49,6 +49,7 @@ return [
         'shortcuts' => \Mrchimp\Chimpcom\Commands\Shortcuts::class,
         'stats' => \Mrchimp\Chimpcom\Commands\Stats::class,
         'styles' => \Mrchimp\Chimpcom\Commands\Styles::class,
+        'sudo' => \Mrchimp\Chimpcom\Commands\Sudo::class,
         'tabtest' => \Mrchimp\Chimpcom\Commands\Tabtest::class,
         'tea' => \Mrchimp\Chimpcom\Commands\Tea::class,
         'tetris' => \Mrchimp\Chimpcom\Commands\Tetris::class,
