@@ -11,7 +11,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Rm extends Command
 {
-
     /**
      * Configure the command
      *

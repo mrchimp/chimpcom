@@ -29,6 +29,7 @@ return [
         'lipsum' => \Mrchimp\Chimpcom\Commands\Lipsum::class,
         'login' => \Mrchimp\Chimpcom\Commands\Login::class,
         'logout' => \Mrchimp\Chimpcom\Commands\Logout::class,
+        'ls' => \App\Mrchimp\Chimpcom\Commands\Ls::class,
         'magiceightball' => \Mrchimp\Chimpcom\Commands\Magiceightball::class,
         'mail' => \Mrchimp\Chimpcom\Commands\Mail::class,
         'man' => \Mrchimp\Chimpcom\Commands\Man::class,

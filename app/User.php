@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Mrchimp\Chimpcom\Models\Directory;
 
 class User extends Authenticatable
 {
@@ -46,5 +47,10 @@ class User extends Authenticatable
     public function feeds()
     {
         return $this->hasMany('Mrchimp\Chimpcom\Models\Feed');
+    }
+
+    public function currentDirectory()
+    {
+        return $this->belongsTo('Mrchimp\Chimpcom\Models\Directory', 'current_directory_id');
     }
 }

@@ -2,8 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Mrchimp\Chimpcom\Format;
+use Mrchimp\Chimpcom\Models\Directory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -43,8 +42,14 @@ class Cd extends Command
         $dir = $input->getArgument('dir');
         $dir_str = implode(' ', $dir);
 
+        $current_dir = Directory::current();
+
         if (!$dir) {
-            $output->write('You go home.');
+            $default = Directory::default();
+
+            if ($default) {
+                $default->setCurrent();
+            }
         } elseif ($dir_str === '.') {
             $output->write('You remain here.');
         } elseif ($dir_str == 'penguin') {
@@ -52,7 +57,13 @@ class Cd extends Command
         } elseif ($dir_str == 'c:' || $dir_str == 'C:') {
             $output->write('What d\'you think this is, Windows?');
         } elseif ($dir_str == '..') {
-            $output->write('You claw at the directory above you but cannot get a purchase.');
+            if ($current_dir->parent) {
+                $current_dir->parent->setCurrent();
+            } else {
+                $output->write('You claw at the directory above you but cannot get a purchase.');
+            }
+        } elseif ($current_dir && $child = $current_dir->findChild($dir_str)) {
+            $child->setCurrent();
         } else {
             $output->error('No such file or directory.');
         }
