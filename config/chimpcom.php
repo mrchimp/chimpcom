@@ -41,6 +41,7 @@ return [
         'project' => \Mrchimp\Chimpcom\Commands\Project::class,
         'projects' => \Mrchimp\Chimpcom\Commands\Projects::class,
         'register' => \Mrchimp\Chimpcom\Commands\Register::class,
+        'rm' => \Mrchimp\Chimpcom\Commands\Rm::class,
         'rss' => \Mrchimp\Chimpcom\Commands\Rss::class,
         'save' => \Mrchimp\Chimpcom\Commands\Save::class,
         'scale' => \Mrchimp\Chimpcom\Commands\Scale::class,
