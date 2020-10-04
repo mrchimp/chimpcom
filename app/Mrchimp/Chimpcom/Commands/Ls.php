@@ -3,6 +3,7 @@
 namespace App\Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Chimpcom\Commands\Command;
+use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Directory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -37,8 +38,7 @@ class Ls extends Command
         }
 
         if ($dir->children->isEmpty()) {
-            $output->error('Current directory: ' . e($dir->name) . '<br>');
-            $output->error('Nothing here');
+            $output->write(Format::grey('Nothing here'));
             return 2;
         }
 
