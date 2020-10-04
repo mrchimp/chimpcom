@@ -46,4 +46,38 @@ class DirectoryTest extends TestCase
         $this->assertTrue($child_1->isDescendantOf($parent));
         $this->assertTrue($child_2->isDescendantOf($parent));
     }
+
+    /** @test */
+    public function fullPath_gets_the_full_path_as_you_would_expect()
+    {
+        $root = factory(Directory::class)->create([
+            'name' => 'root',
+        ]);
+        $child = factory(Directory::class)->create([
+            'name' => 'child',
+        ]);
+        $other_child = factory(Directory::class)->create([
+            'name' => 'other_child',
+        ]);
+
+        $grandchild = factory(Directory::class)->create([
+            'name' => 'grandchild',
+        ]);
+        $other_grandchild = factory(Directory::class)->create([
+            'name' => 'other_grandchild',
+        ]);
+
+        $root->appendNode($child);
+        $root->appendNode($other_child);
+        $child->appendNode($grandchild);
+        $child->appendNode($other_grandchild);
+
+        $root->refresh();
+        $child->refresh();
+        $grandchild->refresh();
+
+        $this->assertEquals('/', $root->fullPath());
+        $this->assertEquals('/child', $child->fullPath());
+        $this->assertEquals('/child/grandchild', $grandchild->fullPath());
+    }
 }

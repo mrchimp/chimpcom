@@ -53,8 +53,6 @@ export default class Chimpcom {
         } else {
           return 'Nothing to fix.';
         }
-      case 'pwd':
-        return document.location.href;
       case 'popup':
       case 'detach':
         openChimpcomPopup();

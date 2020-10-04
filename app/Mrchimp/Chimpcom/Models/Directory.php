@@ -103,4 +103,24 @@ class Directory extends Model
 
         return null;
     }
+
+    /**
+     * The full path of this directory
+     */
+    public function fullPath(): string
+    {
+        if ($this->ancestors->isEmpty()) {
+            return '/';
+        }
+
+        $this->ancestors->shift();
+
+        return '/' .
+            $this
+                ->ancestors
+                ->sortBy($this->getLftName())
+                ->pluck('name')
+                ->push($this->name)
+                ->join('/');
+    }
 }
