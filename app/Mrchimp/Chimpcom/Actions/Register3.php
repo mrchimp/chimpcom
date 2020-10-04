@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Models\Directory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -81,10 +82,21 @@ class Register3 extends Action
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+
+        $home_dir = Directory::fromPath('/home');
+
+        if ($home_dir) {
+            $home_dir->appendNode(Directory::create([
+                'name' => e($user->name),
+                'owner_id' => $user->id,
+            ]));
+        }
+
+        return $user;
     }
 }

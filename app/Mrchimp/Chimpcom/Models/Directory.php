@@ -16,6 +16,16 @@ class Directory extends Model
     use NodeTrait;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'owner_id',
+    ];
+
+    /**
      * Get the  current directory for a user
      */
     public static function current($user = null): ?Directory
