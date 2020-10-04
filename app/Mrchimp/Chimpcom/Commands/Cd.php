@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
 use Mrchimp\Chimpcom\Models\Directory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -40,9 +41,7 @@ class Cd extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $dir = $input->getArgument('dir');
-        $dir_str = implode(' ', $dir);
-
-        $current_dir = Directory::current();
+        $path = implode(' ', $dir);
 
         if (!$dir) {
             $default = Directory::default();
@@ -50,24 +49,41 @@ class Cd extends Command
             if ($default) {
                 $default->setCurrent();
             }
-        } elseif ($dir_str === '.') {
-            $output->write('You remain here.');
-        } elseif ($dir_str == 'penguin') {
-            $output->write('You are inside a penguin. It is dark.');
-        } elseif ($dir_str == 'c:' || $dir_str == 'C:') {
-            $output->write('What d\'you think this is, Windows?');
-        } elseif ($dir_str == '..') {
-            if ($current_dir->parent) {
-                $current_dir->parent->setCurrent();
-            } else {
-                $output->write('You claw at the directory above you but cannot get a purchase.');
-            }
-        } elseif ($current_dir && $child = $current_dir->findChild($dir_str)) {
-            $child->setCurrent();
-        } else {
-            $output->error('No such file or directory.');
+
+            $output->write('You are home.');
+
+            return 0;
         }
 
-        return 0;
+        switch ($path) {
+            case 'penguin':
+                $output->write('You are inside a penguin. It is dark.');
+                return 0;
+            case 'c:':
+            case 'C:':
+                $output->write('What d\'you think this is, Windows?');
+                return 0;
+            case '.':
+                $output->write('You remain here.');
+                return 0;
+            default:
+                try {
+                    $target = Directory::fromPath($path);
+                } catch (InvalidPathException $e) {
+                    $output->error($e->getMessage());
+
+                    return 1;
+                }
+
+                if (!$target) {
+                    $output->error('No such file or directory');
+                    return 2;
+                }
+
+                $target->setCurrent();
+                $output->write('You go.');
+
+                return 0;
+        }
     }
 }

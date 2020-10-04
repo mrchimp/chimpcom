@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Kalnoy\Nestedset\NodeTrait;
+use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
+use Mrchimp\Chimpcom\Filesystem\Path;
 
 class Directory extends Model
 {
@@ -60,12 +62,10 @@ class Directory extends Model
 
     /**
      * Get the default directory
-     *
-     * @todo Use a better default
      */
     public static function default(): ?Directory
     {
-        return Directory::query()->whereIsRoot()->first();
+        return Directory::root();
     }
 
     /**
@@ -122,5 +122,66 @@ class Directory extends Model
                 ->pluck('name')
                 ->push($this->name)
                 ->join('/');
+    }
+
+    public static function root()
+    {
+        return Directory::whereIsRoot()->first();
+    }
+
+    /**
+     * Find a director from an absolute path
+     *
+     * @throws InvalidPathException
+     */
+    public static function fromPath(string $path_str, Directory $source = null): ?Directory
+    {
+        if (!$source) {
+            $source = Directory::current();
+        }
+
+        $path = Path::make($path_str);
+
+        if ($path->doubleDotCount() > 0 && substr($path_str, 0, 2) !== '..') {
+            throw new InvalidPathException('Path cannot contain ".." except at the start of a path');
+        }
+
+        if ($path_str === '..' || $path_str === './..') {
+            return $source->parent;
+        }
+
+        if ($path_str === '.') {
+            return $source;
+        }
+
+        if ($path->isRoot()) {
+            return Directory::root();
+        }
+
+        if ($path->isAbsolute()) {
+            $source = Directory::root();
+        }
+
+        $current = $source;
+
+        if ($path->isEmpty()) {
+            throw new InvalidPathException('Path is empty');
+        }
+
+        do {
+            if ($path->get() === '.') {
+                continue;
+            }
+
+            $child = $current->children->firstWhere('name', $path->get());
+
+            if (!$child) {
+                throw new InvalidPathException('No such file or directory');
+            }
+
+            $current = $child;
+        } while (!is_null($path->next()));
+
+        return $current;
     }
 }
