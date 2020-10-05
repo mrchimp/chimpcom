@@ -10,6 +10,7 @@
   "type": "project",
   "require": {
     "php": ">=7.2.5",
+    "erusev/parsedown": "^1.7",
     "fideloper/proxy": "^4.0",
     "filp/whoops": "~2.0",
     "guzzlehttp/guzzle": "^6.2",

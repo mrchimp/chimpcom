@@ -21,6 +21,7 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    color: var(--text-color);
   }
 
   &::selection,
@@ -97,7 +98,7 @@
   }
 
   dt:before {
-    content: "\2022 \0020";
+    content: '\2022 \0020';
   }
 
   a {
@@ -107,5 +108,9 @@
       color: var(--bg-color);
       background-color: var(--link-color);
     }
+  }
+
+  strong {
+    font-weight: bold;
   }
 }

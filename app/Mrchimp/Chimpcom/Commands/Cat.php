@@ -3,9 +3,8 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;
-use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
 use Mrchimp\Chimpcom\Models\Directory;
-use Mrchimp\Chimpcom\Models\File;
+use Mrchimp\Chimpcom\Parsedown;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -62,7 +61,11 @@ class Cat extends Command
             return 4;
         }
 
-        $output->write(e($file->content));
+        $parsedown = new Parsedown();
+        $html = $parsedown->text($file->content);
+        $output->write('<div class="markdown">');
+        $output->write($html);
+        $output->write('</div>');
 
         return 0;
     }
