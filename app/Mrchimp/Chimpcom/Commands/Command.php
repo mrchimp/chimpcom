@@ -74,7 +74,7 @@ class Command extends SymfonyCommand
 
             foreach ($definition->getArguments() as $argument) {
                 $out .= '<strong>' . $argument->getName() . '</strong><br>';
-                $out .= $argument->getDescription() . '<br><br>';
+                $out .= $argument->getDescription() . '<br>';
             }
         }
 
