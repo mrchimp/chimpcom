@@ -134,4 +134,12 @@ class Path
     {
         return count($this->chunks);
     }
+
+    /**
+     * Is the index the last item
+     */
+    public function isLast(): bool
+    {
+        return $this->index === $this->count() - 1;
+    }
 }

@@ -11,6 +11,7 @@ return [
         'base64decode' => \Mrchimp\Chimpcom\Commands\Base64decode::class,
         'base64encode' => \Mrchimp\Chimpcom\Commands\Base64encode::class,
         'candyman' => \Mrchimp\Chimpcom\Commands\Candyman::class,
+        'cat' => \Mrchimp\Chimpcom\Commands\Cat::class,
         'cd' => \Mrchimp\Chimpcom\Commands\Cd::class,
         'charmap' => \Mrchimp\Chimpcom\Commands\Charmap::class,
         'chpass' => \Mrchimp\Chimpcom\Commands\Chpass::class,

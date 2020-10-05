@@ -5,6 +5,8 @@ namespace Mrchimp\Chimpcom\Models;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
+use Mrchimp\Chimpcom\Filesystem\Path;
 
 class File extends Model
 {
@@ -48,5 +50,13 @@ class File extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    /**
+     * This file belongs to the given user
+     */
+    public function belongsToUser(User $user): bool
+    {
+        return (int) $this->owner_id === (int) $user->id;
     }
 }
