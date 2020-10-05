@@ -38,7 +38,7 @@ class Ls extends Command
 
         $dir->load('children');
 
-        if ($dir->children->isEmpty()) {
+        if ($dir->children->isEmpty() && $dir->files->isEmpty()) {
             $output->write(Format::grey('Nothing here'));
             return 2;
         }
@@ -48,13 +48,24 @@ class Ls extends Command
         foreach ($dir->children as $child) {
             array_push(
                 $bits,
-                $child->ownerName(),
+                '📁',
+                e($child->ownerName()),
                 $child->updated_at->format('M j H:i'),
-                $child->name
+                e($child->name)
             );
         }
 
-        $output->write(Format::listToTable($bits, 3));
+        foreach ($dir->files->sortBy('name') as $file) {
+            array_push(
+                $bits,
+                '📄',
+                e($file->ownerName()),
+                $file->updated_at->format('M j H:i'),
+                e($file->name)
+            );
+        }
+
+        $output->write(Format::listToTable($bits, 4));
 
         return 0;
     }

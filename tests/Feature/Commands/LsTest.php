@@ -3,6 +3,7 @@
 namespace Tests\Feature\Commands;
 
 use Mrchimp\Chimpcom\Models\Directory;
+use Mrchimp\Chimpcom\Models\File;
 use Tests\TestCase;
 
 class LsTest extends TestCase
@@ -26,5 +27,20 @@ class LsTest extends TestCase
         $this->getGuestResponse('ls')
             ->assertStatus(200)
             ->assertSee($child->name);
+    }
+
+    /** @test */
+    public function ls_shows_files_in_directory()
+    {
+        $dir = factory(Directory::class)->create();
+        $file = factory(File::class)->create([
+            'name' => 'My File',
+        ]);
+        $dir->files()->save($file);
+
+        $this
+            ->getGuestResponse('ls')
+            ->assertStatus(200)
+            ->assertSee('My File');
     }
 }
