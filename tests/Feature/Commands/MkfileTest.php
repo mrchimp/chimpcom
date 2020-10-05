@@ -28,11 +28,31 @@ class MkfileTest extends TestCase
         ]);
 
         $this
-            ->getUserResponse('mkfile my_test_file')
+            ->getUserResponse('mkfile my_test_file', $user)
             ->assertStatus(200);
 
         $file = File::first();
 
         $this->assertEquals('my_test_file', $file->name);
+    }
+
+    /** @test */
+    public function cant_create_file_in_a_directory_that_is_not_your_own()
+    {
+        $user = factory(User::class)->create();
+        $other_user = factory(User::class)->create();
+
+        factory(Directory::class)->create([
+            'owner_id' => $other_user->id,
+        ]);
+
+        $this
+            ->getUserResponse('mkfile my_test_file', $user)
+            ->assertStatus(200)
+            ->assertSee('You do not have permission');
+
+        $file_count = File::count();
+
+        $this->assertEquals(0, $file_count);
     }
 }

@@ -48,6 +48,11 @@ class Mkfile extends Command
             return 2;
         }
 
+        if (!$dir->belongsToUser(Auth::user())) {
+            $output->error('You do not have permission to create a file here.');
+            return 3;
+        }
+
         $dir->files()->create([
             'name' => $input->getArgument('filename'),
             'owner_id' => Auth::id(),

@@ -201,4 +201,12 @@ class Directory extends Model
 
         return $current;
     }
+
+    /**
+     * This file belongs to the given user
+     */
+    public function belongsToUser(User $user): bool
+    {
+        return (int) $this->owner_id === (int) $user->id;
+    }
 }
