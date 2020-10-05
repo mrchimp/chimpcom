@@ -43,14 +43,18 @@ class Ls extends Command
             return 2;
         }
 
-        $dir->children->each(function ($child) use ($output) {
-            $output->write(
-                $child->ownerName() . ' ' .
-                $child->updated_at->format('M j H:i') . ' ' .
-                $child->name .
-                '<br>'
+        $bits = [];
+
+        foreach ($dir->children as $child) {
+            array_push(
+                $bits,
+                $child->ownerName(),
+                $child->updated_at->format('M j H:i'),
+                $child->name
             );
-        });
+        }
+
+        $output->write(Format::listToTable($bits, 3));
 
         return 0;
     }
