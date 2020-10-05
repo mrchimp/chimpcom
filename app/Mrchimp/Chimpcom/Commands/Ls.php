@@ -29,13 +29,14 @@ class Ls extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $dir = Directory::current();
-        $dir->load('children');
 
         if (!$dir) {
             $output->error('File system unavailable.');
 
             return 1;
         }
+
+        $dir->load('children');
 
         if ($dir->children->isEmpty()) {
             $output->write(Format::grey('Nothing here'));

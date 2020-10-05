@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\User;
 use Faker\Factory;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
