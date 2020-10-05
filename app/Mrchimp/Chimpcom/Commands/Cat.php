@@ -62,6 +62,8 @@ class Cat extends Command
         }
 
         $parsedown = new Parsedown();
+        $parsedown->setSafeMode(true);
+        $parsedown->setMarkupEscaped(true);
         $html = $parsedown->text($file->content);
         $output->write('<div class="markdown">');
         $output->write($html);
