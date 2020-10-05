@@ -22,6 +22,7 @@ return [
         'does' => \Mrchimp\Chimpcom\Commands\Does::class,
         'done' => \Mrchimp\Chimpcom\Commands\Done::class,
         'doecho' => \Mrchimp\Chimpcom\Commands\Doecho::class,
+        'edit' => \Mrchimp\Chimpcom\Commands\Edit::class,
         'find' => \Mrchimp\Chimpcom\Commands\Find::class,
         'forget' => \Mrchimp\Chimpcom\Commands\Forget::class,
         'go' => \Mrchimp\Chimpcom\Commands\Go::class,
@@ -69,6 +70,7 @@ return [
     'actions' => [
         'candyman' => \Mrchimp\Chimpcom\Actions\Candyman::class,
         'done' => \Mrchimp\Chimpcom\Actions\Done::class,
+        'edit' => \Mrchimp\Chimpcom\Actions\Edit::class,
         'forget' => \Mrchimp\Chimpcom\Actions\Forget::class,
         'newproject' => \Mrchimp\Chimpcom\Actions\Newproject::class,
         'password' => \Mrchimp\Chimpcom\Actions\Password::class,

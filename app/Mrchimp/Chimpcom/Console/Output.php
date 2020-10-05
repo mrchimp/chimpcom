@@ -25,6 +25,7 @@ class Output extends SymfonyOutput
             'id'   => 0,
             'name' => 'Guest',
         ],
+        'edit_content' => '',
     ];
 
     public function __construct($verbosity = self::VERBOSITY_NORMAL, $decorated = false, OutputFormatterInterface $formatter = null)
@@ -243,5 +244,10 @@ class Output extends SymfonyOutput
     public function getResponseCode(): int
     {
         return $this->response_code;
+    }
+
+    public function editContent(string $content): void
+    {
+        $this->out['edit_content'] = $content;
     }
 }
