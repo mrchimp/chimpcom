@@ -3,8 +3,11 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use function PHPSTORM_META\map;
-use Symfony\Component\Console\Input\Input;
 
+use Illuminate\Support\Facades\Auth;
+use Mrchimp\Chimpcom\Models\Directory;
+
+use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,10 +36,9 @@ class Rm extends Command
             'Remove directories and their contents recursively.'
         );
         $this->addArgument(
-            'file',
-            InputArgument::IS_ARRAY | InputArgument::REQUIRED,
-            'File[s] to remove',
-            []
+            'filename',
+            InputArgument::REQUIRED,
+            'File to remove'
         );
     }
 
@@ -47,14 +49,41 @@ class Rm extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $argument_str = implode(' ', $input->getArgument('file'));
+        if (!Auth::check()) {
+            $output->error('You must log in to use this command.');
 
-        if ($argument_str === 'penguin') {
-            $output->write('You remove the penguin but another appears in its place.');
-            return 0;
+            return 1;
         }
 
-        $output->error('rm: cannot remove \'' . e($argument_str) . '\': permission denied');
+        $filename = $input->getArgument('filename');
+
+        $dir = Directory::current();
+
+        if (!$dir) {
+            $output->error('File system not available.');
+            return 2;
+        }
+
+        $file = $dir->files->firstWhere('name', $filename);
+
+        if (!$file) {
+            if ($filename === 'penguin') {
+                $output->write('You remove the penguin but another appears in its place.');
+                return 0;
+            }
+
+            $output->error('File does not exist.');
+            return 3;
+        }
+
+        if (!$file->belongsToUser(Auth::user())) {
+            $output->error('You do not own that file.');
+            return 4;
+        }
+
+        $file->delete();
+
+        $output->write('Ok.');
 
         return 0;
     }
