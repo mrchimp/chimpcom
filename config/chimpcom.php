@@ -35,6 +35,7 @@ return [
         'man' => \Mrchimp\Chimpcom\Commands\Man::class,
         'message' => \Mrchimp\Chimpcom\Commands\Message::class,
         'mkdir' => \Mrchimp\Chimpcom\Commands\Mkdir::class,
+        'mkfile' => \Mrchimp\Chimpcom\Commands\Mkfile::class,
         'monkeys' => \Mrchimp\Chimpcom\Commands\Monkeys::class,
         'newtask' => \Mrchimp\Chimpcom\Commands\Newtask::class,
         'oneliner' => \Mrchimp\Chimpcom\Commands\Oneliner::class,
