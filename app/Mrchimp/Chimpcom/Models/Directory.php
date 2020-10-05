@@ -5,6 +5,7 @@ namespace Mrchimp\Chimpcom\Models;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Kalnoy\Nestedset\NodeTrait;
@@ -24,6 +25,14 @@ class Directory extends Model
         'name',
         'owner_id',
     ];
+
+    /**
+     * Files in this directory
+     */
+    public function files(): HasMany
+    {
+        return $this->hasMany(File::class, 'directory_id');
+    }
 
     /**
      * Get the  current directory for a user
@@ -80,8 +89,6 @@ class Directory extends Model
 
     /**
      * Get the name of the owner of this directory
-     *
-     * @return string
      */
     public function ownerName(): string
     {
