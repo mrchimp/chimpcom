@@ -2,7 +2,9 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Illuminate\Support\Str;
 use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
+use Mrchimp\Chimpcom\Filesystem\Path;
 use Mrchimp\Chimpcom\Models\Directory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -85,5 +87,35 @@ class Cd extends Command
 
                 return 0;
         }
+    }
+
+    /**
+     * Return tab completion options for the current command input
+     *
+     * @param  Input  $input
+     * @return string
+     */
+    public function tab(InputInterface $input)
+    {
+        $path = Path::make(implode(' ', $input->getArgument('dir')));
+        $filename = $path->last();
+        $current = Directory::current();
+
+        $options = $current
+            ->children
+            ->filter(function ($child) use ($filename) {
+                return Str::startsWith($child->name, $filename);
+            });
+
+        if ($options->isEmpty()) {
+            return [];
+        }
+
+        return $options
+            ->pluck('name')
+            ->transform(function ($item) {
+                return 'cd ' . $item;
+            })
+            ->values();
     }
 }

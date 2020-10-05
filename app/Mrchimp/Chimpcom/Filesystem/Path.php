@@ -50,9 +50,17 @@ class Path
     /**
      * Get the first chunk
      */
-    public function first(): string
+    public function first(): ?string
     {
         return Arr::first($this->chunks);
+    }
+
+    /**
+     * Get the last chunk
+     */
+    public function last(): ?string
+    {
+        return Arr::last($this->chunks);
     }
 
     /**
