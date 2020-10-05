@@ -19,5 +19,8 @@ Route::post('ajax/commands', 'ChimpcomController@commandList');
 Route::get('ajax/tabcomplete', 'ChimpcomController@tabComplete');
 
 // Password reset routes...
-Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
-Route::post('password/reset', 'Auth\PasswordController@postReset');
+// Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
+// Route::post('password/reset', 'Auth\PasswordController@postReset');
+
+Route::get('blog/{username}', 'BlogController@index')->name('blog.index');
+Route::get('blog/{username}/{filename}', 'BlogController@show')->name('blog.show');
