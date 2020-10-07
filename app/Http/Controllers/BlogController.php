@@ -24,7 +24,7 @@ class BlogController extends Controller
         return view('blog.index', [
             'title' => 'The Blog of ' . $username,
             'username' => $username,
-            'files' => $dir->files->sortBy('updated_at'),
+            'files' => $dir->files()->orderBy('updated_at')->get(),
         ]);
     }
 
