@@ -16,7 +16,6 @@ class Edit extends Action
     {
         $this->setName('edit');
         $this->setDescription('Handle edited content and save it');
-        $this->addArgument('content', InputArgument::OPTIONAL, 'Content to save.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -30,7 +29,13 @@ class Edit extends Action
             return 1;
         }
 
-        $file->content = $input->getArgument('content');
+        if (!$input->hasArgument('content')) {
+            $this->error('No content to save. Aborting.');
+            return 1;
+        }
+
+        $content = $input->getContent();
+        $file->content = $content;
         $file->save();
 
         $output->alert('Ok.');

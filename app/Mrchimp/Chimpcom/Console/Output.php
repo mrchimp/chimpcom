@@ -19,13 +19,13 @@ class Output extends SymfonyOutput
     private $out = [
         'cmd_out'   => '',
         'show_pass' => false,
-        'cmd_fill'  => '',
-        'log'       => '',
+        'cmd_fill'  => null,
+        'log'       => null,
         'user'      => [
             'id'   => 0,
             'name' => 'Guest',
         ],
-        'edit_content' => '',
+        'edit_content' => null,
     ];
 
     public function __construct($verbosity = self::VERBOSITY_NORMAL, $decorated = false, OutputFormatterInterface $formatter = null)

@@ -10,6 +10,8 @@ const cmd = new Cmd({
   remote_cmd_list_url: 'ajax/commands',
   tabcomplete_url: 'ajax/tabcomplete',
   typewriter_time: 0,
+  cancel_edit_handler: chimpcom.clearAction.bind(chimpcom),
+  save_edit_handler: chimpcom.saveContent.bind(chimpcom),
 });
 
 if (typeof QueryString['cmd'] === 'string') {

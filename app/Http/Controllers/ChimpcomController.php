@@ -32,7 +32,9 @@ class ChimpcomController extends Controller
     public function respond(Request $request)
     {
         $input = $request->input('cmd_in');
-        $response = Chimpcom::respond($input);
+        $content = $request->input('content');
+
+        $response = Chimpcom::respond($input, $content);
 
         if ($request->ajax()) {
             return $response->getJsonResponse();

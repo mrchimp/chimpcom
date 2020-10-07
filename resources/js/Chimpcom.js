@@ -62,13 +62,19 @@ export default class Chimpcom {
   /**
    * Send a command to the server
    */
-  ajaxCmd(cmd_in) {
+  ajaxCmd(cmd_in, content) {
+    const body = {
+      _token: document.querySelector('input[name="_token"]').value,
+      cmd_in: cmd_in,
+    };
+
+    if (content) {
+      body.content = content;
+    }
+
     const request = new Request(this.options.responder, {
       method: 'POST',
-      body: JSON.stringify({
-        _token: document.querySelector('input[name="_token"]').value,
-        cmd_in: cmd_in,
-      }),
+      body: JSON.stringify(body),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -76,7 +82,7 @@ export default class Chimpcom {
       },
     });
 
-    fetch(request)
+    return fetch(request)
       .then((response) => response.json())
       .then((data) => {
         this.cmd.handleResponse(data);
@@ -96,5 +102,16 @@ export default class Chimpcom {
           cmd_out: cmd_out,
         });
       });
+  }
+
+  /**
+   * Reset server action
+   */
+  clearAction() {
+    return this.ajaxCmd('clearaction');
+  }
+
+  saveContent(content) {
+    return this.ajaxCmd('save edit', content);
   }
 }

@@ -24,6 +24,12 @@ export default class Cmd {
         unknown_cmd: 'Unrecognised command',
         typewriter_time: 32,
         volume: 1,
+        cancel_edit_handler: () => {
+          return new Promise().resolve();
+        },
+        save_edit_handler: (content) => {
+          return new Promise().reject('save_edit_handler not set');
+        },
       },
       user_config
     );
@@ -38,6 +44,8 @@ export default class Cmd {
     this.tab_index = 0;
     this.tab_completions = [];
     this.username = 'guest';
+    this.edit_mode = false;
+    this.edit_content = null;
 
     if (this.options.remote_cmd_list_url) {
       const request = new Request(this.options.remote_cmd_list_url, {
@@ -105,7 +113,83 @@ export default class Cmd {
       }
     });
 
-    this.wrapper.addEventListener('keydown', this.handleKeyPress.bind(this));
+    this.container.addEventListener('keydown', this.handleKeyPress.bind(this));
+
+    this.initTextEditor();
+  }
+
+  initTextEditor() {
+    if (!this.editor_wrapper) {
+      this.editor_wrapper = document.createElement('div');
+      this.editor_wrapper.classList.add('cmd-editor');
+
+      this.editor_el = document.createElement('textarea');
+      this.editor_el.classList.add('cmd-editor-content');
+
+      this.editor_wrapper.appendChild(this.editor_el);
+      this.wrapper.appendChild(this.editor_wrapper);
+
+      const editor_actions_el = document.createElement('div');
+      editor_actions_el.classList.add('cmd-editor-actions');
+      editor_actions_el.innerText = 'shift+enter=save escape=cancel';
+      this.editor_wrapper.appendChild(editor_actions_el);
+      this.editor_wrapper.addEventListener('click', (e) => {
+        e.stopImmediatePropagation();
+      });
+      this.editor_el.addEventListener('keydown', (e) => {
+        switch (e.key) {
+          case 'Escape':
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            this.cancelEdit();
+            break;
+          case 'Enter':
+            if (e.shiftKey) {
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              this.saveEdit();
+            }
+            break;
+          default: // Do nothing
+        }
+      });
+    }
+  }
+
+  startEdit(content) {
+    this.edit_mode = true;
+    this.editor_wrapper.classList.add('is-active');
+    this.editor_el.innerHTML = content;
+  }
+
+  cancelEdit() {
+    this.edit_mode = false;
+    this.editor_el.innerHTML = '';
+    this.editor_wrapper.classList.remove('is-active');
+
+    this.options
+      .cancel_edit_handler()
+      .then(() => {
+        this.focusOnInput();
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  }
+
+  saveEdit() {
+    this.displayOutput('Saving...');
+    this.options
+      .save_edit_handler(this.editor_el.value)
+      .then(() => {
+        this.edit_mode = false;
+        this.editor_el.innerHTML = '';
+        this.editor_wrapper.classList.remove('is-active');
+        this.focusOnInput();
+      })
+      .catch((e) => {
+        alert('Save failed.');
+      });
   }
 
   /**
@@ -329,7 +413,7 @@ export default class Cmd {
       window.open(response.openWindow, '_blank', response.openWindowSpecs);
     }
 
-    if (response.log !== undefined && response.log !== '') {
+    if (response.log !== null) {
       console.log(response.log);
     }
 
@@ -339,6 +423,10 @@ export default class Cmd {
       this.showInputType();
     }
 
+    if (response.edit_content !== null) {
+      this.startEdit(response.edit_content);
+    }
+
     this.displayOutput(response.cmd_out);
 
     if (response.user && response.user.name) {
@@ -346,7 +434,7 @@ export default class Cmd {
       this.prompt_elem.innerText = this.makePrompt();
     }
 
-    if (response.cmd_fill) {
+    if (response.cmd_fill !== null) {
       this.input.value = response.cmd_fill;
     }
   }
@@ -539,6 +627,11 @@ export default class Cmd {
    * scroll to the bottom of the page
    */
   focusOnInput() {
+    if (this.edit_mode) {
+      this.editor_el.focus();
+      return;
+    }
+
     this.input.focus();
   }
 

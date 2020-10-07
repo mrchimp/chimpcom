@@ -6,6 +6,7 @@ use App\Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Commands\Command;
+use Mrchimp\Chimpcom\Console\Input;
 use Mrchimp\Chimpcom\Console\Output;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Log;
@@ -15,7 +16,6 @@ use Mrchimp\Chimpcom\Models\Oneliner;
 use Mrchimp\Chimpcom\Models\Shortcut;
 use Psy\Exception\FatalErrorException;
 use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Input\StringInput;
 
 class Chimpcom
 {
@@ -51,6 +51,15 @@ class Chimpcom
      * @var array
      */
     protected $arguments;
+
+    /**
+     * Multiline string content
+     *
+     * Useful for, e.g. when editing text files
+     *
+     * @var string
+     */
+    protected $content;
 
     public function __construct()
     {
@@ -104,9 +113,14 @@ class Chimpcom
     /**
      * Take an input string and return a response array
      */
-    public function respond(string $cmd_in): Output
+    public function respond(string $cmd_in = null, ?string $content = null): Output
     {
+        if (!$cmd_in) {
+            $cmd_in = '';
+        }
+
         $this->cmd_in = $cmd_in;
+        $this->content = $content;
 
         // Catch "@username foo" messages shorthand
         if (substr($this->cmd_in, 0, 1) === '@') {
@@ -114,8 +128,6 @@ class Chimpcom
         }
 
         $parts = explode(' ', trim($this->cmd_in), 2);
-
-        $this->cmd_name = Alias::lookup($parts[0]);
 
         if (isset($parts[1])) {
             $this->arguments = $parts[1];
@@ -126,6 +138,8 @@ class Chimpcom
         if ($this->cmd_in === 'clearaction') {
             return $this->doClearAction();
         }
+
+        $this->cmd_name = Alias::lookup($parts[0]);
 
         if ($this->isSpecialAction()) {
             return $this->handleAction();
@@ -153,7 +167,7 @@ class Chimpcom
     {
         $this->setAction('normal');
         $output = new Output();
-        $output->write(Format::alert('Ok.'));
+        $output->write(Format::alert('Aborted.'));
         return $output;
     }
 
@@ -214,7 +228,8 @@ class Chimpcom
      */
     protected function handleCommand(string $cmd_name, string $cmd_in): Output
     {
-        $input = new StringInput($cmd_in);
+        $input = new Input($cmd_in);
+        $input->setContent($this->content);
         $output = new Output();
 
         try {
@@ -240,7 +255,8 @@ class Chimpcom
      */
     protected function handleShortcut(Shortcut $shortcut, string $cmd_in, string $args): Output
     {
-        $input = new StringInput($args);
+        $input = new Input($args);
+        $input->setContent($this->content);
         $output = new Output();
 
         $search = $input->getFirstArgument();
@@ -265,7 +281,8 @@ class Chimpcom
     protected function handleAction(): Output
     {
         $action_name = $this->getAction();
-        $input = new StringInput($this->cmd_in);
+        $input = new Input($this->cmd_in);
+        $input->setContent($this->content);
         $output = new Output();
 
         try {
