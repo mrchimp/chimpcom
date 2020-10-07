@@ -175,7 +175,6 @@ export default class Cmd {
   }
 
   saveEdit(continue_editing = true) {
-    console.log('save', continue_editing);
     if (!continue_editing) {
       this.displayOutput('Saving...');
     }
