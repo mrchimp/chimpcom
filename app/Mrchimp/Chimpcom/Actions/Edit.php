@@ -29,12 +29,13 @@ class Edit extends Action
             return 1;
         }
 
-        if (!$input->hasArgument('content')) {
-            $this->error('No content to save. Aborting.');
+        $content = $input->getContent();
+
+        if (empty($content)) {
+            $output->error('No content to save. Aborting.');
             return 1;
         }
 
-        $content = $input->getContent();
         $file->content = $content;
         $file->save();
 
