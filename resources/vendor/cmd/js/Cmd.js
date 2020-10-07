@@ -666,7 +666,7 @@ export default class Cmd {
     this.prompt_elem = document.createElement('span');
     this.prompt_elem.classList.add('main-prompt');
     this.prompt_elem.classList.add('prompt');
-    this.prompt_elem.innerHTML = this.prompt_str;
+    this.prompt_elem.innerHTML = this.makePrompt();
     this.container.append(this.prompt_elem);
 
     this.input = document.createElement('input');
