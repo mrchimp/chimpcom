@@ -137,7 +137,7 @@ export default class Cmd {
       child.remove();
     });
 
-    this.input.setAttribute('title', 'Chimpcom input');
+    this.input.setAttribute('title', 'Cmd input');
     this.container.append(this.input);
 
     this.focusOnInput();
@@ -318,7 +318,7 @@ export default class Cmd {
 
   /**
    * Handle JSON responses. Used as callback by external command handler
-   * @param  {object} res Chimpcom command object
+   * @param  {object} res Cmd command object
    */
   handleResponse(response) {
     if (response.redirect !== undefined) {
