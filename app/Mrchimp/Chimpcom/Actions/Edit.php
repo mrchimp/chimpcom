@@ -16,11 +16,14 @@ class Edit extends Action
     {
         $this->setName('edit');
         $this->setDescription('Handle edited content and save it');
+        $this->addOption('continue', 'c', null, 'Continue editing');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Chimpcom::setAction('normal');
+        if (!$input->getOption('continue')) {
+            Chimpcom::setAction('normal');
+        }
 
         $file = File::find(Session::get('edit_id'));
 
@@ -39,7 +42,9 @@ class Edit extends Action
         $file->content = $content;
         $file->save();
 
-        $output->alert('Ok.');
+        if (!$input->getOption('continue')) {
+            $output->alert('Ok.');
+        }
 
         return 0;
     }

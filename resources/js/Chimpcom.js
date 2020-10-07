@@ -62,19 +62,18 @@ export default class Chimpcom {
   /**
    * Send a command to the server
    */
-  ajaxCmd(cmd_in, content) {
-    const body = {
-      _token: document.querySelector('input[name="_token"]').value,
-      cmd_in: cmd_in,
-    };
-
-    if (content) {
-      body.content = content;
-    }
-
+  ajaxCmd(cmd_in, options) {
     const request = new Request(this.options.responder, {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: JSON.stringify(
+        Object.assign(
+          {
+            _token: document.querySelector('input[name="_token"]').value,
+            cmd_in: cmd_in,
+          },
+          options
+        )
+      ),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -111,7 +110,9 @@ export default class Chimpcom {
     return this.ajaxCmd('clearaction');
   }
 
-  saveContent(content) {
-    return this.ajaxCmd('', content);
+  saveContent(content, continue_editing) {
+    return this.ajaxCmd(continue_editing ? '--continue' : '', {
+      content: content,
+    });
   }
 }

@@ -131,26 +131,24 @@ export default class Cmd {
 
       const editor_actions_el = document.createElement('div');
       editor_actions_el.classList.add('cmd-editor-actions');
-      editor_actions_el.innerText = 'shift+enter=save escape=cancel';
+      editor_actions_el.innerText = 'escape=cancel shift+enter=save ctrl+shift+enter=save';
       this.editor_wrapper.appendChild(editor_actions_el);
       this.editor_wrapper.addEventListener('click', (e) => {
         e.stopImmediatePropagation();
       });
       this.editor_el.addEventListener('keydown', (e) => {
-        switch (e.key) {
-          case 'Escape':
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            this.cancelEdit();
-            break;
-          case 'Enter':
-            if (e.shiftKey) {
-              e.preventDefault();
-              e.stopImmediatePropagation();
-              this.saveEdit();
-            }
-            break;
-          default: // Do nothing
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          e.stopPropagation();
+          this.cancelEdit();
+          return;
+        }
+
+        if (e.key === 'Enter' && e.shiftKey) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.saveEdit(!e.ctrlKey);
+          return;
         }
       });
     }
@@ -176,16 +174,25 @@ export default class Cmd {
       });
   }
 
-  saveEdit() {
-    this.displayOutput('Saving...');
+  saveEdit(continue_editing = true) {
+    console.log('save', continue_editing);
+    if (!continue_editing) {
+      this.displayOutput('Saving...');
+    }
+
+    this.editor_el.disabled = false;
+
     this.options
-      .save_edit_handler(this.editor_el.value)
+      .save_edit_handler(this.editor_el.value, continue_editing)
       .then(() => {
-        console.log('post save stuff');
-        this.edit_mode = false;
-        this.editor_el.innerHTML = '';
-        this.editor_wrapper.classList.remove('is-active');
-        this.focusOnInput();
+        this.editor_el.disabled = false;
+
+        if (!continue_editing) {
+          this.edit_mode = false;
+          this.editor_el.innerHTML = '';
+          this.editor_wrapper.classList.remove('is-active');
+          this.focusOnInput();
+        }
       })
       .catch((e) => {
         alert('Save failed.');
