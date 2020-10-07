@@ -53,16 +53,6 @@ export default class Chimpcom {
         } else {
           return 'Nothing to fix.';
         }
-      case 'popup':
-      case 'detach':
-        openChimpcomPopup();
-        return "If nothing happened, try disabling your popup blocker.<br><br>To create popup bookmarklet, bookmark <a href=\"javascript:window.open('http://cmd.deviouschimp.co.uk/','_blank','height=388,width=669,left=100,top=100,menubar=no,location=no,scrollbars=yes,status=no,toolbar=no,titlebar=no');\">this link.</a>";
-      case 'ispopup':
-        if (this.popup) {
-          return 'Popup mode is enabled.';
-        } else {
-          return 'Popup mode is not enabled.';
-        }
       default:
         this.ajaxCmd(cmd_in);
         return true;

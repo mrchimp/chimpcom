@@ -9,23 +9,24 @@ import CmdStack from './CmdStack';
 export default class Cmd {
   constructor(user_config) {
     this.keys_array = [9, 13, 38, 40, 27];
-    this.style = 'dark';
-    this.popup = false;
     this.prompt_str = '%USERNAME% $ ';
     this.speech_synth_support =
       'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
-    this.options = {
-      busy_text: '...',
-      external_processor: function() {},
-      history_id: 'cmd_history',
-      remote_cmd_list_url: '',
-      selector: '#cmd',
-      tabcomplete_url: '',
-      talk: false,
-      unknown_cmd: 'Unrecognised command',
-      typewriter_time: 32,
-      volume: 1,
-    };
+    this.options = Object.assign(
+      {
+        busy_text: '...',
+        external_processor: function() {},
+        history_id: 'cmd_history',
+        remote_cmd_list_url: '',
+        selector: '#cmd',
+        tabcomplete_url: '',
+        talk: false,
+        unknown_cmd: 'Unrecognised command',
+        typewriter_time: 32,
+        volume: 1,
+      },
+      user_config
+    );
     this.voices = false;
     this.remote_commands = [];
     this.all_commands = [];
@@ -37,8 +38,6 @@ export default class Cmd {
     this.tab_index = 0;
     this.tab_completions = [];
     this.username = 'guest';
-
-    this.options = Object.assign(this.options, user_config);
 
     if (this.options.remote_cmd_list_url) {
       const request = new Request(this.options.remote_cmd_list_url, {
@@ -532,17 +531,7 @@ export default class Cmd {
       url = 'http://' + url;
     }
 
-    if (popup) {
-      window.open(url, '_blank');
-      window.focus();
-    } else {
-      // break out of iframe - used by chrome plugin
-      if (top.location !== location) {
-        top.location.href = document.location.href;
-      }
-
-      location.href = url;
-    }
+    location.href = url;
   }
 
   /**
