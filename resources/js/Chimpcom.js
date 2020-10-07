@@ -112,6 +112,6 @@ export default class Chimpcom {
   }
 
   saveContent(content) {
-    return this.ajaxCmd('save edit', content);
+    return this.ajaxCmd('', content);
   }
 }
