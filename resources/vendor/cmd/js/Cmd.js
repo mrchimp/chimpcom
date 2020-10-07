@@ -577,6 +577,10 @@ export default class Cmd {
               this.resetTabInput();
               this.input.value = data[0];
             } else {
+              if (!Array.isArray(data)) {
+                throw 'Tab complete is not array.';
+              }
+
               this.tab_completions = data;
               this.input.value = data[0];
             }
