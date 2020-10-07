@@ -163,13 +163,12 @@ export default class Cmd {
   }
 
   cancelEdit() {
-    this.edit_mode = false;
-    this.editor_el.innerHTML = '';
-    this.editor_wrapper.classList.remove('is-active');
-
     this.options
       .cancel_edit_handler()
       .then(() => {
+        this.edit_mode = false;
+        this.editor_el.innerHTML = '';
+        this.editor_wrapper.classList.remove('is-active');
         this.focusOnInput();
       })
       .catch((e) => {
@@ -182,6 +181,7 @@ export default class Cmd {
     this.options
       .save_edit_handler(this.editor_el.value)
       .then(() => {
+        console.log('post save stuff');
         this.edit_mode = false;
         this.editor_el.innerHTML = '';
         this.editor_wrapper.classList.remove('is-active');
