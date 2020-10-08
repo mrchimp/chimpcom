@@ -48,6 +48,7 @@ return [
         'pwd' => \Mrchimp\Chimpcom\Commands\Pwd::class,
         'register' => \Mrchimp\Chimpcom\Commands\Register::class,
         'rm' => \Mrchimp\Chimpcom\Commands\Rm::class,
+        'rmdir' => \Mrchimp\Chimpcom\Commands\Rmdir::class,
         'rss' => \Mrchimp\Chimpcom\Commands\Rss::class,
         'save' => \Mrchimp\Chimpcom\Commands\Save::class,
         'scale' => \Mrchimp\Chimpcom\Commands\Scale::class,

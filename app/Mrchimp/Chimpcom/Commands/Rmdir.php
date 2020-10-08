@@ -2,17 +2,13 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use function PHPSTORM_META\map;
-
 use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Models\Directory;
-
-use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Rm extends Command
+class Rmdir extends Command
 {
     /**
      * Configure the command
@@ -21,8 +17,8 @@ class Rm extends Command
      */
     protected function configure()
     {
-        $this->setName('rm');
-        $this->setDescription('Remove files.');
+        $this->setName('rmdir');
+        $this->setDescription('Remove direcories.');
         $this->addOption(
             'force',
             'f',
@@ -30,11 +26,12 @@ class Rm extends Command
             'Ignore nonexistent files and arguments, never prompt.'
         );
         $this->addArgument(
-            'filename',
+            'dirname',
             InputArgument::REQUIRED,
             'File to remove'
         );
     }
+
 
     /**
      * Run the command
@@ -49,19 +46,19 @@ class Rm extends Command
             return 1;
         }
 
-        $filename = $input->getArgument('filename');
+        $dirname = $input->getArgument('dirname');
 
-        $dir = Directory::current();
+        $current = Directory::current();
 
-        if (!$dir) {
+        if (!$current) {
             $output->error('File system not available.');
             return 2;
         }
 
-        $file = $dir->files->firstWhere('name', $filename);
+        $directory = $current->children->firstWhere('name', $dirname);
 
-        if (!$file) {
-            if ($filename === 'penguin') {
+        if (!$directory) {
+            if ($dirname === 'penguin') {
                 $output->write('You remove the penguin but another appears in its place.');
                 return 0;
             }
@@ -70,12 +67,17 @@ class Rm extends Command
             return 3;
         }
 
-        if (!$file->belongsToUser(Auth::user())) {
-            $output->error('You do not own that file.');
+        if (!$directory->belongsToUser(Auth::user()) && !Auth::user()->is_admin) {
+            $output->error('You do not have permission to remove that directory.');
             return 4;
         }
 
-        $file->delete();
+        if ($directory->children->isNotEmpty() || $directory->files->isNotEmpty()) {
+            $output->error('That directory is not empty.');
+            return 5;
+        }
+
+        $directory->delete();
 
         $output->write('Ok.');
 
