@@ -54,15 +54,15 @@ abstract class TestCase extends BaseTestCase
             );
     }
 
-    protected function getAdminResponse($cmd_in)
+    protected function getAdminResponse($cmd_in, $user = null)
     {
-        if (!$this->admin) {
+        if (!$this->admin && is_null($user)) {
             $this->admin = factory(User::class)->states('admin')->create();
             $this->admin->save();
         }
 
         return $this
-            ->actingAs($this->admin)
+            ->actingAs($user ? $user : $this->admin)
             ->post(
                 $this->response_path,
                 [
