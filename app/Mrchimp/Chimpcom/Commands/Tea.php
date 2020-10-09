@@ -36,7 +36,8 @@ class Tea extends Command
     {
         $names = $input->getArgument('names');
         $rand = array_rand($names);
-        $output->write(ucwords($names[$rand]) . ' is on hot beverage duty.');
+        $name = ucwords($names[$rand]);
+        $output->write($name . ' ' . ($name === 'You' ? 'are' : 'is') .  ' on hot beverage duty.');
 
         return 0;
     }
