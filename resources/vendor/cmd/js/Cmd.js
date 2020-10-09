@@ -213,11 +213,13 @@ export default class Cmd {
       case 'textarea':
         this.input = document.createElement('textarea');
         this.input.classList.add('cmd-in');
+        this.input.setAttribute('autocapitalize', 'off');
         break;
       default:
         this.input = document.createElement('input');
         this.input.setAttribute('type', 'text');
         this.input.setAttribute('maxlength', 512);
+        this.input.setAttribute('autocapitalize', 'off');
         this.input.classList.add('cmd-in');
     }
 
