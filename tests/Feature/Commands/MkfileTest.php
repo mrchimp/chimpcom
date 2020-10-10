@@ -55,4 +55,10 @@ class MkfileTest extends TestCase
 
         $this->assertEquals(0, $file_count);
     }
+
+    /** @test */
+    public function cant_create_files_with_same_name_as_dir()
+    {
+        $this->markTestIncomplete();
+    }
 }

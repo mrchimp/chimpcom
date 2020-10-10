@@ -84,4 +84,10 @@ class MkdirTest extends TestCase
             ->assertStatus(200)
             ->assertSee('Filesystem is not available');
     }
+
+    /** @test */
+    public function cant_create_files_with_same_name_as_directories()
+    {
+        $this->markTestIncomplete();
+    }
 }

@@ -43,13 +43,13 @@ class Cd extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $dir = $input->getArgument('dir');
-        $path = implode(' ', $dir);
+        $path_string = implode(' ', $dir);
 
         if (!$dir) {
-            $default = Directory::default();
+            $home = Directory::home();
 
-            if ($default) {
-                $default->setCurrent();
+            if ($home) {
+                $home->setCurrent();
             }
 
             $output->write('You are home.');
@@ -57,7 +57,7 @@ class Cd extends Command
             return 0;
         }
 
-        switch ($path) {
+        switch ($path_string) {
             case 'penguin':
                 $output->write('You are inside a penguin. It is dark.');
                 return 0;
@@ -70,19 +70,24 @@ class Cd extends Command
                 return 0;
             default:
                 try {
-                    $target = Directory::fromPath($path);
+                    $path = Path::make($path_string);
                 } catch (InvalidPathException $e) {
                     $output->error($e->getMessage());
 
                     return 1;
                 }
 
-                if (!$target) {
+                if (!$path->exists()) {
                     $output->error('No such file or directory');
                     return 2;
                 }
 
-                $target->setCurrent();
+                if (!$path->isDirectory()) {
+                    $output->error('Target is not a directory.');
+                    return 3;
+                }
+
+                $path->target()->setCurrent();
                 $output->write('You go.');
 
                 return 0;

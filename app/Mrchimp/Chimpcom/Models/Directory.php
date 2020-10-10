@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Kalnoy\Nestedset\NodeTrait;
 use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
+use Mrchimp\Chimpcom\Filesystem\FilesystemEntity;
 use Mrchimp\Chimpcom\Filesystem\Path;
 
-class Directory extends Model
+class Directory extends Model implements FilesystemEntity
 {
     use NodeTrait;
 
@@ -88,6 +89,32 @@ class Directory extends Model
     }
 
     /**
+     * Get the user's home directory
+     *
+     * @return Directory|null
+     */
+    public static function home(): ?Directory
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+
+        $root = Directory::root();
+
+        if (!$root) {
+            return null;
+        }
+
+        $home = $root->children->firstWhere('name', 'home');
+
+        if (!$home) {
+            return null;
+        }
+
+        return $home->children->firstWhere('name', Auth::user()->name);
+    }
+
+    /**
      * Get the name of the owner of this directory
      */
     public function ownerName(): string
@@ -151,56 +178,56 @@ class Directory extends Model
      *
      * @throws InvalidPathException
      */
-    public static function fromPath(string $path_str, Directory $source = null): ?Directory
-    {
-        if (!$source) {
-            $source = Directory::current();
-        }
+    // public static function fromPath(string $path_str, Directory $source = null): ?Directory
+    // {
+        // if (!$source) {
+        //     $source = Directory::current();
+        // }
 
-        $path = Path::make($path_str);
+        // $path = Path::make($path_str);
 
-        if ($path->doubleDotCount() > 0 && substr($path_str, 0, 2) !== '..') {
-            throw new InvalidPathException('Path cannot contain ".." except at the start of a path');
-        }
+        // if ($path->doubleDotCount() > 0 && substr($path_str, 0, 2) !== '..') {
+        //     throw new InvalidPathException('Path cannot contain ".." except at the start of a path');
+        // }
 
-        if ($path_str === '..' || $path_str === './..') {
-            return $source->parent;
-        }
+        // if ($path_str === '..' || $path_str === './..') {
+        //     return $source->parent;
+        // }
 
-        if ($path_str === '.') {
-            return $source;
-        }
+        // if ($path_str === '.') {
+        //     return $source;
+        // }
 
-        if ($path->isRoot()) {
-            return Directory::root();
-        }
+        // if ($path->isRoot()) {
+        //     return Directory::root();
+        // }
 
-        if ($path->isAbsolute()) {
-            $source = Directory::root();
-        }
+        // if ($path->isAbsolute()) {
+        //     $source = Directory::root();
+        // }
 
-        $current = $source;
+        // $current = $source;
 
-        if ($path->isEmpty()) {
-            throw new InvalidPathException('Path is empty');
-        }
+        // if ($path->isEmpty()) {
+        //     throw new InvalidPathException('Path is empty');
+        // }
 
-        do {
-            if ($path->get() === '.') {
-                continue;
-            }
+        // do {
+        //     if ($path->get() === '.') {
+        //         continue;
+        //     }
 
-            $child = $current->children->firstWhere('name', $path->get());
+        //     $child = $current->children->firstWhere('name', $path->get());
 
-            if (!$child) {
-                throw new InvalidPathException('No such file or directory');
-            }
+        //     if (!$child) {
+        //         throw new InvalidPathException('No such file or directory');
+        //     }
 
-            $current = $child;
-        } while (!is_null($path->next()));
+        //     $current = $child;
+        // } while (!is_null($path->next()));
 
-        return $current;
-    }
+        // return $current;
+    // }
 
     /**
      * This file belongs to the given user

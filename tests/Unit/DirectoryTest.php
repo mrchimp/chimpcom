@@ -81,38 +81,4 @@ class DirectoryTest extends TestCase
         $this->assertEquals('/child', $child->fullPath());
         $this->assertEquals('/child/grandchild', $grandchild->fullPath());
     }
-
-    /** @test */
-    public function a_directory_can_be_found_from_an_absolute_or_relative_path()
-    {
-        $root = factory(Directory::class)->create([
-            'name' => 'root',
-        ]);
-        $child = factory(Directory::class)->create([
-            'name' => 'child',
-        ]);
-        $grandchild = factory(Directory::class)->create([
-            'name' => 'grandchild',
-        ]);
-
-        $root->appendNode($child);
-        $child->appendNode($grandchild);
-
-        $this->assertEquals($root->name, Directory::fromPath('/')->name);
-        $this->assertEquals($child->name, Directory::fromPath('child', $root)->name);
-        $this->assertEquals($child->name, Directory::fromPath('/child')->name);
-        $this->assertEquals($grandchild->name, Directory::fromPath('/child/grandchild')->name);
-        $this->assertEquals($root->name, Directory::fromPath('..', $child)->name);
-        $this->assertEquals($child->name, Directory::fromPath('.', $child)->name);
-        $this->assertEquals($child->name, Directory::fromPath('./child', $root)->name);
-
-        $this->expectException(InvalidPathException::class);
-        Directory::fromPath('/file_that_does_not_exist');
-
-        $this->expectException(InvalidPathException::class);
-        Directory::fromPath('file_that_does_not_exist');
-
-        $this->expectException(InvalidPathException::class);
-        Directory::fromPath('../..', $grandchild);
-    }
 }
