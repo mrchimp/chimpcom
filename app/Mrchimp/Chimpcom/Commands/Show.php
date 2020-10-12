@@ -2,7 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Memory;
@@ -30,9 +30,9 @@ class Show extends Command
         $this->addRelated('setpublic');
 
         $this->addArgument(
-            'name',
-            InputArgument::OPTIONAL,
-            'Name of memories to search for.'
+            'names',
+            InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
+            'Name(s) of memories to search for.'
         );
 
         $this->addOption(
@@ -85,7 +85,7 @@ class Show extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = $input->getArgument('name');
+        $names = $input->getArgument('names');
         $show_public = $input->getOption('public');
         $show_private = $input->getOption('private');
         $show_mine = $input->getOption('mine');
@@ -129,11 +129,11 @@ class Show extends Command
 
         if ($last) {
             $query->orderBy('created_at');
-        } elseif (is_numeric($name)) {
-            $memory_id = $name;
-            $query->where('id', $memory_id);
+        } elseif (is_numeric(Arr::first($names))) {
+            $memory_id = $names;
+            $query->whereIn('id', $memory_id);
         } else {
-            $query->where('name', $name);
+            $query->whereIn('name', $names);
         }
 
         $memories = $query->get();
