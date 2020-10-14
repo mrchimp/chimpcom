@@ -2,9 +2,13 @@
 
 namespace Mrchimp\Chimpcom\Filesystem;
 
+use App\User;
 use Illuminate\Support\Arr;
 use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
+use Mrchimp\Chimpcom\Exceptions\PermissionDenied;
 use Mrchimp\Chimpcom\Models\Directory;
+use Mrchimp\Chimpcom\Models\File;
+use PDO;
 
 /**
  * Helper class for handling path strings
@@ -322,6 +326,53 @@ class Path
     public function parent(): ?Directory
     {
         return $this->parent_directory;
+    }
+
+    /**
+     * Create a directory in the parent directory
+     */
+    public function makeDirectory(User $owner, string $name): Directory
+    {
+        if (!$this->parent_directory) {
+            throw new InvalidPathException('Parent directory does not exist.');
+        }
+
+        if (!$this->parent_directory->belongsToUser($owner)) {
+            throw new PermissionDenied('User does not own the parent directory.');
+        }
+
+        $directory = Directory::make([
+            'name' => $name,
+            'owner_id' => $owner->id,
+        ]);
+
+        $this->parent_directory->appendNode($directory);
+
+        return $directory;
+    }
+
+    /**
+     * Create a file in the parent directory
+     */
+    public function makeFile(User $owner, string $name): File
+    {
+        if (!$this->parent_directory) {
+            throw new InvalidPathException('Parent directory does not exist');
+        }
+
+        if (!$this->parent_directory->belongsToUser($owner)) {
+            throw new PermissionDenied('User does not own the parent directory.');
+        }
+
+        $file = File::make([
+            'name' => $name,
+            'owner_id' => $owner->id,
+            'content' => '',
+        ]);
+
+        $this->parent_directory->files()->save($file);
+
+        return $file;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\User;
 use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
 use Mrchimp\Chimpcom\Filesystem\Path;
 use Mrchimp\Chimpcom\Models\Directory;
@@ -175,5 +176,53 @@ class PathTest extends TestCase
         $this->assertFalse($path->exists());
         $this->assertInstanceOf(Directory::class, $path->parent());
         $this->assertEquals('fred', $path->parent()->name);
+    }
+
+    /** @test */
+    public function a_directory_can_be_created_in_the_parent_directory()
+    {
+        $user = factory(User::class)->create();
+        $root = factory(Directory::class)->create([
+            'name' => 'root',
+            'owner_id' => $user->id,
+        ]);
+        $home = factory(Directory::class)->create([
+            'name' => 'home',
+            'owner_id' => $user->id,
+        ]);
+        $root->appendNode($home);
+
+        $path = Path::make('/home/fred');
+
+        $this->assertFalse($path->exists());
+        $path->makeDirectory($user, 'fred');
+        $path->resolve();
+        $this->assertTrue($path->exists());
+        $this->assertInstanceOf(Directory::class, $path->target());
+        $this->assertEquals('fred', $path->target()->name);
+    }
+
+    /** @test */
+    public function a_file_can_be_created_in_the_parent_directory()
+    {
+        $user = factory(User::class)->create();
+        $root = factory(Directory::class)->create([
+            'name' => 'root',
+            'owner_id' => $user->id,
+        ]);
+        $home = factory(Directory::class)->create([
+            'name' => 'home',
+            'owner_id' => $user->id,
+        ]);
+        $root->appendNode($home);
+
+        $path = Path::make('/home/fred');
+
+        $this->assertFalse($path->exists());
+        $path->makeFile($user, 'fred');
+        $path->resolve();
+        $this->assertTrue($path->exists());
+        $this->assertInstanceOf(File::class, $path->target());
+        $this->assertEquals('fred', $path->target()->name);
     }
 }
