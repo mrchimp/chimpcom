@@ -3,6 +3,8 @@
 namespace Mrchimp\Chimpcom\Filesystem;
 
 use Illuminate\Support\Arr;
+use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
+use Mrchimp\Chimpcom\Models\Directory;
 
 /**
  * Helper class for handling path strings
@@ -31,12 +33,38 @@ class Path
     protected $index = 0;
 
     /**
+     * Type of target
+     *
+     * @var int
+     */
+    protected $type;
+
+    /**
+     * The directory/file that this path points at
+     *
+     * @var Directory|File
+     */
+    protected $target;
+
+    /**
+     * Whether resolve has been called
+     *
+     * @var boolean
+     */
+    protected $resolved = false;
+
+    public const FILE = 0;
+    public const DIRECTORY = 1;
+
+    /**
      * Make a new Path
      */
     public function __construct($path)
     {
         $this->path = $path;
         $this->chunks = array_values(array_filter(explode('/', $path)));
+        $this->resolve();
+        $this->reset();
     }
 
     /**
@@ -74,7 +102,17 @@ class Path
     }
 
     /**
-     * Get the current chunk
+     * Move the cursor back and return the current chunk
+     */
+    public function previous(): ?string
+    {
+        $this->index--;
+
+        return $this->get();
+    }
+
+    /**
+     * Get the current chunk - or null
      */
     public function get(): ?string
     {
@@ -87,6 +125,14 @@ class Path
     public function reset(): void
     {
         $this->index = 0;
+    }
+
+    /**
+     * Move cursor to last item
+     */
+    public function toEnd(): void
+    {
+        $this->index = count($this->chunks) - 1;
     }
 
     /**
@@ -141,5 +187,131 @@ class Path
     public function isLast(): bool
     {
         return $this->index === $this->count() - 1;
+    }
+
+    /**
+     * Find the Directory or File that this path points at
+     *
+     * @param Directory $source Directory to use as a source for relative paths
+     *
+     * @throws InvalidPathException
+     */
+    public function resolve(Directory $source = null): void
+    {
+        if ($this->resolved) {
+            return;
+        }
+
+        if ($this->count() > 32) {
+            throw new InvalidPathException('Path length is too long.');
+        }
+
+        if (!$source) {
+            $source = Directory::current();
+
+            if (!$source) {
+                throw new InvalidPathException('No source directory.');
+            }
+        }
+
+        if ($this->path === '.') {
+            $this->type = static::DIRECTORY;
+            $this->target = $source;
+            return;
+        }
+
+        if ($this->isRoot()) {
+            $this->type = static::DIRECTORY;
+            $this->target = Directory::root();
+            return;
+        }
+
+        if ($this->isEmpty()) {
+            throw new InvalidPathException('Path is empty.');
+        }
+
+        if ($this->isAbsolute()) {
+            $source = Directory::root();
+        }
+
+        $current = $source;
+
+        do {
+            if ($this->get() === '.') {
+                continue;
+            }
+
+            if ($this->get() === '..') {
+                if ($current->parent) {
+                    $next = $current->parent;
+                } else {
+                    throw new InvalidPathException('No such file or directory');
+                }
+            } else {
+                $next = $current->children->firstWhere('name', $this->get());
+            }
+
+            if ($this->isLast()) {
+                if ($next) {
+                    $this->target = $next;
+                    $this->type = static::DIRECTORY;
+                    return;
+                } else {
+                    $file = $current->files->firstWhere('name', $this->get());
+
+                    if (!$file) {
+                        throw new InvalidPathException('No such file or directory');
+                    }
+
+                    $this->target = $file;
+                    $this->type = static::FILE;
+                    return;
+                }
+            }
+
+            $current = $next;
+        } while (!is_null($this->next()));
+
+        throw new \Exception('This should never happen.');
+    }
+
+    /**
+     * If path resolves to an existing item
+     */
+    public function exists(): bool
+    {
+        return !is_null($this->target);
+    }
+
+    /**
+     * If resolved target is a directory
+     */
+    public function isDirectory(): bool
+    {
+        return $this->type === static::DIRECTORY;
+    }
+
+    /**
+     * If resolved target is a file
+     */
+    public function isFile(): bool
+    {
+        return $this->type === static::FILE;
+    }
+
+    /**
+     * Get the entity that this path points at
+     */
+    public function target(): FilesystemEntity
+    {
+        return $this->target;
+    }
+
+    /**
+     * Convert to string
+     */
+    public function __toString()
+    {
+        return $this->path;
     }
 }

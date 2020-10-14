@@ -53,8 +53,16 @@ class Mkfile extends Command
             return 3;
         }
 
+        $filename = $input->getArgument('filename');
+
+        if ($dir->children->firstWhere('name', $filename)) {
+            $output->error('A directory with that name already exists.');
+            $output->setResponseCode(422);
+            return 4;
+        }
+
         $dir->files()->create([
-            'name' => $input->getArgument('filename'),
+            'name' => $filename,
             'owner_id' => Auth::id(),
             'content' => '',
         ]);

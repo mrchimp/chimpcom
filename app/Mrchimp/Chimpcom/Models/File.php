@@ -5,10 +5,9 @@ namespace Mrchimp\Chimpcom\Models;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
-use Mrchimp\Chimpcom\Filesystem\Path;
+use Mrchimp\Chimpcom\Filesystem\FilesystemEntity;
 
-class File extends Model
+class File extends Model implements FilesystemEntity
 {
     /**
      * The attributes that are mass assignable.

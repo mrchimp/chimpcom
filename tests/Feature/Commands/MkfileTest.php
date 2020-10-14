@@ -55,4 +55,22 @@ class MkfileTest extends TestCase
 
         $this->assertEquals(0, $file_count);
     }
+
+    /** @test */
+    public function cant_create_files_with_same_name_as_dir()
+    {
+        $user = factory(User::class)->create();
+        $directory = factory(Directory::class)->create([
+            'owner_id' => $user->id,
+        ]);
+        $child = factory(Directory::class)->create([
+            'name' => 'child',
+        ]);
+        $directory->appendNode($child);
+        $user->currentDirectory()->associate($directory);
+
+        $this->getUserResponse('mkfile child', $user)
+            ->assertStatus(422)
+            ->assertSee('A directory with that name already exists.');
+    }
 }

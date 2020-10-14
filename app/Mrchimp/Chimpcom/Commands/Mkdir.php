@@ -56,6 +56,13 @@ class Mkdir extends Command
 
         $filename = $input->getArgument('name');
 
+        if ($current->files->firstWhere('name', $filename)) {
+            $output->error('A file with that name already exists.');
+            $output->setResponseCode(422);
+
+            return 3;
+        }
+
         $current->appendNode(Directory::create([
             'name' => $this->sanitiseFilename($filename),
             'owner_id' => Auth::id(),

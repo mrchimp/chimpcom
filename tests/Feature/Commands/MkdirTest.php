@@ -4,6 +4,7 @@ namespace Tests\Feature\Commands;
 
 use App\User;
 use Mrchimp\Chimpcom\Models\Directory;
+use Mrchimp\Chimpcom\Models\File;
 use Tests\TestCase;
 
 class MkdirTest extends TestCase
@@ -83,5 +84,25 @@ class MkdirTest extends TestCase
         $this->getUserResponse('mkdir dirname')
             ->assertStatus(200)
             ->assertSee('Filesystem is not available');
+    }
+
+    /** @test */
+    public function cant_create_files_with_same_name_as_directories()
+    {
+        $user = factory(User::class)->create();
+        $directory = factory(Directory::class)->create([
+            'name' => 'Parent Dir',
+            'owner_id' => $user->id,
+        ]);
+
+        $file = factory(File::class)->create([
+            'name' => 'file',
+        ]);
+        $directory->files()->save($file);
+        $user->currentDirectory()->associate($directory);
+
+        $this->getUserResponse('mkdir file', $user)
+            ->assertStatus(422)
+            ->assertSee('A file with that name already exists.');
     }
 }
