@@ -13,10 +13,11 @@ class RemoveRootDirectory extends Migration
     public function up()
     {
         $root = Directory::whereIsRoot()->first();
-        $root->fixTree();
-        $root->refreshNode();
 
         if ($root) {
+            $root->fixTree();
+            $root->refreshNode();
+
             $root->children->each(function ($child) use ($root) {
                 $child->saveAsRoot();
             });
