@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\User;
 use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
+use Mrchimp\Chimpcom\Filesystem\RootDirectory;
 use Mrchimp\Chimpcom\Models\Directory;
 use Tests\TestCase;
 
@@ -24,13 +25,13 @@ class DirectoryTest extends TestCase
     }
 
     /** @test */
-    public function if_user_has_no_current_directory_one_is_assigned()
+    public function if_user_has_no_current_null_is_returned()
     {
-        $directory = factory(Directory::class)->create();
         $user = factory(User::class)->create();
 
-        $this->assertEquals($directory->id, Directory::current($user)->id);
-        $this->assertInstanceOf(Directory::class, Directory::current($user));
+        $this->assertInstanceOf(RootDirectory::class, Directory::current($user));
+        $this->assertEquals('/', Directory::current($user)->fullPath());
+        $this->assertEquals('/', Directory::current($user)->name);
     }
 
     /** @test */
@@ -51,34 +52,20 @@ class DirectoryTest extends TestCase
     /** @test */
     public function fullPath_gets_the_full_path_as_you_would_expect()
     {
-        $root = factory(Directory::class)->create([
-            'name' => 'root',
+        $directory = factory(Directory::class)->create([
+            'name' => 'directory',
         ]);
+
         $child = factory(Directory::class)->create([
             'name' => 'child',
         ]);
-        $other_child = factory(Directory::class)->create([
-            'name' => 'other_child',
-        ]);
 
-        $grandchild = factory(Directory::class)->create([
-            'name' => 'grandchild',
-        ]);
-        $other_grandchild = factory(Directory::class)->create([
-            'name' => 'other_grandchild',
-        ]);
+        $directory->appendNode($child);
 
-        $root->appendNode($child);
-        $root->appendNode($other_child);
-        $child->appendNode($grandchild);
-        $child->appendNode($other_grandchild);
-
-        $root->refresh();
+        $directory->refresh();
         $child->refresh();
-        $grandchild->refresh();
 
-        $this->assertEquals('/', $root->fullPath());
-        $this->assertEquals('/child', $child->fullPath());
-        $this->assertEquals('/child/grandchild', $grandchild->fullPath());
+        $this->assertEquals('/directory', $directory->fullPath());
+        $this->assertEquals('/directory/child', $child->fullPath());
     }
 }

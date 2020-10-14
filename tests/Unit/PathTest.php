@@ -14,9 +14,6 @@ class PathTest extends TestCase
     /** @test */
     public function path_allows_traversing_via_segment()
     {
-        $this->root = factory(Directory::class)->create([
-            'name' => 'root',
-        ]);
         $this->parent = factory(Directory::class)->create([
             'name' => 'parent',
         ]);
@@ -27,7 +24,6 @@ class PathTest extends TestCase
             'name' => 'grandchild',
         ]);
 
-        $this->root->appendNode($this->parent);
         $this->parent->appendNode($this->child);
         $this->child->appendNode($this->grandchild);
 
@@ -48,9 +44,6 @@ class PathTest extends TestCase
     {
         $path_str = '/home/test';
 
-        $root = factory(Directory::class)->create([
-            'name' => 'root',
-        ]);
         $home = factory(Directory::class)->create([
             'name' => 'home',
         ]);
@@ -58,7 +51,6 @@ class PathTest extends TestCase
             'name' => 'test',
         ]);
 
-        $root->appendNode($home);
         $home->appendNode($test);
 
         $path = Path::make($path_str);
@@ -74,16 +66,9 @@ class PathTest extends TestCase
     {
         $path_str = '/home/test';
 
-        $root = factory(Directory::class)->create([
-            'name' => 'root',
-        ]);
-        $home = factory(Directory::class)->create([
+        factory(Directory::class)->create([
             'name' => 'home',
         ]);
-
-        $root->appendNode($home);
-
-        // $this->expectException(InvalidPathException::class);
 
         $path = Path::make($path_str);
 
@@ -95,9 +80,6 @@ class PathTest extends TestCase
     {
         $path_str = '/home/test/file';
 
-        $root = factory(Directory::class)->create([
-            'name' => 'root',
-        ]);
         $home = factory(Directory::class)->create([
             'name' => 'home',
         ]);
@@ -108,7 +90,6 @@ class PathTest extends TestCase
             'name' => 'file',
         ]);
 
-        $root->appendNode($home);
         $home->appendNode($test);
         $test->files()->save($file);
 
@@ -158,9 +139,6 @@ class PathTest extends TestCase
     /** @test */
     public function if_a_path_doesnt_exist_but_its_parent_directory_does_then_we_can_get_that()
     {
-        $root = factory(Directory::class)->create([
-            'name' => 'root'
-        ]);
         $home = factory(Directory::class)->create([
             'name' => 'home',
         ]);
@@ -168,7 +146,6 @@ class PathTest extends TestCase
             'name' => 'fred',
         ]);
 
-        $root->appendNode($home);
         $home->appendNode($fred);
 
         $path = Path::make('/home/fred/doesntexist');
@@ -182,15 +159,11 @@ class PathTest extends TestCase
     public function a_directory_can_be_created_in_the_parent_directory()
     {
         $user = factory(User::class)->create();
-        $root = factory(Directory::class)->create([
-            'name' => 'root',
-            'owner_id' => $user->id,
-        ]);
         $home = factory(Directory::class)->create([
             'name' => 'home',
             'owner_id' => $user->id,
         ]);
-        $root->appendNode($home);
+        $home->setCurrent($user);
 
         $path = Path::make('/home/fred');
 
@@ -206,15 +179,10 @@ class PathTest extends TestCase
     public function a_file_can_be_created_in_the_parent_directory()
     {
         $user = factory(User::class)->create();
-        $root = factory(Directory::class)->create([
-            'name' => 'root',
-            'owner_id' => $user->id,
-        ]);
         $home = factory(Directory::class)->create([
             'name' => 'home',
             'owner_id' => $user->id,
         ]);
-        $root->appendNode($home);
 
         $path = Path::make('/home/fred');
 

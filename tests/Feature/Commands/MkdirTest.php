@@ -83,7 +83,7 @@ class MkdirTest extends TestCase
     {
         $this->getUserResponse('mkdir dirname')
             ->assertStatus(200)
-            ->assertSee('Filesystem is not available');
+            ->assertSee('You do not have permission to create a directory here');
     }
 
     /** @test */

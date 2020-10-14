@@ -64,17 +64,25 @@ class Path
      */
     protected $parent_directory;
 
+    /**
+     * Directory to use as origin for relative paths
+     *
+     * @var Directory
+     */
+    protected $source_directory;
+
     public const FILE = 0;
     public const DIRECTORY = 1;
 
     /**
      * Make a new Path
      */
-    public function __construct($path)
+    public function __construct($path, ?Directory $source = null)
     {
+        $this->source = $source;
         $this->path = $path;
         $this->chunks = array_values(array_filter(explode('/', $path)));
-        $this->resolve();
+        $this->resolve($this->source);
         $this->reset();
     }
 
@@ -217,6 +225,10 @@ class Path
             throw new InvalidPathException('Path length is too long.');
         }
 
+        if ($this->isAbsolute()) {
+            $source = new RootDirectory;
+        }
+
         if (!$source) {
             $source = Directory::current();
 
@@ -233,16 +245,12 @@ class Path
 
         if ($this->isRoot()) {
             $this->type = static::DIRECTORY;
-            $this->target = Directory::root();
+            $this->target = new RootDirectory;
             return;
         }
 
         if ($this->isEmpty()) {
             throw new InvalidPathException('Path is empty.');
-        }
-
-        if ($this->isAbsolute()) {
-            $source = Directory::root();
         }
 
         $current = $source;
@@ -253,10 +261,20 @@ class Path
             }
 
             if ($this->get() === '..') {
+                if ($current instanceof RootDirectory) {
+                    throw new InvalidPathException('Cannot go above root.');
+                }
+
                 if ($current->parent) {
                     $next = $current->parent;
                 } else {
-                    throw new InvalidPathException('No such file or directory');
+                    $next = new RootDirectory;
+                }
+
+                if ($this->isLast()) {
+                    $this->target = $next;
+                    $this->type = static::DIRECTORY;
+                    return;
                 }
             } else {
                 $next = $current->children->firstWhere('name', $this->get());
@@ -270,7 +288,11 @@ class Path
                     $this->type = static::DIRECTORY;
                     return;
                 } else {
-                    $file = $current->files->firstWhere('name', $this->get());
+                    if (!($current instanceof RootDirectory)) {
+                        $file = $current->files->firstWhere('name', $this->get());
+                    } else {
+                        $file = null;
+                    }
 
                     if (!$file) {
                         return;

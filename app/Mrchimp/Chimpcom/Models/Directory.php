@@ -12,6 +12,7 @@ use Kalnoy\Nestedset\NodeTrait;
 use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
 use Mrchimp\Chimpcom\Filesystem\FilesystemEntity;
 use Mrchimp\Chimpcom\Filesystem\Path;
+use Mrchimp\Chimpcom\Filesystem\RootDirectory;
 
 class Directory extends Model implements FilesystemEntity
 {
@@ -38,7 +39,7 @@ class Directory extends Model implements FilesystemEntity
     /**
      * Get the  current directory for a user
      */
-    public static function current($user = null): ?Directory
+    public static function current($user = null): ?FilesystemEntity
     {
         if (is_null($user)) {
             $user = Auth::user();
@@ -48,17 +49,9 @@ class Directory extends Model implements FilesystemEntity
             return $user->currentDirectory;
         } elseif (Session::has('current_directory')) {
             return Session::get('current_directory');
-        } else {
-            $default = Directory::default();
-
-            if ($default) {
-                $default->setCurrent();
-            }
-
-            return $default;
         }
 
-        return Directory::default();
+        return new RootDirectory;
     }
 
     /**
@@ -79,13 +72,23 @@ class Directory extends Model implements FilesystemEntity
         return $this;
     }
 
-
     /**
      * Get the default directory
      */
-    public static function default(): ?Directory
+    public static function default(): ?FileSystemEntity
     {
-        return Directory::root();
+        if (!Auth::check()) {
+            return new RootDirectory;
+        }
+
+        $path_str = '/home/' . Auth::user()->name;
+        $path = Path::make($path_str);
+
+        if ($path->exists() && $path->isDirectory()) {
+            return $path->target();
+        }
+
+        return new RootDirectory;
     }
 
     /**
@@ -99,7 +102,7 @@ class Directory extends Model implements FilesystemEntity
             return null;
         }
 
-        $root = Directory::root();
+        $root = new RootDirectory;
 
         if (!$root) {
             return null;
@@ -153,12 +156,6 @@ class Directory extends Model implements FilesystemEntity
      */
     public function fullPath(): string
     {
-        if ($this->ancestors->isEmpty()) {
-            return '/';
-        }
-
-        $this->ancestors->shift();
-
         return '/' .
             $this
                 ->ancestors
@@ -166,11 +163,6 @@ class Directory extends Model implements FilesystemEntity
                 ->pluck('name')
                 ->push($this->name)
                 ->join('/');
-    }
-
-    public static function root()
-    {
-        return Directory::whereIsRoot()->first();
     }
 
     /**

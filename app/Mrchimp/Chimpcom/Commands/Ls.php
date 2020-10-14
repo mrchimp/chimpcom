@@ -30,12 +30,6 @@ class Ls extends Command
     {
         $dir = Directory::current();
 
-        if (!$dir) {
-            $output->error('File system unavailable.');
-
-            return 1;
-        }
-
         $dir->load('children');
 
         if ($dir->children->isEmpty() && $dir->files->isEmpty()) {

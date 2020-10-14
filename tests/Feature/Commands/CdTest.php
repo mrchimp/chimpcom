@@ -3,6 +3,7 @@
 namespace Tests\Feature\Commands;
 
 use App\User;
+use Mrchimp\Chimpcom\Filesystem\RootDirectory;
 use Mrchimp\Chimpcom\Models\Directory;
 use Mrchimp\Chimpcom\Models\File;
 use Tests\TestCase;
@@ -15,10 +16,6 @@ class CdTest extends TestCase
             'name' => 'fred',
         ]);
 
-        $this->root = factory(Directory::class)->create([
-            'name' => 'root',
-            'owner_id' => $this->user->id,
-        ]);
         $this->home = factory(Directory::class)->create([
             'name' => 'home',
             'owner_id' => $this->user->id,
@@ -27,13 +24,16 @@ class CdTest extends TestCase
             'name' => 'fred',
             'owner_id' => $this->user->id,
         ]);
+        $this->bin = factory(Directory::class)->create([
+            'name' => 'bin',
+            'owner_id' => $this->user->id,
+        ]);
 
         $this->file = factory(File::class)->create([
             'name' => 'file',
             'owner_id' => $this->user->id,
         ]);
 
-        $this->root->appendNode($this->home);
         $this->home->appendNode($this->fred);
 
         $this->fred->files()->save($this->file);
@@ -44,7 +44,7 @@ class CdTest extends TestCase
     {
         $this->makeDirStructure();
 
-        $this->root->setCurrent($this->user);
+        $this->bin->setCurrent($this->user);
 
         $this->getUserResponse('cd', $this->user)
             ->assertStatus(200);
@@ -60,44 +60,106 @@ class CdTest extends TestCase
         $this->makeDirStructure();
 
         // Go to root
-        $this->getUserResponse('cd /', $this->user);
-        $this->assertEquals($this->root->name, Directory::current($this->user)->name);
+        $this->getUserResponse('cd /', $this->user)->assertStatus(200);
+        $this->assertEquals('/', Directory::current($this->user)->name);
+    }
 
-        // Go to absolute path
-        $this->getUserResponse('cd /home', $this->user);
-        // dump($response->getContent());
-        $this->assertEquals($this->home->name, Directory::current($this->user)->name);
+    /** @test */
+    public function can_cd_to_an_absolute_path()
+    {
+        $this->makeDirStructure();
 
-        // Go up a directory
-        $this->getUserResponse('cd ..', $this->user);
-        $this->assertEquals($this->root->name, Directory::current($this->user)->name);
+        (new RootDirectory)->setCurrent($this->user);
 
-        // Go to absolute nested path
-        $this->getUserResponse('cd /home/fred', $this->user);
-        $this->assertEquals($this->fred->name, Directory::current($this->user)->name);
+        $this->getUserResponse('cd /home', $this->user)->assertStatus(200);
+        $this->assertEquals('home', Directory::current($this->user)->name);
+    }
 
-        // Go to current directory
-        $this->getUserResponse('cd .', $this->user);
-        $this->assertEquals($this->fred->name, Directory::current($this->user)->name);
+    /** @test */
+    public function can_cd_up_one_directory()
+    {
+        $this->makeDirStructure();
 
-        // Go up two directories
-        $this->getUserResponse('cd ../..', $this->user);
-        $this->assertEquals($this->root->name, Directory::current($this->user)->name);
+        $this->home->setCurrent($this->user);
 
-        // Go to a relative path
-        $this->getUserResponse('cd home');
-        $this->assertEquals($this->home->name, Directory::current($this->user)->name);
+        $this->getUserResponse('cd ..', $this->user)->assertStatus(200);
+        $this->assertEquals('/', Directory::current($this->user)->name);
+    }
 
-        // Combined different dot path parts
-        $this->getUserResponse('cd ./..');
-        $this->assertEquals($this->root->name, Directory::current($this->user)->name);
+    /** @test */
+    public function can_cd_to_an_absolute_path_with_multiple_levels()
+    {
+        $this->makeDirStructure();
 
-        // Go to relative nested path
-        $this->getUserResponse('cd home/fred', $this->user);
-        $this->assertEquals($this->fred->name, Directory::current($this->user)->name);
+        (new RootDirectory)->setCurrent($this->user);
 
-        // Go back to root
-        $this->getUserResponse('cd /', $this->user);
-        $this->assertEquals($this->root->name, Directory::current($this->user)->name);
+        $this->getUserResponse('cd /home/fred', $this->user)->assertStatus(200);
+        $this->assertEquals('fred', Directory::current($this->user)->name);
+    }
+
+    /** @test */
+    public function can_cd_to_current_directory()
+    {
+        $this->makeDirStructure();
+
+        $this->fred->setCurrent($this->user);
+
+        $this->getUserResponse('cd .', $this->user)->assertStatus(200);
+        $this->assertEquals('fred', Directory::current($this->user)->name);
+    }
+
+    /** @test */
+    public function can_cd_up_multiple_levels()
+    {
+        $this->makeDirStructure();
+
+        $this->fred->setCurrent($this->user);
+
+        $this->getUserResponse('cd ../..', $this->user)->assertStatus(200);
+        $this->assertEquals('/', Directory::current($this->user)->name);
+    }
+
+    /** @test */
+    public function can_cd_to_a_relative_path()
+    {
+        $this->makeDirStructure();
+
+        (new RootDirectory)->setCurrent($this->user);
+
+        $this->getUserResponse('cd home')->assertStatus(200);
+        $this->assertEquals('home', Directory::current($this->user)->name);
+    }
+
+    /** @test */
+    public function can_cd_to_a_path_with_different_dot_path_types()
+    {
+        $this->makeDirStructure();
+
+        $this->home->setCurrent($this->user);
+
+        $this->getUserResponse('cd ./..')->assertStatus(200);
+        $this->assertEquals('/', Directory::current($this->user)->name);
+    }
+
+    /** @test */
+    public function can_cd_to_a_relative_path_with_multiple_segments()
+    {
+        $this->makeDirStructure();
+
+        (new RootDirectory)->setCurrent($this->user);
+
+        $this->getUserResponse('cd home/fred', $this->user)->assertStatus(200);
+        $this->assertEquals('fred', Directory::current($this->user)->name);
+    }
+
+    /** @test */
+    public function can_cd_to_root()
+    {
+        $this->makeDirStructure();
+
+        $this->fred->setCurrent($this->user);
+
+        $this->getUserResponse('cd /', $this->user)->assertStatus(200);
+        $this->assertEquals('/', Directory::current($this->user)->name);
     }
 }

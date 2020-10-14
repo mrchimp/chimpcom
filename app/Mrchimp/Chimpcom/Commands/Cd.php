@@ -5,6 +5,7 @@ namespace Mrchimp\Chimpcom\Commands;
 use Illuminate\Support\Str;
 use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
 use Mrchimp\Chimpcom\Filesystem\Path;
+use Mrchimp\Chimpcom\Filesystem\RootDirectory;
 use Mrchimp\Chimpcom\Models\Directory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,6 +76,12 @@ class Cd extends Command
                     $output->error($e->getMessage());
 
                     return 1;
+                }
+
+                if ($path->isRoot()) {
+                    (new RootDirectory)->setCurrent();
+                    $output->write('You go.');
+                    return 0;
                 }
 
                 if (!$path->exists()) {

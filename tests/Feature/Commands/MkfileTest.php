@@ -23,9 +23,11 @@ class MkfileTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        factory(Directory::class)->create([
+        $directory = factory(Directory::class)->create([
             'owner_id' => $user->id,
         ]);
+
+        $directory->setCurrent($user);
 
         $this
             ->getUserResponse('mkfile my_test_file', $user)

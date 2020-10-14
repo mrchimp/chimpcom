@@ -431,7 +431,7 @@ export default class Cmd {
       this.showInputType();
     }
 
-    if (response.edit_content !== null) {
+    if (typeof response.edit_content === 'string') {
       this.startEdit(response.edit_content);
     }
 
