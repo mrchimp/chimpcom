@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\Output as SymfonyOutput;
 
 class Output extends SymfonyOutput
 {
-    protected $response_code = 200;
+    protected $status_code = 200;
 
     /**
      * Response array. This is what will eventually be returned.
@@ -121,7 +121,7 @@ class Output extends SymfonyOutput
     {
         return response()->json(
             $this->out,
-            $this->response_code
+            $this->status_code
         );
     }
 
@@ -231,19 +231,19 @@ class Output extends SymfonyOutput
     }
 
     /**
-     * Set HTTP Response Code
+     * Set HTTP Status Code
      */
-    public function setResponseCode(int $code): void
+    public function setStatusCode(int $code): void
     {
-        $this->response_code = $code;
+        $this->status_code = $code;
     }
 
     /**
-     * Get HTTP Response Code
+     * Get HTTP Status Code
      */
-    public function getResponseCode(): int
+    public function getStatusCode(): int
     {
-        return $this->response_code;
+        return $this->status_code;
     }
 
     public function editContent(string $content): void

@@ -219,7 +219,7 @@ class Chimpcom
         $output = new Output();
         $this->log->error('Invalid command: ' . $this->cmd_in);
         $output->error('Invalid command: ' . htmlspecialchars($this->cmd_name));
-        $output->setResponseCode(404);
+        $output->setStatusCode(404);
         return $output;
     }
 

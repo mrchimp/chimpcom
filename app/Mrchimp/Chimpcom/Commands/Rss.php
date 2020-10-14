@@ -53,7 +53,7 @@ class Rss extends Command
     {
         if (!Auth::check()) {
             $output->error('You must be logged in to use this command.');
-            $output->setResponseCode(401);
+            $output->setStatusCode(401);
             return 1;
         }
 
@@ -65,13 +65,13 @@ class Rss extends Command
         if ($subcommand === 'add') {
             if (!$name) {
                 $output->error('You need to provide a name.');
-                $output->setResponseCode(422);
+                $output->setStatusCode(422);
                 return 2;
             }
 
             if (!$url) {
                 $output->error('You need to provide a URL.');
-                $output->setResponseCode(422);
+                $output->setStatusCode(422);
                 return 2;
             }
 
@@ -89,7 +89,7 @@ class Rss extends Command
 
             if ($validator->fails()) {
                 $output->error('There was a problem with that.');
-                $output->setResponseCode(422);
+                $output->setStatusCode(422);
                 return 3;
             }
 
@@ -119,7 +119,7 @@ class Rss extends Command
         if ($subcommand == 'remove') {
             if (!$name) {
                 $output->error('You must provide a feed name.');
-                $output->setResponseCode(422);
+                $output->setStatusCode(422);
                 return 5;
             }
 
@@ -129,7 +129,7 @@ class Rss extends Command
 
             if (!$feed) {
                 $output->error(e('Could not find feed or it isn\'t yours to remove.'));
-                $output->setResponseCode(422);
+                $output->setStatusCode(422);
                 return 6;
             }
 

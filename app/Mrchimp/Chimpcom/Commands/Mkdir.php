@@ -58,7 +58,7 @@ class Mkdir extends Command
 
         if ($current->files->firstWhere('name', $filename)) {
             $output->error('A file with that name already exists.');
-            $output->setResponseCode(422);
+            $output->setStatusCode(422);
 
             return 3;
         }

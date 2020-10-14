@@ -78,7 +78,7 @@ class Todo extends Command
     {
         if (!Auth::check()) {
             $output->error('You must be logged in to use this command.');
-            $output->setResponseCode(404);
+            $output->setStatusCode(404);
 
             return 1;
         }
@@ -88,7 +88,7 @@ class Todo extends Command
 
         if (!$project) {
             $output->error('No active project. Use `PROJECTS` and `SET PROJECT x`.');
-            $output->setResponseCode(200);
+            $output->setStatusCode(200);
 
             return 2;
         }

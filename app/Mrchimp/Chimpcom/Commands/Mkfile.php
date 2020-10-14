@@ -57,7 +57,7 @@ class Mkfile extends Command
 
         if ($dir->children->firstWhere('name', $filename)) {
             $output->error('A directory with that name already exists.');
-            $output->setResponseCode(422);
+            $output->setStatusCode(422);
             return 4;
         }
 
