@@ -38,6 +38,11 @@ class RootDirectory implements FilesystemEntity
      */
     public $name = '/';
 
+    /**
+     * Lister
+     */
+    public $lister;
+
     public function __construct()
     {
         $this->children = Directory::whereIsRoot()->get();
