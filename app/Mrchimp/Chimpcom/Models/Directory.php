@@ -172,4 +172,17 @@ class Directory extends Model implements FilesystemEntity
     {
         return (int) $this->owner_id === (int) $user->id;
     }
+
+    /**
+     * Get an array of items to show in an LS output
+     */
+    public function lsArray(): array
+    {
+        return [
+            '📁',
+            e($this->ownerName()),
+            $this->updated_at->format('M j H:i'),
+            e($this->name)
+        ];
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Mrchimp\Chimpcom\Commands;
 use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Directory;
+use PDO;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,37 +31,43 @@ class Ls extends Command
     {
         $dir = Directory::current();
 
-        $dir->load('children');
+        if ($dir->lister) {
+            $lister = new $dir->lister;
+            $items = $lister->list();
+        } else {
+            $dir->load('children');
 
-        if ($dir->children->isEmpty() && $dir->files->isEmpty()) {
-            $output->write(Format::grey('Nothing here'));
-            return 2;
+            if ($dir->children->isEmpty() && $dir->files->isEmpty()) {
+                $output->write(Format::grey('Nothing here'));
+                return 2;
+            }
+
+            $items = $this->getItems($dir);
         }
 
+        $output->write(Format::listToTable($items, 4));
+
+        return 0;
+    }
+
+    protected function getItems($dir)
+    {
         $bits = [];
 
         foreach ($dir->children as $child) {
             array_push(
                 $bits,
-                '📁',
-                e($child->ownerName()),
-                $child->updated_at->format('M j H:i'),
-                e($child->name)
+                ...$child->lsArray()
             );
         }
 
         foreach ($dir->files->sortBy('name') as $file) {
             array_push(
                 $bits,
-                '📄',
-                e($file->ownerName()),
-                $file->updated_at->format('M j H:i'),
-                e($file->name)
+                $file->lsArray()
             );
         }
 
-        $output->write(Format::listToTable($bits, 4));
-
-        return 0;
+        return $bits;
     }
 }

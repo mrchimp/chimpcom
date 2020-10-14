@@ -4,6 +4,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Mrchimp\Chimpcom\Filesystem\RootDirectory;
 use Mrchimp\Chimpcom\Models\Directory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -63,10 +64,14 @@ class Mkdir extends Command
             return 3;
         }
 
-        $current->appendNode(Directory::create([
+        $node = Directory::create([
             'name' => $this->sanitiseFilename($filename),
             'owner_id' => Auth::id(),
-        ]));
+        ]);
+
+        if (!($current instanceof RootDirectory)) {
+            $current->appendNode($node);
+        }
 
         $output->alert('Ok.');
 
