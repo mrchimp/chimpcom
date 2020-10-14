@@ -161,5 +161,6 @@ class CdTest extends TestCase
 
         $this->getUserResponse('cd /', $this->user)->assertStatus(200);
         $this->assertEquals('/', Directory::current($this->user)->name);
+        $this->assertInstanceOf(RootDirectory::class, Directory::current($this->user));
     }
 }

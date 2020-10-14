@@ -53,6 +53,7 @@ class RootDirectory implements FilesystemEntity
             }
 
             $user->currentDirectory()->dissociate();
+            $user->save();
         }
 
         Session::put('current_directory', $this);
