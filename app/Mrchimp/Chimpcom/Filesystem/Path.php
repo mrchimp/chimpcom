@@ -53,6 +53,13 @@ class Path
      */
     protected $resolved = false;
 
+    /**
+     * The parent directory
+     *
+     * @var Directory
+     */
+    protected $parent_directory;
+
     public const FILE = 0;
     public const DIRECTORY = 1;
 
@@ -252,6 +259,8 @@ class Path
             }
 
             if ($this->isLast()) {
+                $this->parent_directory = $current;
+
                 if ($next) {
                     $this->target = $next;
                     $this->type = static::DIRECTORY;
@@ -260,7 +269,7 @@ class Path
                     $file = $current->files->firstWhere('name', $this->get());
 
                     if (!$file) {
-                        throw new InvalidPathException('No such file or directory');
+                        return;
                     }
 
                     $this->target = $file;
@@ -305,6 +314,14 @@ class Path
     public function target(): FilesystemEntity
     {
         return $this->target;
+    }
+
+    /**
+     * The parent directory
+     */
+    public function parent(): ?Directory
+    {
+        return $this->parent_directory;
     }
 
     /**
