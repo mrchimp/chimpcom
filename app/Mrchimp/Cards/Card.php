@@ -116,7 +116,7 @@ class Card
     {
         return ($this->face_up ? $this->rank : ' ');
     }
-The
+
     /**
      * Card suit
      *
