@@ -195,7 +195,7 @@ class Chimpcom
     protected function getOneliner(): ?Oneliner
     {
         return Oneliner::query()
-            ->where('command', strtolower($this->cmd_name))
+            ->where('command', strtolower($this->cmd_in))
             ->inRandomOrder()
             ->first();
     }
