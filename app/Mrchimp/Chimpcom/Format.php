@@ -69,9 +69,7 @@ class Format
             return false;
         }
 
-        $cols = ($cols < 1 ? 1 : $cols);/**
- * Check if a string is affirmative or negative.
- */
+        $cols = ($cols < 1 ? 1 : $cols);
 
         if ($sort_list) {
             sort($list);
