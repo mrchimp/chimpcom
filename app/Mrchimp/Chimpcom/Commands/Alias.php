@@ -70,7 +70,7 @@ class Alias extends Command
                 $out[] = $alias->alias;
             }
 
-            $output->write(Format::listToTable($out, 3, true));
+            $output->write(Format::listToTable($out, 3, false));
             return 2;
         }
 

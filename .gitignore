@@ -4,6 +4,7 @@
 /public/css
 /public/js
 /public/mix-manifest.json
+/public/coverage.html
 Homestead.yaml
 Homestead.json
 .env

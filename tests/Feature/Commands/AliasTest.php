@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands;
 
+use Mrchimp\Chimpcom\Models\Alias;
 use Tests\TestCase;
 
 class AliasTest extends TestCase
@@ -22,6 +23,11 @@ class AliasTest extends TestCase
 
     public function testAdminListResponse()
     {
+        factory(Alias::class)->create([
+            'name' => 'welcome',
+            'alias' => 'hi',
+        ]);
+
         $this->getAdminResponse('alias')
             ->assertStatus(200);
     }

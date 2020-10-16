@@ -6,7 +6,6 @@ return [
     'commands' => [
         'addshortcut' => \Mrchimp\Chimpcom\Commands\Addshortcut::class,
         'alias' => \Mrchimp\Chimpcom\Commands\Alias::class,
-        'aliases' => \Mrchimp\Chimpcom\Commands\Aliases::class,
         'are' => \Mrchimp\Chimpcom\Commands\Are::class,
         'base64decode' => \Mrchimp\Chimpcom\Commands\Base64decode::class,
         'base64encode' => \Mrchimp\Chimpcom\Commands\Base64encode::class,
