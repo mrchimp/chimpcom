@@ -5,7 +5,6 @@ namespace App\Mrchimp\Chimpcom\Commands;
 use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Directory;
-use PDO;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -64,7 +63,7 @@ class Ls extends Command
         foreach ($dir->files->sortBy('name') as $file) {
             array_push(
                 $bits,
-                $file->lsArray()
+                ...$file->lsArray()
             );
         }
 
