@@ -70,7 +70,7 @@ class Project_rm extends Action
             return 0;
         }
 
-        if ($project->user_id !== $user->id) {
+        if ((int) $project->user_id !== (int) $user->id) {
             $output->error('That isn\'t yours to delete.');
 
             return 2;
@@ -78,7 +78,7 @@ class Project_rm extends Action
 
         $project->delete();
 
-        $output->alert('Ok. It\'s gone.');
+        $output->alert(e('Ok. It\'s gone.'));
 
         return 0;
     }

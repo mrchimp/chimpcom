@@ -170,4 +170,44 @@ class TodoTest extends TestCase
             ->assertDontSee('Task on other project')
             ->assertDontSee('Other users task');
     }
+
+    /** @test */
+    public function if_there_are_no_tasks_say_nothing_to_do()
+    {
+        $this->user = factory(User::class)->create();
+
+        $this->active_project = factory(Project::class)->create([
+            'user_id' => $this->user->id,
+        ]);
+
+        $this->user->active_project_id = $this->active_project->id;
+        $this->user->save();
+
+        $this->getUserResponse('todo')
+            ->assertStatus(200)
+            ->assertSee('Nothing to do!');
+    }
+
+    /** @test */
+    public function if_all_tasks_are_complete_then_say_so()
+    {
+        $this->user = factory(User::class)->create();
+
+        $this->active_project = factory(Project::class)->create([
+            'user_id' => $this->user->id,
+        ]);
+
+        $this->user->active_project_id = $this->active_project->id;
+        $this->user->save();
+
+        factory(Task::class)->states('completed')->create([
+            'description' => 'Completed task',
+            'user_id' => $this->user->id,
+            'project_id' => $this->active_project->id,
+        ]);
+
+        $this->getUserResponse('todo')
+            ->assertStatus(200)
+            ->assertSee('All done!');
+    }
 }

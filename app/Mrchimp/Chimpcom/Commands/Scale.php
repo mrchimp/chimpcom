@@ -2,6 +2,8 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Illuminate\Support\Arr;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -22,12 +24,12 @@ class Scale extends Command
         $this->setHelp('All black notes are written as sharps.');
         $this->addArgument(
             'root',
-            null,
+            InputArgument::REQUIRED,
             'The root note of the scale. Defaults to C.'
         );
         $this->addArgument(
             'scale',
-            null,
+            InputArgument::IS_ARRAY,
             'The type of scale to show. If not set, all scales will be shown.'
         );
     }
@@ -44,7 +46,7 @@ class Scale extends Command
         $scales = [
             'major' => [1, 3, 5, 6, 8, 10, 12],
             'minor' => [1, 3, 4, 6, 8, 9, 11],
-            'harmonic minor' => [1, 3, 4, 6, 7, 8, 9, 12],
+            'harmonic minor' => [1, 3, 4, 6, 8, 9, 12, 12],
             'melodic minor asc' => [1, 3, 4, 6, 8, 10, 12],
             'melodic minor desc' => [1, 3, 4, 6, 8, 9, 11],
             'diminished' => [1, 3, 4, 6, 7, 9, 10, 12],
@@ -67,10 +69,13 @@ class Scale extends Command
         ];
 
         $root = strtoupper($input->getArgument('root'));
-        if (!$root) {
-            $root = 'C';
+
+        if (!in_array($root, $notes)) {
+            $this->error('That is not a valid root note.');
+            return 1;
         }
-        $scale = strtolower($input->getArgument('scale'));
+
+        $scale = strtolower(implode(' ', $input->getArgument('scale', [])));
 
         $root_num = array_search($root, $notes) - 1;
         $output->title("Root note: $root <br>");

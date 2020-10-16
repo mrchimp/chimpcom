@@ -124,6 +124,11 @@ class Project extends Command
                 ->nameOrId($project_id)
                 ->first();
 
+            if (!$project) {
+                $output->error('Cannot remove that.');
+                return 5;
+            }
+
             $output->title('Are you sure you want to delete the project `' . e($project->name) . '`?');
             Session::put('projectrm', $project->id);
             Chimpcom::setAction('project_rm');

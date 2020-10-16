@@ -74,7 +74,7 @@ DESC);
         }
 
         $user = Auth::user();
-// dd($input->getArgument('content'));
+
         $name      = $input->getArgument('name');
         $content   = implode(' ', $input->getArgument('content'));
         $is_public = $input->getOption('public');
@@ -90,6 +90,7 @@ DESC);
 
         if (!$memory->save()) {
             $output->error('Could not save memory. Try again.');
+            return 2;
         }
 
         // @todo get tags working

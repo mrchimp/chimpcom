@@ -80,7 +80,7 @@ class CreateChimpcomTables extends Migration
             $table->increments('id');
             $table->boolean('is_new');
             $table->string('name', 255);
-            $table->string('description', 255);
+            $table->string('description', 255)->nullable();
             $table->integer('user_id');
             $table->nullableTimestamps();
         });

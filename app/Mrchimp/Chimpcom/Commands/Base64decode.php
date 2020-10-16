@@ -38,7 +38,7 @@ class Base64decode extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $encoded = $input->getArgument('input');
-        $decoded = base64_decode($encoded);
+        $decoded = base64_decode(utf8_encode($encoded));
 
         $output->write(e($decoded));
 

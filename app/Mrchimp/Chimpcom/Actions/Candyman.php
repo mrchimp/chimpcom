@@ -22,7 +22,11 @@ class Candyman extends Action
     {
         $this->setName('candyman');
         $this->setDescription('Maybe say something scary.');
-        $this->addArgument('response', InputArgument::OPTIONAL, 'User\'s response.');
+        $this->addArgument(
+            'response',
+            InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
+            'User\'s response.'
+        );
     }
 
     /**
@@ -32,7 +36,7 @@ class Candyman extends Action
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getArgument('response') === 'candyman') {
+        if (implode(' ', $input->getArgument('response')) === 'candyman') {
             $output->error('AAAAAAAAGH!');
         } else {
             $output->write('Pussy.');
