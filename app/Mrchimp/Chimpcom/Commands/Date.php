@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Carbon\Carbon;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -51,14 +52,16 @@ class Date extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $now = Carbon::now();
+
         if ($input->getOption('date')) {
-            $output->write(date('l jS \of F Y'));
+            $output->write($now->format('l jS \of F Y'));
         } elseif ($input->getOption('time')) {
-            $output->write(date('h:i:s A'));
+            $output->write($now->format('H:i:s'));
         } elseif ($input->getOption('iso')) {
-            $output->write(date('c'));
+            $output->write($now->format('c'));
         } else {
-            $output->write(date('l jS \of F Y h:i:s A e'));
+            $output->write($now->format('l jS \of F Y H:i:s e'));
         }
 
         return 0;
