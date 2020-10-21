@@ -28,6 +28,7 @@ class Booleanate
         'yar',
         'yarr',
         'yarrr',
+        'yarp',
         'yeppers',
         'do it',
         'fuck yes',
