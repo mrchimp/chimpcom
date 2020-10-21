@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Models\Directory;
+use Mrchimp\Chimpcom\Models\File;
 
 class RootDirectory implements FilesystemEntity
 {

@@ -44,11 +44,6 @@ class Edit extends Command
 
         $dir = Directory::current();
 
-        if (!$dir) {
-            $output->error('File system not available.');
-            return 2;
-        }
-
         $file = $dir->files->firstWhere('name', $input->getArgument('filename'));
 
         if (!$file) {
