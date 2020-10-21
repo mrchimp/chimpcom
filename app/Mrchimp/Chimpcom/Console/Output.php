@@ -2,7 +2,10 @@
 
 namespace Mrchimp\Chimpcom\Console;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Validator;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Format;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Output\Output as SymfonyOutput;
@@ -22,7 +25,7 @@ class Output extends SymfonyOutput
         'cmd_fill'  => null,
         'log'       => null,
         'user'      => [
-            'id'   => 0,
+            'id'   => -1,
             'name' => 'Guest',
         ],
         'edit_content' => null,
@@ -50,7 +53,7 @@ class Output extends SymfonyOutput
     /**
      * Get user details from session.
      */
-    public function populateUserDetails()
+    public function populateUserDetails(): void
     {
         if (Auth::check()) {
             $this->user = Auth::user();
@@ -63,61 +66,60 @@ class Output extends SymfonyOutput
     }
 
     /**
+     * @deprecated Use populateUserDetails instead
+     */
+    public function getUserDetails(): void
+    {
+        dump('hello!');
+        $this->populateUserDetails();
+    }
+
+    /**
      * Append some text to the output.
      *
-     * @param string $str The text to append
      * @deprecated Use write instead
      */
-    public function say($str)
+    public function say(string $str, bool $newline = false): void
     {
-        $this->write($str);
+        $this->write($str, $newline);
     }
 
     /**
      * Format a string and then write() it.
-     *
-     * @param  string $str
      */
-    public function error($str)
+    public function error(string $str, bool $newline = false): void
     {
-        $this->write(Format::error($str));
+        $this->write(Format::error($str), $newline);
     }
 
     /**
      * Format a string and then write() it.
-     *
-     * @param  string $str
      */
-    public function alert($str)
+    public function alert(string $str, bool $newline = false): void
     {
-        $this->write(Format::alert($str));
+        $this->write(Format::alert($str), $newline);
     }
 
     /**
      * Format a string and then write() it.
-     *
-     * @param  string $str
      */
-    public function grey($str)
+    public function grey(string $str, bool $newline = false): void
     {
-        $this->write(Format::grey($str));
+        $this->write(Format::grey($str), $newline);
     }
 
     /**
      * Format a string and then write() it.
-     *
-     * @param  string $str
      */
-    public function title($str)
+    public function title(string $str, bool $newline = false): void
     {
-        $this->write(Format::title($str));
+        $this->write(Format::title($str), $newline);
     }
 
     /**
      * Get output in JSON format
-     * @return string JSON Command response
      */
-    public function getJsonResponse()
+    public function getJsonResponse(): JsonResponse
     {
         return response()->json(
             $this->out,
@@ -127,55 +129,52 @@ class Output extends SymfonyOutput
 
     /**
      * Return the output HTML only.
-     * @return string Response HTML
      */
-    public function getTextOutput()
+    public function getTextOutput(): string
     {
         return $this->out['cmd_out'];
     }
 
     /**
      * Change client input to password input
-     * @param  boolean $on If true, use password input. Otherwise normal text input.
+     *
+     * If $on is true, use password input. Otherwise normal text input.
      */
-    public function usePasswordInput($on = true)
+    public function usePasswordInput(bool $on = true): void
     {
         $this->out['show_pass'] = !!$on;
     }
 
     /**
      * Output a string to the client's console
-     * @param  string $str
      */
-    public function log($str)
+    public function log(string $str): void
     {
         $this->out['log'] .= $str;
     }
 
     /**
      * Set the cmd_out (the string output to the terminal).
-     * You probably don't need to call this. You probably want say().
-     * @param string $str The new cmd_out
+     *
+     * You probably don't need to call this. You probably want write().
      */
-    public function setCmdOut($str)
+    public function setCmdOut(string $cmd_out): void
     {
-        $this->out['cmd_out'] = htmlspecialchars($str);
+        $this->out['cmd_out'] = htmlspecialchars($cmd_out);
     }
 
     /**
      * Insert text into the command input.
-     *
-     * @param string $str The string to be inserted
      */
-    public function cFill($str)
+    public function cFill(string $command): void
     {
-        $this->out['cmd_fill'] .= $str;
+        $this->out['cmd_fill'] .= $command;
     }
 
     /**
      * Redirect the browser
      */
-    public function redirect($url)
+    public function redirect(string $url): void
     {
         $this->out['redirect'] = $url;
     }
@@ -183,7 +182,7 @@ class Output extends SymfonyOutput
     /**
      * Open a new browser window
      */
-    public function openWindow($url, $specs = '')
+    public function openWindow(string $url, string $specs = ''): void
     {
         $this->out['openWindow'] = $url;
         $this->out['openWindowSpecs'] = $specs;
@@ -192,39 +191,21 @@ class Output extends SymfonyOutput
     /**
      * Set normal input and normal action.
      */
-    public function resetTerminal()
+    public function resetTerminal(): void
     {
-        $this->setAction('normal');
-        $this->response->usePasswordInput(false);
-    }
-
-    /**
-     * Get user details from session. This only needs to be called after user logs in/out.
-     */
-    public function getUserDetails()
-    {
-        if (Auth::check()) {
-            $this->user = Auth::user();
-            $this->out['user']['id'] = $this->user->id;
-            $this->out['user']['name'] = $this->user->name;
-        } else {
-            $this->out['user']['id'] = -1;
-            $this->out['user']['name'] = 'Guest';
-        }
+        Chimpcom::setAction('normal');
+        $this->usePasswordInput(false);
     }
 
     /**
      * Output errors from a Validator object
-     *
-     * @param  Validator $validator Validator to output
-     * @param  string    $message   Message to prepend to errors
-     * @return void
      */
-    public function writeErrors($validator, $message = 'There was a problem:')
+    public function writeErrors(Validator $validator, string $message = 'There was a problem:'): void
     {
         $errors = $validator->errors();
 
         $this->error($message . '<br>');
+
         foreach ($errors->all() as $message) {
             $this->error(' &bullet; ' . $message . '<br>');
         }
@@ -246,8 +227,19 @@ class Output extends SymfonyOutput
         return $this->status_code;
     }
 
+    /**
+     * Provide content to be edited
+     */
     public function editContent(string $content): void
     {
         $this->out['edit_content'] = $content;
+    }
+
+    /**
+     * Convert to array
+     */
+    public function toArray(): array
+    {
+        return $this->out;
     }
 }
