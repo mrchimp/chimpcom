@@ -64,7 +64,7 @@ class Cd extends Command
                 return 0;
             case 'c:':
             case 'C:':
-                $output->write('What d\'you think this is, Windows?');
+                $output->write(e('What d\'you think this is, Windows?'));
                 return 0;
             case '.':
                 $output->write('You remain here.');

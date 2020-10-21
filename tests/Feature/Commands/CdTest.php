@@ -163,4 +163,52 @@ class CdTest extends TestCase
         $this->assertEquals('/', Directory::current($this->user)->name);
         $this->assertInstanceOf(RootDirectory::class, Directory::current($this->user));
     }
+
+    /** @test */
+    public function cd_penguin_gives_a_joke_answer()
+    {
+        $this->getGuestResponse('cd penguin')
+            ->assertStatus(200)
+            ->assertSee('You are inside a penguin. It is dark.');
+
+        $this->markTestIncomplete('What if there is a dir called penguin?');
+    }
+
+    /** @test */
+    public function cd_c_gives_a_joke_answer()
+    {
+        $this->getGuestResponse('cd c:')
+            ->assertStatus(200)
+            ->assertSee('What d\'you think this is, Windows?');
+
+        $this->getGuestResponse('cd C:')
+            ->assertStatus(200)
+            ->assertSee('What d\'you think this is, Windows?');
+    }
+
+    /** @test */
+    public function cding_to_invalid_paths_fail()
+    {
+        $this->getGuestResponse('cd /a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/')
+            ->assertStatus(200)
+            ->assertSee('Path length is too long.');
+    }
+
+    /** @test */
+    public function cding_to_a_directory_that_doesnt_exist_fails()
+    {
+        $this->getGuestResponse('cd wherever')
+            ->assertStatus(200)
+            ->assertSee('No such file or directory');
+    }
+
+    /** @test */
+    public function you_cant_cd_to_a_file()
+    {
+        $this->makeDirStructure();
+
+        $this->getGuestResponse('cd /home/fred/file')
+            ->assertStatus(200)
+            ->assertSee('Target is not a directory.');
+    }
 }
