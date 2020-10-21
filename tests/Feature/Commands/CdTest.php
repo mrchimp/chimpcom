@@ -211,4 +211,20 @@ class CdTest extends TestCase
             ->assertStatus(200)
             ->assertSee('Target is not a directory.');
     }
+
+    /** @test */
+    public function can_get_tab_completions_in_current_directory()
+    {
+        $this->makeDirStructure();
+
+        (new RootDirectory)->setCurrent($this->user);
+
+        $json = $this->actingAs($this->user)
+            ->get('/ajax/tabcomplete?cmd_in=cd h')
+            ->assertStatus(200)
+            ->json();
+
+        $this->assertCount(1, $json);
+        $this->assertEquals('cd home', $json[0]);
+    }
 }
