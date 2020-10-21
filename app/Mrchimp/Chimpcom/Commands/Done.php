@@ -55,7 +55,7 @@ class Done extends Command
 
         if (!$project) {
             $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
-            return;
+            return 2;
         }
 
         $task_id = Chimpcom::decodeId($input->getArgument('task_id'));
@@ -65,8 +65,8 @@ class Done extends Command
             ->first();
 
         if (!$task) {
-            $output->error('Couldn\'t find that task.');
-            return 2;
+            $output->error(e('Couldn\'t find that task.'));
+            return 3;
         }
 
         Session::put('task_to_complete', $task->id);
