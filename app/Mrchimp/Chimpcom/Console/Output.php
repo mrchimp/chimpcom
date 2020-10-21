@@ -70,7 +70,6 @@ class Output extends SymfonyOutput
      */
     public function getUserDetails(): void
     {
-        dump('hello!');
         $this->populateUserDetails();
     }
 
