@@ -6,7 +6,6 @@ use App\Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\File;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -36,7 +35,7 @@ class Edit extends Action
 
         if (empty($content)) {
             $output->error('No content to save. Aborting.');
-            return 1;
+            return 2;
         }
 
         $file->content = $content;

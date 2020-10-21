@@ -55,6 +55,23 @@ abstract class TestCase extends BaseTestCase
             );
     }
 
+    protected function getUserEditSaveResponse($content, $user = null, $cmd_in = '')
+    {
+        if (!$this->user && is_null($user)) {
+            $this->user = factory(User::class)->create();
+        }
+
+        return $this
+            ->actingAs($user ? $user : $this->user)
+            ->post(
+                $this->response_path,
+                [
+                    'content' => $content,
+                    'cmd_in' => $cmd_in,
+                ]
+            );
+    }
+
     protected function getAdminResponse($cmd_in, $user = null)
     {
         if (!$this->admin && is_null($user)) {
