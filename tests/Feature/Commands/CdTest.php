@@ -227,4 +227,19 @@ class CdTest extends TestCase
         $this->assertCount(1, $json);
         $this->assertEquals('cd home', $json[0]);
     }
+
+    /** @test */
+    public function if_there_are_no_autocompletions_then_you_dont_get_any_autocompletions_ok()
+    {
+        $this->makeDirStructure();
+
+        (new RootDirectory)->setCurrent($this->user);
+
+        $json = $this->actingAs($this->user)
+            ->get('/ajax/tabcomplete?cmd_in=cd asdasdsad')
+            ->assertStatus(200)
+            ->json();
+
+        $this->assertCount(0, $json);
+    }
 }
