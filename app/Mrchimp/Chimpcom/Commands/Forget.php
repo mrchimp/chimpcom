@@ -56,8 +56,8 @@ class Forget extends Command
         $mem_ids = $input->getArgument('id');
 
         if ($mem_ids[0] == 'everything' || $mem_ids[0] == 'all') {
-            $output->write('Where am I? Who are you? WHAT THE HELL\'S GOING ON?!');
-            return;
+            $output->write(e('Where am I? Who are you? WHAT THE HELL\'S GOING ON?!'));
+            return 2;
         }
 
         $ids = Chimpcom::decodeIds($mem_ids);
@@ -66,9 +66,9 @@ class Forget extends Command
                         ->whereIn('id', $ids)
                         ->get();
 
-        if (empty($memories)) {
-            $output->error('Couldn\'t find that memory or it\'s not yours to forget.');
-            return 1;
+        if ($memories->isEmpty()) {
+            $output->error(e('Couldn\'t find that memory or it\'s not yours to forget.'));
+            return 3;
         }
 
         $output->title('Are you sure you want to forget these memories?<br>');

@@ -62,12 +62,13 @@ class Forget extends Action
         if (Booleanate::isAffirmative($answer)) {
             $ids = Session::get('forget_id');
 
-            $memories = Memory::where('user_id', $user->id)
+            Memory::where('user_id', $user->id)
                 ->whereIn('id', $ids)
                 ->delete();
 
             $ids = Chimpcom::encodeIds($ids);
-            $output->alert((count($ids) > 0 ? 'Memories' : 'memory') . ' forgotten: #' . implode(', #', $ids));
+
+            $output->alert((count($ids) > 1 ? 'Memories' : 'Memory') . ' forgotten: #' . implode(', #', $ids));
         } elseif (Booleanate::isNegative($answer)) {
             $output->write('Action aborted.');
         } else {

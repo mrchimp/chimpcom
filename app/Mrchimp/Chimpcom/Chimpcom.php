@@ -349,7 +349,11 @@ class Chimpcom
      */
     public static function decodeId(string $id): int
     {
-        return hexdec($id);
+        try {
+            return hexdec($id);
+        } catch (\Exception $e) {
+            return -1;
+        }
     }
 
     /**
