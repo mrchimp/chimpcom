@@ -60,8 +60,8 @@ class Hexdec extends Command
                         hexdec($parts[2]) . ') ';
                     $output_val .= '<span style="color:#' . $value . '">███████</span>';
                 } else {
-                    $output->error('I don\'t know how to handle this.');
-                    return;
+                    $output->error(e('I don\'t know how to handle this.'));
+                    return 1;
                 }
             } else {
                 $output_val = hexdec($value);
