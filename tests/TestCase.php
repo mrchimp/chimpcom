@@ -6,6 +6,7 @@ use App\User;
 use Faker\Factory;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Mrchimp\Chimpcom\Models\Directory;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -72,5 +73,36 @@ abstract class TestCase extends BaseTestCase
                     'HTTP_X-Requested-With' => 'XMLHttpRequest'
                 ]
             );
+    }
+
+    /**
+     * Create a newsted oparth from a string
+     *
+     * @param string $path e.g. /home/mrchimp/blog
+     * @return void
+     */
+    protected function createPath(string $path): Directory
+    {
+        $parts = explode('/', $path);
+
+        $dir = null;
+
+        foreach ($parts as $part) {
+            if (empty($part)) {
+                continue;
+            }
+
+            $new = factory(Directory::class)->create([
+                'name' => $part,
+            ]);
+
+            if ($dir) {
+                $dir->appendNode($new);
+            }
+
+            $dir = $new;
+        }
+
+        return $dir;
     }
 }
