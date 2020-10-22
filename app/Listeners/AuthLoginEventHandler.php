@@ -2,10 +2,8 @@
 
 namespace App\Listeners;
 
-use DB;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\Login;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class AuthLoginEventHandler
 {
@@ -29,7 +27,7 @@ class AuthLoginEventHandler
     {
         $user = $event->user;
         $user->update([
-            'last_seen' => DB::raw('NOW()'),
+            'last_seen' => Carbon::now(),
         ]);
     }
 }

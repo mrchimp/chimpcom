@@ -5,6 +5,7 @@ namespace Mrchimp\Chimpcom\Commands;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -22,7 +23,7 @@ class Login extends Command
 
         $this->addArgument(
             'username',
-            null,
+            InputArgument::REQUIRED,
             'Username to log in as.'
         );
     }
@@ -43,11 +44,6 @@ class Login extends Command
         }
 
         $username = $input->getArgument('username');
-
-        if (!$username) {
-            $output->alert('Provide a username.');
-            return 2;
-        }
 
         $user = User::where('name', $username)->get();
 
