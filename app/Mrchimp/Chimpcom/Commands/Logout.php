@@ -32,7 +32,7 @@ class Logout extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
-            $output->error('You\'re not logged in.');
+            $output->error(e('You\'re not logged in.'));
             return 1;
         }
 

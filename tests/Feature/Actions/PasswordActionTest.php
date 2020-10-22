@@ -4,6 +4,7 @@ namespace Tests\Feature\Actions;
 
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class PasswordActionTest extends TestCase
@@ -27,6 +28,8 @@ class PasswordActionTest extends TestCase
             ->assertStatus(200)
             ->assertSee('Welcome back.')
             ->assertSessionHas('action', 'normal');
+
+        $this->assertTrue(Auth::check());
     }
 
     /** @test */
