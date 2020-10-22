@@ -34,8 +34,8 @@ class Go extends Command
     {
         $url = $input->getArgument('url');
 
-        if (substr($url, 0, 4) !== 'http') {
-            $url = 'http://' . $url;
+        if (substr($url, 0, 7) !== 'http://' && substr($url, 0, 8) !== 'https://') {
+            $url = 'https://' . $url;
         }
 
         $output->redirect($url);
