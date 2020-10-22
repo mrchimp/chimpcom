@@ -99,6 +99,7 @@ class Mail extends Command
             return 0;
         }
 
+        // @todo - something with these options
         $showAll = $input->getOption('all');
         $mailbox = $input->getOption('sent') ? 'outbox' : 'inbox';
 
