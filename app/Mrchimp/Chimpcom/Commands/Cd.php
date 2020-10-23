@@ -59,6 +59,7 @@ class Cd extends Command
         }
 
         switch ($path_string) {
+            // @todo what if there is a directory called penguin?
             case 'penguin':
                 $output->write('You are inside a penguin. It is dark.');
                 return 0;

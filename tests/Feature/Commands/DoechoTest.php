@@ -13,4 +13,12 @@ class DoechoTest extends TestCase
             ->assertStatus(200)
             ->assertSee('blah');
     }
+
+    /** @test */
+    public function if_doecho_receives_no_input_it_just_outputs_echo()
+    {
+        $this->getGuestResponse('doecho')
+            ->assertStatus(200)
+            ->assertSee('echo');
+    }
 }

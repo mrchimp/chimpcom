@@ -83,11 +83,11 @@ class Parser extends Command
         }
 
         if ($input->getOption('option')) {
-            $output->writeLn('Option!');
+            $output->writeLn('Option was set!');
         }
 
         if ($input->getOption('other_option')) {
-            $output->writeLn('Other Option!');
+            $output->writeLn('Other Option was set to: ' . e($input->getOption('other_option')));
         }
 
         // foreach ($input as $key => $spec) {

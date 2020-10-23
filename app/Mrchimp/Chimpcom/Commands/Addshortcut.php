@@ -65,11 +65,9 @@ class Addshortcut extends Command
             ],
             [
                 'name' => [
-                    'required',
                     Rule::notIn(Chimpcom::getCommandList()),
                 ],
                 'url' => [
-                    'required',
                     'url',
                 ],
             ],
@@ -89,8 +87,6 @@ class Addshortcut extends Command
 
         if ($shortcut->save()) {
             $output->alert('Ok.');
-        } else {
-            $output->error('There was an error. Try again.');
         }
 
         return 0;

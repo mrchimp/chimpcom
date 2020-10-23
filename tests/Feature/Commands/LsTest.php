@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands;
 
+use App\Mrchimp\Chimpcom\Filesystem\Listers\Bin;
 use App\User;
 use Mrchimp\Chimpcom\Models\Directory;
 use Mrchimp\Chimpcom\Models\File;
@@ -45,5 +46,28 @@ class LsTest extends TestCase
             ->getUserResponse('ls', $user)
             ->assertStatus(200)
             ->assertSee('My File');
+    }
+
+    /** @test */
+    public function ls_shows_list_of_bins_if_theres_a_bin_lister_cos_the_bin_lister_lists_bins()
+    {
+        $user = factory(User::class)->create([
+            'name' => 'Fred Test',
+        ]);
+        $dir = factory(Directory::class)->create([
+            'name' => 'top_level',
+            'lister' => Bin::class,
+        ]);
+
+        $dir->setCurrent($user);
+
+        $user->refresh();
+
+        $this
+            ->getUserResponse('ls', $user)
+            ->assertStatus(200)
+            ->assertSee('man')
+            ->assertSee('login')
+            ->assertSee('logout');
     }
 }

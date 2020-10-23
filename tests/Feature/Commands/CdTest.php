@@ -170,8 +170,6 @@ class CdTest extends TestCase
         $this->getGuestResponse('cd penguin')
             ->assertStatus(200)
             ->assertSee('You are inside a penguin. It is dark.');
-
-        $this->markTestIncomplete('What if there is a dir called penguin?');
     }
 
     /** @test */

@@ -16,7 +16,7 @@ class DealTest extends TestCase
     /** @test */
     public function deal_can_take_count_option()
     {
-        $this->getGuestResponse('deal --count 10')
+        $this->getGuestResponse('deal --count 20')
             ->assertStatus(200);
     }
 }
