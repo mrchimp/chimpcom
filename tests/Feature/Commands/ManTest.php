@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands;
 
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
@@ -41,5 +42,21 @@ class ManTest extends TestCase
         $this->getGuestResponse('man zxcvzxcvzxcvzxcvzxcvxzcv')
             ->assertSee('No man page found')
             ->assertStatus(200);
+    }
+
+    /** @test */
+    public function man_supports_tab_complete()
+    {
+        $user = factory(User::class)->create();
+
+        $responses = $this->actingAs($user)
+            ->get('/ajax/tabcomplete?cmd_in=man lo')
+            ->assertStatus(200)
+            ->json();
+
+        $this->assertIsArray($responses);
+        $this->assertCount(2, $responses);
+        $this->assertEquals('man login', $responses[0]);
+        $this->assertEquals('man logout', $responses[1]);
     }
 }
