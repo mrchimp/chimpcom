@@ -57,7 +57,7 @@ class Priority extends Command
 
         $user = Auth::user();
         $task_id = Chimpcom::decodeId($input->getArgument('task_id'));
-        $priority = (int)$input->getArgument('priority');
+        $priority = $input->getArgument('priority');
 
         if (!is_numeric($priority)) {
             $output->error('Priority should be an integer.');
@@ -78,18 +78,15 @@ class Priority extends Command
             ->first();
 
         if (!$task) {
-            $output->error('Couldn\'t find that task, or it\'s not yours to edit.');
+            $output->error(e('Couldn\'t find that task, or it\'s not yours to edit.'));
 
             return 4;
         }
 
-        $task->priority = $priority;
+        $task->priority = (int) $priority;
 
-        if ($task->save()) {
-            $output->alert('Ok.');
-        } else {
-            $output->error('There was a problem. Try again?');
-        }
+        $task->save();
+        $output->alert('Ok.');
 
         return 0;
     }

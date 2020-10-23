@@ -256,6 +256,10 @@ class Path
         $current = $source;
 
         do {
+            if (!$current) {
+                return;
+            }
+
             if ($this->get() === '.') {
                 continue;
             }
@@ -277,7 +281,11 @@ class Path
                     return;
                 }
             } else {
-                $next = $current->children->firstWhere('name', $this->get());
+                if ($current && $current->children->isNotEmpty()) {
+                    $next = $current->children->firstWhere('name', $this->get());
+                } else {
+                    $next = null;
+                }
             }
 
             if ($this->isLast()) {

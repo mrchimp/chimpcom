@@ -26,7 +26,7 @@ class Register extends Action
         $this->setDescription('Register step 2.');
         $this->addArgument(
             'password',
-            InputArgument::REQUIRED,
+            InputArgument::OPTIONAL,
             'Password for new account.'
         );
     }

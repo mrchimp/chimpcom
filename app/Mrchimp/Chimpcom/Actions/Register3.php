@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Filesystem\Path;
 use Mrchimp\Chimpcom\Models\Directory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,6 +57,9 @@ class Register3 extends Action
 
         if ($validator->fails()) {
             $output->writeErrors($validator, 'Something went wrong. Please try again.');
+            Session::forget('register_username');
+            Session::forget('register_password');
+            Session::forget('register_password2');
             Chimpcom::setAction('normal');
             return 1;
         }
@@ -86,12 +90,13 @@ class Register3 extends Action
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'active_project_id' => -1,
         ]);
 
-        $home_dir = Directory::fromPath('/home');
+        $home_dir = Path::make('/home');
 
-        if ($home_dir) {
-            $home_dir->appendNode(Directory::create([
+        if ($home_dir->exists()) {
+            $home_dir->target()->appendNode(Directory::create([
                 'name' => e($user->name),
                 'owner_id' => $user->id,
             ]));

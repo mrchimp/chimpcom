@@ -16,7 +16,13 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password', 'last_seen'];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'last_seen',
+        'active_project_id'
+    ];
 
     /**
      * The attributes excluded from the model's JSON form.

@@ -44,11 +44,6 @@ class Mkdir extends Command
 
         $current = Directory::current();
 
-        if (!$current) {
-            $output->error('Filesystem is not available.');
-            return 1;
-        }
-
         if (!$current->belongsToUser(Auth::user()) && !Auth::user()->is_admin) {
             $output->error('You do not have permission to create a directory here.');
 
