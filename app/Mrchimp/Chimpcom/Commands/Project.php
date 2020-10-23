@@ -112,7 +112,7 @@ class Project extends Command
                 return 3;
             }
 
-            $project->activeUsers()->save($user);
+            $user->setActiveProject($project);
             $output->alert(e($project->name) . ' is now the current project.');
 
             return 0;

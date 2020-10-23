@@ -15,6 +15,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Task extends Model
 {
+    protected $fillable = [
+        'description',
+        'user_id',
+        'project_id',
+        'priority',
+        'completed',
+    ];
+
     /**
      * The user that made this task
      */

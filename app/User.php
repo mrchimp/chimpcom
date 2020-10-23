@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Mrchimp\Chimpcom\Models\Directory;
+use Mrchimp\Chimpcom\Models\Project;
 
 class User extends Authenticatable
 {
@@ -52,5 +53,10 @@ class User extends Authenticatable
     public function currentDirectory()
     {
         return $this->belongsTo('Mrchimp\Chimpcom\Models\Directory', 'current_directory_id');
+    }
+
+    public function setActiveProject(Project $project)
+    {
+        $project->activeUsers()->save($this);
     }
 }

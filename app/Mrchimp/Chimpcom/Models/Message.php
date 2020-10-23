@@ -15,6 +15,13 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  */
 class Message extends Model
 {
+    protected $fillable = [
+        'message',
+        'recipient_id',
+        'author_id',
+        'has_been_read',
+    ];
+
     public function tags(): MorphToMany
     {
         return $this->morphToMany('Mrchimp\Chimpcom\Models\Tag', 'taggable');

@@ -32,6 +32,13 @@ class Newtask extends Command
             InputArgument::IS_ARRAY | InputArgument::REQUIRED,
             'Description of what needs doing.'
         );
+        $this->addOption(
+            'priority',
+            'p',
+            InputArgument::OPTIONAL,
+            'Priority of the task. Higher is more important. Default is 1.',
+            1
+        );
     }
 
     /**
@@ -59,10 +66,13 @@ class Newtask extends Command
             return 1;
         }
 
-        $task = new Task();
-        $task->description = $description;
-        $user->tasks()->save($task);
-        $project->tasks()->save($task);
+        $task = Task::create([
+            'description' => $description,
+            'project_id' => $project->id,
+            'user_id' => $user->id,
+            'priority' => $input->getOption('priority'),
+            'completed' => 0,
+        ]);
 
         // @todo - cross-user tasks
         // $user_ids = array($user->id);

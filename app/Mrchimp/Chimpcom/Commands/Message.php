@@ -79,6 +79,7 @@ class Message extends Command
             $message->message = $body;
             $message->recipient_id = $recipient->id;
             $message->author_id = $user->id;
+            $message->has_been_read = false;
             $message->save();
 
             $output->alert(e($name) . ' ✔<br>');
@@ -89,7 +90,7 @@ class Message extends Command
         $name_count = count($recipient_names);
 
         if ($name_count > 1) {
-            if ($success_count === 1) {
+            if ($success_count === 0) {
                 $output->error('No messages were sent.');
             } elseif ($success_count === $name_count) {
                 $output->alert('All messages were sent!');
