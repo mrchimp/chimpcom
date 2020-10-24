@@ -61,13 +61,13 @@ class Setpublic extends Command
         $memory = Memory::find($id);
 
         if (!$memory) {
-            $output->error('That memory doesn\'t exist.');
+            $output->error(e('That memory doesn\'t exist.'));
 
             return 2;
         }
 
         if (!$memory->isMine()) {
-            $output->error('That isn\'t your memory to change.');
+            $output->error(e('That isn\'t your memory to change.'));
 
             return 3;
         }

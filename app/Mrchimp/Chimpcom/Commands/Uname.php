@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Illuminate\Support\Arr;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -96,7 +97,7 @@ class Uname extends Command
 
         $bits = [
             's' => 'Chimpcom',
-            'n' => $_SERVER['HTTP_HOST'],
+            'n' => Arr::get($_SERVER, 'HTTP_HOST', 'CLI'),
             'r' => Chimpcom::getVersion(),
             'v' => date('d M Y H:i:s'),
             'p' => 'unknown',

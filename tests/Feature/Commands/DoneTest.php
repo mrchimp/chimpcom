@@ -40,8 +40,6 @@ class DoneTest extends TestCase
             ->assertSee('Couldn\'t find that task.');
     }
 
-
-
     /** @test */
     public function done_command_cues_up_the_done_action_if_all_is_well()
     {

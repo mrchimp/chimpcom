@@ -17,6 +17,13 @@ use Illuminate\Support\Facades\Auth;
  */
 class Memory extends Model
 {
+    protected $fillable = [
+        'name',
+        'content',
+        'user_id',
+        'public',
+    ];
+
     /**
      * Memories can have multiple tags
      */
@@ -88,6 +95,6 @@ class Memory extends Model
 
         $user = Auth::user();
 
-        return $user->id === $this->user_id;
+        return (int) $user->id === (int) $this->user_id;
     }
 }
