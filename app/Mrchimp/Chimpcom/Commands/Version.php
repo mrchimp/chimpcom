@@ -29,8 +29,8 @@ class Version extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->write('Chimpcom ' . Chimpcom::getVersion() . ', Laravel v' . app()::VERSION);
-
+        $output->write('Chimpcom ' . Chimpcom::getVersion());
+dump('whatup');
         return 0;
     }
 }

@@ -50,11 +50,6 @@ class Rmdir extends Command
 
         $current = Directory::current();
 
-        if (!$current) {
-            $output->error('File system not available.');
-            return 2;
-        }
-
         $directory = $current->children->firstWhere('name', $dirname);
 
         if (!$directory) {
@@ -63,7 +58,7 @@ class Rmdir extends Command
                 return 0;
             }
 
-            $output->error('File does not exist.');
+            $output->error('Directory does not exist.');
             return 3;
         }
 

@@ -12,7 +12,7 @@ class Tabtest extends Command
     {
         $this->setName('tabtest');
         $this->setDescription('Tests tab completion');
-        $this->addArgument('count', InputArgument::REQUIRED, 'Number of results to return');
+        $this->addArgument('command', InputArgument::REQUIRED, 'Number of results to return');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -31,9 +31,9 @@ class Tabtest extends Command
      */
     public function tab(InputInterface $input)
     {
-        $count = $input->getArgument('count');
+        $command = $input->getArgument('command');
 
-        switch ($count) {
+        switch ($command) {
             case 'a':
                 return ['tabtest animal'];
             case 'b':

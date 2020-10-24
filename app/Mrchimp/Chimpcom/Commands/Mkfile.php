@@ -43,11 +43,6 @@ class Mkfile extends Command
 
         $dir = Directory::current();
 
-        if (!$dir) {
-            $output->error('File system is not available.');
-            return 2;
-        }
-
         if (!$dir->belongsToUser(Auth::user())) {
             $output->error('You do not have permission to create a file here.');
             return 3;

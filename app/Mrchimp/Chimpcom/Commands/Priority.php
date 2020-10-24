@@ -65,14 +65,6 @@ class Priority extends Command
             return 2;
         }
 
-        $project = $user->activeProject();
-
-        if (!$project) {
-            $output->error('No active project. User `PROJECTS` and `PROJECT SET x`.');
-
-            return 3;
-        }
-
         $task = Task::where('id', $task_id)
             ->where('user_id', $user->id)
             ->first();

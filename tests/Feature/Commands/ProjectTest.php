@@ -108,4 +108,73 @@ class ProjectTest extends TestCase
             ->assertSee('No active project')
             ->assertStatus(200);
     }
+
+    /** @test */
+    public function projects_names_that_arent_alphadash_will_be_rejected()
+    {
+        $this->getUserResponse('project new £&^&^&*')
+            ->assertSee('There was a problem')
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    public function cant_set_current_project_if_it_cant_be_found()
+    {
+        $this->getUserResponse('project set lkdsajflasfdhjkfds')
+            ->assertSee('That project ID is invalid')
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    public function can_list_current_project()
+    {
+        $this->user = factory(User::class)->create();
+        $project = factory(Project::class)->create([
+            'name' => 'myproject',
+            'user_id' => $this->user->id,
+        ]);
+        $this->user->active_project_id = $project->id;
+        $this->user->save();
+
+        $this->getUserResponse('project')
+            ->assertSee('Current project: myproject')
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    public function can_get_a_commands_tab_completions()
+    {
+        $this->user = factory(User::class)->create();
+
+        factory(Project::class)->create([
+            'user_id' => $this->user->id,
+            'name' => 'chimpcom',
+        ]);
+
+        $json = $this->actingAs($this->user)
+            ->get('/ajax/tabcomplete?cmd_in=project+set+c')
+            ->assertStatus(200)
+            ->json();
+
+        $this->assertCount(1, $json);
+        $this->assertEquals('project set chimpcom', $json[0]);
+    }
+
+    /** @test */
+    public function will_get_empty_array_if_tab_completion_fails()
+    {
+        $this->user = factory(User::class)->create();
+
+        factory(Project::class)->create([
+            'user_id' => $this->user->id,
+            'name' => 'chimpcom',
+        ]);
+
+        $json = $this->actingAs($this->user)
+            ->get('/ajax/tabcomplete?cmd_in=project+set+xxxx')
+            ->assertStatus(200)
+            ->json();
+
+        $this->assertCount(0, $json);
+    }
 }

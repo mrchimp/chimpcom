@@ -47,6 +47,33 @@ class Rmdirtest extends TestCase
     }
 
     /** @test */
+    public function users_cant_remove_directories_that_belong_to_another_user()
+    {
+        $user = factory(User::class)->create();
+        $other_user = factory(User::class)->create();
+
+        $parent_dir = factory(Directory::class)->create([
+            'name' => 'parent_dir',
+            'owner_id' => $user->id,
+        ]);
+        $child_dir = factory(Directory::class)->create([
+            'name' => 'child_dir',
+            'owner_id' => $user->id,
+        ]);
+        $parent_dir->appendNode($child_dir);
+
+        $other_user->currentDirectory()->associate($parent_dir);
+
+        $this->getUserResponse('rmdir child_dir', $other_user)
+            ->assertStatus(200)
+            ->assertSee('You do not have permission to remove that directory');
+
+        $directories = Directory::all();
+
+        $this->assertCount(2, $directories);
+    }
+
+    /** @test */
     public function admin_can_remove_other_users_directories()
     {
         $user = factory(User::class)->create();
@@ -135,5 +162,39 @@ class Rmdirtest extends TestCase
 
         $this->assertCount(2, $directories);
         $this->assertCount(1, $files);
+    }
+
+    /** @test */
+    public function penguins_can_be_removed_but_will_respawn()
+    {
+        $this->getUserResponse('rmdir penguin')
+            ->assertSee('You remove the penguin but another appears in its place.')
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    public function users_cant_remove_directories_that_dont_exist()
+    {
+        $user = factory(User::class)->create();
+
+        $parent_dir = factory(Directory::class)->create([
+            'name' => 'parent_dir',
+            'owner_id' => $user->id,
+        ]);
+        $child_dir = factory(Directory::class)->create([
+            'name' => 'child_dir',
+            'owner_id' => $user->id,
+        ]);
+        $parent_dir->appendNode($child_dir);
+
+        $user->currentDirectory()->associate($parent_dir);
+
+        $this->getUserResponse('rmdir some_other_dir', $user)
+            ->assertStatus(200)
+            ->assertSee('Directory does not exist.');
+
+        $directories = Directory::all();
+
+        $this->assertCount(2, $directories);
     }
 }

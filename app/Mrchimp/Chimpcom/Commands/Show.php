@@ -122,13 +122,16 @@ class Show extends Command
 
         $query = Memory::query()
             ->visibility($item_type)
-            ->orderBy('name')
-            ->orderBy('id')
+            ->when(!$last, function ($query) {
+                $query
+                    ->orderBy('name')
+                    ->orderBy('id');
+            })
             ->with('user')
             ->limit($count);
 
         if ($last) {
-            $query->orderBy('created_at');
+            $query->orderBy('created_at', 'DESC');
         } elseif (is_numeric(Arr::first($names))) {
             $memory_id = $names;
             $query->whereIn('id', $memory_id);

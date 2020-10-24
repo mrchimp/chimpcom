@@ -31,11 +31,6 @@ class Pwd extends Command
     {
         $dir = Directory::current();
 
-        if (!$dir) {
-            $output->error('File system not available.');
-            return 1;
-        }
-
         $output->write($dir->fullPath());
 
         return 0;
