@@ -26,11 +26,11 @@ class Styles extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->write(Format::title('This Is A Title<br>'));
-        $output->write('Here\'s some regular text (say)<br>');
-        $output->write(Format::alert('This is an alert!<br>'));
-        $output->write(Format::error('Oh no! This is an error!<br>'));
-        $output->write('<code>$this === some($code)</code><br>');
+        $output->write(Format::title('This Is A Title'), true);
+        $output->write(e('Here\'s some regular text (say)'), true);
+        $output->write(Format::alert('This is an alert!'), true);
+        $output->write(Format::error('Oh no! This is an error!'), true);
+        $output->write('<code>$this === some($code)</code>', true);
         $output->write(
             Format::style(
                 'Auto fill (click me)',
@@ -39,11 +39,12 @@ class Styles extends Command
                     'data-type' => 'autofill',
                     'data-autofill' => 'you clicked an autofill'
                 ]
-            ) . '<br>'
+            ),
+            true
         );
         $output->write(Format::link('This is a link', 'https://example.com', [
             'data-foo' => 'bar',
-        ]) . '<br>');
+        ]), true);
         $output->write(
             Format::listToTable(
                 [
@@ -51,7 +52,8 @@ class Styles extends Command
                     'Title 2', 'Blah 1', 'Blah 2', 'Blah 3'
                 ],
                 3
-            )
+            ),
+            true
         );
 
         $output->cFill('This text was automatically inserted');
