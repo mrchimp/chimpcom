@@ -29,7 +29,7 @@ class Shortcuts extends Command
         $shortcuts = Shortcut::get();
 
         if (count($shortcuts) === 0) {
-            $output->error('The are currently no shortcuts.');
+            $output->error('There are currently no shortcuts.');
 
             return 1;
         }
