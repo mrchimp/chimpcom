@@ -81,14 +81,18 @@ class Format
         $s = '<table>';
 
         while (isset($list[$output_count])) {
-            //$s .= $row_count.'-';
-            //$s .= $output_count.'-';
             $s .= ($row_count == 1 ? '<tr>' : '');
             $s .= '<td>' . $list[$output_count] . '</td>';
-            $s .= ($row_count == $cols ? '</tr>' : '');
 
-            $row_count++;
-            $row_count = $row_count % $cols;
+            if ($row_count === $cols || $output_count + 1 === $num_of_items) {
+                $s .= '</tr>';
+            }
+
+            if ($output_count === $num_of_items) {
+                break;
+            }
+
+            $row_count = ($row_count % $cols) + 1;
             $output_count++;
         }
 
