@@ -12,7 +12,7 @@ class CommandListTest extends TestCase
     /** @test */
     public function can_get_a_command_list()
     {
-        $this->get('ajax/command')
-            ->assert(200);
+        $this->get('ajax/commands')
+            ->assertStatus(200);
     }
 }

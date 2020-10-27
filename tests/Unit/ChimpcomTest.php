@@ -2,9 +2,11 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Support\Facades\Config;
 use Mrchimp\Chimpcom\Actions\Candyman;
 use Mrchimp\Chimpcom\Chimpcom;
 use Mrchimp\Chimpcom\Commands\Hi;
+use Mrchimp\Chimpcom\Models\Shortcut;
 use Tests\TestCase;
 
 class ChimpcomTest extends TestCase
@@ -58,5 +60,30 @@ class ChimpcomTest extends TestCase
 
         $this->getGuestResponse('clearaction')
             ->assertSessionHas('action', 'normal');
+    }
+
+    /** @test */
+    public function shortcuts_can_be_used()
+    {
+        factory(Shortcut::class)->create([
+            'name' => 'testshortcut',
+            'url' => 'http://example.com',
+        ]);
+
+        $json = $this->getGuestResponse('testshortcut')->json();
+
+        $this->assertEquals('http://example.com', $json['redirect']);
+    }
+
+    /** @test */
+    public function invalid_commands_dont_totally_fail()
+    {
+        Config::set('chimpcom.commands', [
+            'testcommand' => 'Fake/Class/That/Doesnt/Exist',
+        ]);
+
+        $this->getGuestResponse('testcommand')
+            ->assertSee('Invalid command: testcommand')
+            ->assertStatus(404);
     }
 }

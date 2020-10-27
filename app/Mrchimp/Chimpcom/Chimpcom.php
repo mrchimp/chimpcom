@@ -85,7 +85,17 @@ class Chimpcom
      */
     public static function commandExists(string $name): Bool
     {
-        return !!config('chimpcom.commands.' . strtolower($name));
+        $class = config('chimpcom.commands.' . strtolower($name));
+
+        if (!$class) {
+            return false;
+        }
+
+        if (!class_exists($class)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -236,6 +246,12 @@ class Chimpcom
             $command = $this->instantiateCommand($cmd_name);
         } catch (FatalErrorException $e) {
             $this->log->error('Failed to load command: ' . $cmd_name);
+            $output->error('Failed to load command.');
+            return $output;
+        }
+
+        if (!$command) {
+            $this->log->error('Command with missing command class called: ' . e($cmd_name));
             $output->error('Failed to load command.');
             return $output;
         }
