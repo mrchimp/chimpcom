@@ -12,8 +12,8 @@ class VersionTest extends TestCase
     /** @test */
     public function version_command_gets_the_version()
     {
-        $this->getGuestResponse('version v7.0b')
-            ->assertSee('Chimpcom')
+        $this->getGuestResponse('version')
+            ->assertSee('Chimpcom v7.0b')
             ->assertStatus(200);
     }
 }
