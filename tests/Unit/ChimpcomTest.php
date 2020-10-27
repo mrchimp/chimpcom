@@ -50,4 +50,13 @@ class ChimpcomTest extends TestCase
         $this->assertInstanceOf(Candyman::class, Chimpcom::instantiateAction('Candyman'));
         $this->assertTrue(Chimpcom::actionExists('Candyman'));
     }
+
+    /** @test */
+    public function clearaction_clears_the_action()
+    {
+        $this->withSession(['action' => 'specialaction']);
+
+        $this->getGuestResponse('clearaction')
+            ->assertSessionHas('action', 'normal');
+    }
 }
