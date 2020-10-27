@@ -28,4 +28,30 @@ class BlogShowTest extends TestCase
             ->assertStatus(200)
             ->assertSee('Here is a post');
     }
+
+    /** @test */
+    public function blog_post_returns_404_if_path_is_invalid()
+    {
+        $this->get('blog/!£$!£$!£$!£$/postname')
+            ->assertStatus(404);
+    }
+
+    /** @test */
+    public function blog_post_returns_404_if_path_does_not_exist()
+    {
+        $this->get('blog/unknownuser/post')
+            ->assertStatus(404);
+    }
+
+    /** @test */
+    public function blog_post_returns_404_if_path_is_a_directory()
+    {
+        factory(User::class)->create([
+            'name' => 'mrchimp'
+        ]);
+        $this->createPath('/home/mrchimp/blog/post');
+
+        $this->get('blog/mrchimp/post')
+            ->assertStatus(404);
+    }
 }

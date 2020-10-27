@@ -14,7 +14,6 @@ class BlogController extends Controller
     {
         try {
             $path = Path::make('/home/' . $username . '/blog');
-            // $dir = Directory::fromPath();
         } catch (InvalidPathException $e) {
             abort(404);
         }
@@ -44,7 +43,7 @@ class BlogController extends Controller
     public function show(string $username, string $filename): View
     {
         try {
-            $path = Path::make('/home/' . $username . '/blog');
+            $path = Path::make('/home/' . $username . '/blog/' . $filename);
         } catch (InvalidPathException $e) {
             abort(404);
         }
@@ -53,23 +52,17 @@ class BlogController extends Controller
             abort(404);
         }
 
-        if (!$path->isDirectory()) {
-            abort(404);
-        }
-
-        $file = $path->target()->files->firstWhere('name', $filename);
-
-        if (!$file) {
+        if ($path->isDirectory()) {
             abort(404);
         }
 
         $parsedown = new Parsedown();
         $parsedown->setSafeMode(true);
         $parsedown->setMarkupEscaped(true);
-        $content = $parsedown->text($file->content);
+        $content = $parsedown->text($path->target()->content);
 
         return view('blog.show', [
-            'title' => $file->name,
+            'title' => $path->target()->name,
             'content' => $content,
         ]);
     }
