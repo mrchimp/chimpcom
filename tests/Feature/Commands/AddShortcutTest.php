@@ -11,7 +11,7 @@ class AddShortcutTest extends TestCase
     {
         $this->getGuestResponse('addshortcut foo http://example.com')
             ->assertStatus(200)
-            ->assertSee('You must be logged in');
+            ->assertSee(__('chimpcom.must_log_in'));
     }
 
     /** @test */
@@ -19,7 +19,7 @@ class AddShortcutTest extends TestCase
     {
         $this->getUserResponse('addshortcut foo http://example.com')
             ->assertStatus(200)
-            ->assertSee('No.');
+            ->assertSee(__('chimpcom.not_admin'));
     }
 
     /** @test */

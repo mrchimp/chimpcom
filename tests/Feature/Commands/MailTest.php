@@ -16,7 +16,7 @@ class MailTest extends TestCase
     public function you_must_log_in_to_use_mail_command()
     {
         $this->getGuestResponse('mail')
-            ->assertSee('You must be logged in to use this command')
+            ->assertSee(__('chimpcom.must_log_in'))
             ->assertStatus(200);
     }
 

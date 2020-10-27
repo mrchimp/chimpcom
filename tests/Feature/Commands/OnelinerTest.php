@@ -14,7 +14,7 @@ class OnelinerTest extends TestCase
     public function oneliner_is_not_for_guests()
     {
         $this->getGuestResponse('oneliner command response')
-            ->assertSee('You must log in to use this command')
+            ->assertSee(__('chimpcom.must_log_in'))
             ->assertStatus(200);
     }
 

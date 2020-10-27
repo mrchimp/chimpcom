@@ -16,7 +16,7 @@ class Rmdirtest extends TestCase
     public function guests_cant_user_rmdir()
     {
         $this->getGuestResponse('rmdir dirname')
-            ->assertSee('You must log in to use this command');
+            ->assertSee(__('chimpcom.must_log_in'));
     }
 
     /** @test */

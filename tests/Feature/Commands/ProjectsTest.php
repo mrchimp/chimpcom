@@ -15,7 +15,7 @@ class ProjectsTest extends TestCase
     public function projects_lists_your_projects()
     {
         $user = factory(User::class)->create();
-        $project = factory(Project::class)->create([
+        factory(Project::class)->create([
             'name' => 'Project Name'
         ]);
 
@@ -36,7 +36,7 @@ class ProjectsTest extends TestCase
     public function projects_is_not_for_guests()
     {
         $this->getGuestResponse('projects')
-            ->assertSee('You must log in to use this command.')
+            ->assertSee(__('chimpcom.must_log_in'))
             ->assertStatus(200);
     }
 }

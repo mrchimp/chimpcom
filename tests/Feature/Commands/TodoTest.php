@@ -72,7 +72,7 @@ class TodoTest extends TestCase
     {
         $this->getGuestResponse('todo')
             ->assertStatus(404)
-            ->assertSee('You must be logged in');
+            ->assertSee(__('chimpcom.must_log_in'));
     }
 
     /** @test */

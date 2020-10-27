@@ -14,7 +14,7 @@ class SaveTest extends TestCase
     public function guests_cant_use_save_command()
     {
         $this->getGuestResponse('save name content')
-            ->assertSee('You must log in to use this command.')
+            ->assertSee(__('chimpcom.must_log_in'))
             ->assertStatus(200);
     }
 

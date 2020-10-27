@@ -38,7 +38,7 @@ class RmTest extends TestCase
     public function rm_command_is_not_for_guests()
     {
         $this->getGuestResponse('rm testfile')
-            ->assertSee('You must log in to use this command.')
+            ->assertSee(__('chimpcom.must_log_in'))
             ->assertStatus(200);
     }
 

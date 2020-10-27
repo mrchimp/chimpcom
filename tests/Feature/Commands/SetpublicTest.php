@@ -16,7 +16,7 @@ class SetpublicTest extends TestCase
     public function setpublic_is_not_for_guests()
     {
         $this->getGuestResponse('setpublic asd')
-            ->assertSee('You must log in to use this command.')
+            ->assertSee(__('chimpcom.must_log_in'))
             ->assertStatus(200);
     }
 

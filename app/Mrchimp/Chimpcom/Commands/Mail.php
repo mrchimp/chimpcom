@@ -69,7 +69,7 @@ class Mail extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
-            $output->error('You must be logged in to use this command.');
+            $output->error(__('chimpcom.must_log_in'));
 
             return 1;
         }

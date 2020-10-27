@@ -14,7 +14,7 @@ class RssTest extends TestCase
         $this
             ->getGuestResponse('rss')
             ->assertStatus(401)
-            ->assertSee('You must be logged in to use this command.');
+            ->assertSee(__('chimpcom.must_log_in'));
     }
 
     /** @test */

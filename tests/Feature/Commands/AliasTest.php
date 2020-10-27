@@ -11,14 +11,14 @@ class AliasTest extends TestCase
     {
         $this->getGuestResponse('alias foo bar')
             ->assertStatus(200)
-            ->assertSee('You must be logged in');
+            ->assertSee(__('chimpcom.must_log_in'));
     }
 
     public function testUserResponse()
     {
         $this->getUserResponse('alias foo bar')
             ->assertStatus(200)
-            ->assertSee('No.');
+            ->assertSee(__('chimpcom.not_admin'));
     }
 
     public function testAdminListResponse()

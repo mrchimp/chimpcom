@@ -12,7 +12,7 @@ class ChpassTest extends TestCase
     {
         $this->getGuestResponse('chpass')
             ->assertStatus(200)
-            ->assertSee('You must log in to use this command.')
+            ->assertSee(__('chimpcom.must_log_in'))
             ->assertSessionMissing('action');
     }
 

@@ -16,7 +16,7 @@ class NewtaskTest extends TestCase
     public function newtask_command_is_not_for_guests()
     {
         $this->getGuestResponse('newtask Do a thing')
-            ->assertSee('You must be logged in to use this command')
+            ->assertSee(__('chimpcom.must_log_in'))
             ->assertStatus(200);
     }
 

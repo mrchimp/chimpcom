@@ -39,7 +39,7 @@ class Projects extends Command
         $user = Auth::user();
 
         if (!Auth::check()) {
-            $output->error('You must log in to use this command.');
+            $output->error(__('chimpcom.must_log_in'));
 
             return 1;
         }

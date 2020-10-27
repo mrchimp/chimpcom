@@ -15,7 +15,7 @@ class PriorityTest extends TestCase
     public function priority_is_not_for_guests()
     {
         $this->getGuestResponse('priority a a')
-            ->assertSee('You must be logged in to use this command.')
+            ->assertSee(__('chimpcom.must_log_in'))
             ->assertStatus(200);
     }
 

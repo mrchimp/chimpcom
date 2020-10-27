@@ -14,7 +14,7 @@ class ForgetTest extends TestCase
     {
         $this->getGuestResponse('forget thing')
             ->assertStatus(200)
-            ->assertSee('You must log in to use this command.');
+            ->assertSee(__('chimpcom.must_log_in'));
     }
 
     /** @test */

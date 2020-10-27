@@ -14,7 +14,7 @@ class EditTest extends TestCase
     {
         $this->getGuestResponse('edit file')
             ->assertStatus(200)
-            ->assertSee('You must log in to use this command.');
+            ->assertSee(__('chimpcom.must_log_in'));
     }
 
     /** @test */

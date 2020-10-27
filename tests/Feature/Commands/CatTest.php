@@ -16,7 +16,7 @@ class CatTest extends TestCase
     public function can_is_not_available_to_guests()
     {
         $this->getGuestResponse('cat file')
-            ->assertSee('You must log in to use this command')
+            ->assertSee(__('chimpcom.must_log_in'))
             ->assertStatus(200);
     }
 

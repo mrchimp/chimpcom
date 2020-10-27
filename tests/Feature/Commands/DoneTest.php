@@ -14,7 +14,7 @@ class DoneTest extends TestCase
     {
         $this->getGuestResponse('done 1')
             ->assertStatus(200)
-            ->assertSee('You must log in to use this command.');
+            ->assertSee(__('chimpcom.must_log_in'));
     }
 
     /** @test */

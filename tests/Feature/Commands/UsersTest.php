@@ -26,7 +26,7 @@ class UsersTest extends TestCase
     public function users_is_not_for_guests()
     {
         $this->getGuestResponse('users')
-            ->assertSee('You must log in to use this command.')
+            ->assertSee(__('chimpcom.must_log_in'))
             ->assertStatus(200);
     }
 
