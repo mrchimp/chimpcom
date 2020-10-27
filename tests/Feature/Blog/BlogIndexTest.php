@@ -22,7 +22,7 @@ class BlogIndexTest extends TestCase
             'name' => 'postname',
             'content' => 'Here is a post',
         ]);
-        $blog_dir->files()->save($post);
+        $home_dir->files()->save($post);
 
         $this->get('blog/mrchimp')
             ->assertStatus(200)

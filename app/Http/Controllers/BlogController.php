@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\View\View;
 use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
 use Mrchimp\Chimpcom\Filesystem\Path;
-use Mrchimp\Chimpcom\Models\Directory;
 use Parsedown;
 
 class BlogController extends Controller
 {
+    /**
+     * Get a list of a user's blog posts
+     */
     public function index(string $username): View
     {
         try {
@@ -35,10 +37,6 @@ class BlogController extends Controller
 
     /**
      * SHow a blog post
-     *
-     * @param string $user
-     * @param string $name
-     * @return void
      */
     public function show(string $username, string $filename): View
     {

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\View\View;
 use Mrchimp\Chimpcom\Console\Output;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Symfony\Component\Console\Input\StringInput;
@@ -15,10 +18,8 @@ class ChimpcomController extends Controller
 {
     /**
      * Show the interface
-     *
-     * @return View
      */
-    public function index()
+    public function index(): View
     {
         return view('index');
     }
@@ -26,14 +27,11 @@ class ChimpcomController extends Controller
     /**
      * Provide a response to a given command.
      * If response is an AJAX response, return JSON;
-     *
-     * @return String The command output. HTML or JSON.
      */
-    public function respond(Request $request)
+    public function respond(Request $request): Response
     {
         $input = $request->input('cmd_in');
         $content = $request->input('content');
-
         $response = Chimpcom::respond($input, $content);
 
         if ($request->ajax()) {
@@ -43,20 +41,24 @@ class ChimpcomController extends Controller
         }
     }
 
-    public function commandList()
+    /**
+     * Get a list of commands
+     */
+    public function commandList(): JsonResponse
     {
-        $commands = Chimpcom::getCommandList();
-        return json_encode($commands);
+        return response()->json(Chimpcom::getCommandList());
     }
 
-    public function tabComplete(Request $request)
+    /**
+     * Get tab completions
+     */
+    public function tabComplete(Request $request): JsonResponse
     {
         $chunks = explode(' ', $request->input('cmd_in'));
         $input = new StringInput(implode(' ', array_slice($chunks, 1)));
         $output = new Output;
         $command = Chimpcom::instantiateCommand(Arr::first($chunks));
-        $result = $command->tabcomplete($input, $output);
 
-        return json_encode($result);
+        return response()->json($command->tabcomplete($input, $output));
     }
 }
