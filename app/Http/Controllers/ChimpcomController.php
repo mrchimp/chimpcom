@@ -26,9 +26,10 @@ class ChimpcomController extends Controller
 
     /**
      * Provide a response to a given command.
-     * If response is an AJAX response, return JSON;
+     *
+     * If response is an AJAX response, return JSON
      */
-    public function respond(Request $request): Response
+    public function respond(Request $request)
     {
         $input = $request->input('cmd_in');
         $content = $request->input('content');

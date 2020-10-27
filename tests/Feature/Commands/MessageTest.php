@@ -12,14 +12,6 @@ class MessageTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
-    public function message_command_cant_send_a_message_if_no_recipient_is_provided()
-    {
-        $this->getUserResponse('message no names here')
-            ->assertSee('You need to tell me who to send that to')
-            ->assertStatus(200);
-    }
-
-    /** @test */
     public function message_can_send_a_message_to_a_person()
     {
         $author = factory(User::class)->create(['name' => 'author']);
@@ -35,6 +27,32 @@ class MessageTest extends TestCase
         $this->assertEquals('Hello there!', $messages->first()->message);
         $this->assertEquals($author->id, $messages->first()->author_id);
         $this->assertEquals($recipient->id, $messages->first()->recipient_id);
+    }
+
+    /** @test */
+    public function can_use_at_symbol_message_shorthand()
+    {
+        $author = factory(User::class)->create(['name' => 'author']);
+        $recipient = factory(User::class)->create(['name' => 'recipient']);
+
+        $this->getUserResponse('@recipient Hello there!', $author)
+            ->assertSee('Message sent!')
+            ->assertStatus(200);
+
+        $messages = Message::all();
+
+        $this->assertCount(1, $messages);
+        $this->assertEquals('Hello there!', $messages->first()->message);
+        $this->assertEquals($author->id, $messages->first()->author_id);
+        $this->assertEquals($recipient->id, $messages->first()->recipient_id);
+    }
+
+    /** @test */
+    public function message_command_cant_send_a_message_if_no_recipient_is_provided()
+    {
+        $this->getUserResponse('message no names here')
+            ->assertSee('You need to tell me who to send that to')
+            ->assertStatus(200);
     }
 
     /** @test */
