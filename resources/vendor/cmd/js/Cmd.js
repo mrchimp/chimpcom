@@ -484,7 +484,6 @@ export default class Cmd {
           if (this.input.type === 'text') {
             this.cmd_stack.push(input_str);
           }
-          a;
 
           this.handleInput(input_str);
         }
