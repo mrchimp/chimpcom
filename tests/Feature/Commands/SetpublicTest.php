@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands;
 
+use App\Mrchimp\Chimpcom\Id;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
@@ -36,7 +37,7 @@ class SetpublicTest extends TestCase
             'user_id' => 9999,
         ]);
 
-        $encoded_id = Chimpcom::encodeId($memory->id);
+        $encoded_id = Id::encode($memory->id);
 
         $this->getUserResponse('setpublic ' . $encoded_id, $user)
             ->assertSee('That isn\'t your memory to change.')
@@ -55,7 +56,7 @@ class SetpublicTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $encoded_id = Chimpcom::encodeId($memory->id);
+        $encoded_id = Id::encode($memory->id);
 
         $this->getUserResponse('setpublic ' . $encoded_id, $user)
             ->assertSee('Ok.')

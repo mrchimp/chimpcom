@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use App\Mrchimp\Chimpcom\Id;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
@@ -58,7 +59,7 @@ class Done extends Command
             return 2;
         }
 
-        $task_id = Chimpcom::decodeId($input->getArgument('task_id'));
+        $task_id = Id::decode($input->getArgument('task_id'));
 
         $task = Task::where('id', $task_id)
             ->where('project_id', $project->id)

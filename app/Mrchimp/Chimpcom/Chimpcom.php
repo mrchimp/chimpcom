@@ -78,53 +78,6 @@ class Chimpcom
     }
 
     /**
-     * Convert integer ID to front-facing id
-     *
-     * @param  integer $id Decoded id
-     * @return string      Encoded id
-     */
-    public function encodeId(int $id): string
-    {
-        return dechex($id);
-    }
-
-    /**
-     * Encode an array of Ids
-     */
-    public function encodeIds(array $ids): array
-    {
-        foreach ($ids as &$id) {
-            $id = self::encodeId($id);
-        }
-
-        return $ids;
-    }
-
-    /**
-     * Convert front-facing id to integer
-     */
-    public function decodeId(string $id): int
-    {
-        try {
-            return hexdec($id);
-        } catch (\Exception $e) {
-            return -1;
-        }
-    }
-
-    /**
-     * Decode an array of IDs
-     */
-    public function decodeIds(array $ids): array
-    {
-        foreach ($ids as &$id) {
-            $id = self::decodeId($id);
-        }
-
-        return $ids;
-    }
-
-    /**
      * Return list of command names
      */
     public function getCommandList(): array

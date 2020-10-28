@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use App\Mrchimp\Chimpcom\Id;
 use Auth;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Memory;
@@ -56,7 +57,7 @@ class Setpublic extends Command
             return 1;
         }
 
-        $id = Chimpcom::decodeId($input->getArgument('id'));
+        $id = Id::decode($input->getArgument('id'));
         $memory = Memory::find($id);
 
         if (!$memory) {

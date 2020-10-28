@@ -7,6 +7,7 @@
 namespace Mrchimp\Chimpcom\Actions;
 
 use App\Mrchimp\Chimpcom\Actions\Action;
+use App\Mrchimp\Chimpcom\Id;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Booleanate;
@@ -66,7 +67,7 @@ class Forget extends Action
                 ->whereIn('id', $ids)
                 ->delete();
 
-            $ids = Chimpcom::encodeIds($ids);
+            $ids = Id::encodeMany($ids);
 
             $output->alert((count($ids) > 1 ? 'Memories' : 'Memory') . ' forgotten: #' . implode(', #', $ids));
         } elseif (Booleanate::isNegative($answer)) {

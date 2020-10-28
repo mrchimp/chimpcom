@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use App\Mrchimp\Chimpcom\Id;
 use Chimpcom;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -60,7 +61,7 @@ class Forget extends Command
             return 2;
         }
 
-        $ids = Chimpcom::decodeIds($mem_ids);
+        $ids = Id::decodeMany($mem_ids);
 
         $memories = Memory::where('user_id', $user->id)
                         ->whereIn('id', $ids)

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands;
 
+use App\Mrchimp\Chimpcom\Id;
 use App\User;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Memory;
@@ -45,7 +46,7 @@ class ForgetTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $encoded_id = Chimpcom::encodeId($memory->id);
+        $encoded_id = Id::encode($memory->id);
 
         $this->getUserResponse('forget ' . $encoded_id, $user)
             ->assertStatus(200)
@@ -62,7 +63,7 @@ class ForgetTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $encoded_id = Chimpcom::encodeId($memory->id);
+        $encoded_id = Id::encode($memory->id);
 
         $this->getUserResponse('forget ' . $encoded_id, $user);
 
@@ -79,7 +80,7 @@ class ForgetTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $encoded_id = Chimpcom::encodeId($memory->id);
+        $encoded_id = Id::encode($memory->id);
 
         $this->getUserResponse('forget ' . $encoded_id, $user);
 
@@ -96,7 +97,7 @@ class ForgetTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $encoded_id = Chimpcom::encodeId($memory->id);
+        $encoded_id = Id::encode($memory->id);
 
         $this->getUserResponse('forget ' . $encoded_id, $user);
 

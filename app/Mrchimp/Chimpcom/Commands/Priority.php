@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use App\Mrchimp\Chimpcom\Id;
 use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Task;
@@ -56,7 +57,7 @@ class Priority extends Command
         }
 
         $user = Auth::user();
-        $task_id = Chimpcom::decodeId($input->getArgument('task_id'));
+        $task_id = Id::decode($input->getArgument('task_id'));
         $priority = $input->getArgument('priority');
 
         if (!is_numeric($priority)) {

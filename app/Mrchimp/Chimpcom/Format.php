@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom;
 
+use App\Mrchimp\Chimpcom\Id;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
@@ -118,7 +119,7 @@ class Format
                 $chunks = [];
             }
 
-            $hexid = Chimpcom::encodeId($memory['id']);
+            $hexid = Id::encode($memory['id']);
 
             // Memory ID
             $chunks[] = Format::grey($hexid, [
@@ -221,7 +222,7 @@ class Format
         );
 
         foreach ($tasks as $task) {
-            $hex_id = Chimpcom::encodeId($task->id);
+            $hex_id = Id::encode($task->id);
 
             $output .= Format::style(($task->completed ? '&#10004;' : '') . " $hex_id ", '', [
                 'data-type' => 'autofill',
