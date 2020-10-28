@@ -39,9 +39,8 @@ class RegisterTest extends TestCase
     public function register_action_aborts_if_a_password_is_not_provided()
     {
         $this->getGuestResponse('register fred');
-
-        $this->getGuestResponse('')
-            ->assertSee('No password given. Giving up.')
+        $response = $this->getGuestResponse('');
+        $response->assertSee('No password given. Giving up.')
             ->assertSessionMissing('register_username')
             ->assertStatus(200);
     }

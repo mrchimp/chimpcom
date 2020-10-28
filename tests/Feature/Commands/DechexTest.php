@@ -19,9 +19,6 @@ class DechexTest extends TestCase
     {
         $response = $this->getGuestResponse('dechex rgb(0,128,255)')
             ->assertStatus(200)
-            // ->tap(function ($response) {
-            //     dd($response->getContent());
-            // })
             ->assertSee('#080ff');
 
         $this->assertStringContainsString(

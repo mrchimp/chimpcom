@@ -3,7 +3,7 @@
 namespace Tests\Feature\Commands;
 
 use App\User;
-use Mrchimp\Chimpcom\Chimpcom;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Memory;
 use Tests\TestCase;
 

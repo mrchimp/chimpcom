@@ -3,11 +3,10 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
-use Mrchimp\Chimpcom\Chimpcom;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**

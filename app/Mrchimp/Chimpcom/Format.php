@@ -4,6 +4,7 @@ namespace Mrchimp\Chimpcom;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Feed;
 
 /**

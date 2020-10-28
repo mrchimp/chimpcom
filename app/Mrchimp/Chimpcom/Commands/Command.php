@@ -28,6 +28,40 @@ class Command extends SymfonyCommand
         $this->log = new Log;
     }
 
+    public static function make(string $name, string $type = 'command'): ?Command
+    {
+        if ($type === 'command') {
+            $config_str = 'chimpcom.commands.' . strtolower($name);
+        } elseif ($type === 'action') {
+            $config_str = 'chimpcom.actions.' . strtolower($name);
+        } else {
+            throw new \Exception('Invalid command type');
+        }
+
+        $command_class = config($config_str);
+
+        if (!class_exists($command_class)) {
+            return null;
+        }
+
+        return new $command_class;
+    }
+
+    public static function exists(string $name = null)
+    {
+        $class = config('chimpcom.commands.' . strtolower($name));
+
+        if (!$class) {
+            return false;
+        }
+
+        if (!class_exists($class)) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Generate a help string from the provided parts.
      *

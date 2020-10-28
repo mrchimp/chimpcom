@@ -3,7 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Str;
-use Mrchimp\Chimpcom\Chimpcom;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Format;
 use Mrchimp\Chimpcom\Models\Alias;
 use Symfony\Component\Console\Input\InputInterface;
@@ -63,7 +63,7 @@ class Man extends Command
         }
 
         $page_name = Alias::lookup($input->getArgument('command_name'));
-        $command = Chimpcom::instantiateCommand($page_name);
+        $command = Command::make($page_name);
 
         if (!$command) {
             $output->write(Format::error('No man page found'));

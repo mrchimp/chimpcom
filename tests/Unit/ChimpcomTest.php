@@ -2,9 +2,11 @@
 
 namespace Tests\Unit;
 
+use App\Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Config;
 use Mrchimp\Chimpcom\Actions\Candyman;
 use Mrchimp\Chimpcom\Chimpcom;
+use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Commands\Hi;
 use Mrchimp\Chimpcom\Models\Shortcut;
 use Tests\TestCase;
@@ -14,7 +16,7 @@ class ChimpcomTest extends TestCase
     /** @test */
     public function command_can_be_instantiated_if_it_exists()
     {
-        $command = Chimpcom::instantiateCommand('hi');
+        $command = Command::make('hi');
 
         $this->assertInstanceOf(Hi::class, $command);
     }
@@ -22,7 +24,7 @@ class ChimpcomTest extends TestCase
     /** @test */
     public function null_will_be_returned_if_command_is_not_recognised()
     {
-        $command = Chimpcom::instantiateCommand('commandthatdoesnotexist');
+        $command = Command::make('commandthatdoesnotexist');
 
         $this->assertNull($command);
     }
@@ -30,7 +32,7 @@ class ChimpcomTest extends TestCase
     /** @test */
     public function action_can_be_instantiated_if_it_exists()
     {
-        $action = Chimpcom::instantiateAction('candyman');
+        $action = Command::make('candyman', 'action');
 
         $this->assertInstanceOf(Candyman::class, $action);
     }
@@ -38,7 +40,7 @@ class ChimpcomTest extends TestCase
     /** @test */
     public function null_will_be_return_if_action_is_not_recognised()
     {
-        $action = Chimpcom::instantiateAction('actionthatdoesnotexist');
+        $action = Command::make('actionthatdoesnotexist', 'action');
 
         $this->assertNull($action);
     }
@@ -46,11 +48,11 @@ class ChimpcomTest extends TestCase
     /** @test */
     public function command_names_are_case_insensitive()
     {
-        $this->assertInstanceOf(Hi::class, Chimpcom::instantiateCommand('Hi'));
-        $this->assertTrue(Chimpcom::commandExists('Hi'));
+        $this->assertInstanceOf(Hi::class, Command::make('Hi'));
+        $this->assertTrue(Command::exists('Hi'));
 
-        $this->assertInstanceOf(Candyman::class, Chimpcom::instantiateAction('Candyman'));
-        $this->assertTrue(Chimpcom::actionExists('Candyman'));
+        $this->assertInstanceOf(Candyman::class, Command::make('Candyman', 'action'));
+        $this->assertTrue(Action::exists('Candyman'));
     }
 
     /** @test */

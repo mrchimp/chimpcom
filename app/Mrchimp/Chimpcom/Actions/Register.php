@@ -7,8 +7,8 @@
 namespace Mrchimp\Chimpcom\Actions;
 
 use App\Mrchimp\Chimpcom\Actions\Action;
-use Chimpcom;
-use Session;
+use Illuminate\Support\Facades\Session;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
