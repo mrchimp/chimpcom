@@ -45,7 +45,6 @@ class ProgressBar
 
     /**
      * Create a new ProgressBar
-     *
      */
     public static function make(int $done, int $total): ProgressBar
     {

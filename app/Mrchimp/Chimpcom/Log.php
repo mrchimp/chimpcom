@@ -26,12 +26,18 @@ class Log
         $this->log->pushHandler($stream);
     }
 
-    public function info($msg)
+    /**
+     * Log info
+     */
+    public function info(string $msg): void
     {
         $this->log->info($msg);
     }
 
-    public function error($msg)
+    /**
+     * Log an error
+     */
+    public function error(string $msg): void
     {
         $this->log->error($msg);
     }

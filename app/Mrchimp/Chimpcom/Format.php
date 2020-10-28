@@ -5,7 +5,6 @@ namespace Mrchimp\Chimpcom;
 use App\Mrchimp\Chimpcom\Id;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Feed;
 
 /**
@@ -151,7 +150,7 @@ class Format
             // Major
             $pos = strpos($memory->content, '#major');
             if ($pos !== false) {
-                $chunks[] = $this->error('!', [
+                $chunks[] = static::error('!', [
                     'title' => 'Major! This is important! Take notice! Act now!'
                 ]);
             } else {
@@ -273,11 +272,11 @@ class Format
     public static function messages(Collection $messages): string
     {
         $output = '<table>
-                  <tr>
+                <tr>
                     <td>' . Format::title('id') . '</td>
                     <td>' . Format::title('From') . '</td>
                     <td colspan="2">' . Format::title('Message') . '</td>
-                  </tr>';
+                </tr>';
 
         foreach ($messages as $msg) {
             $output .= '<tr>' .
@@ -310,6 +309,9 @@ class Format
         return $output;
     }
 
+    /**
+     * Format a single feed item
+     */
     public static function feedItem($item): string
     {
         $output = self::title(e($item->get_title())) . '<br>';

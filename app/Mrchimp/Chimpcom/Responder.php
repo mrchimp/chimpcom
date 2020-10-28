@@ -203,6 +203,9 @@ class Responder
         return $output;
     }
 
+    /**
+     * Run the command
+     */
     public function run(): Output
     {
         if ($this->cmd_in === 'clearaction') {
@@ -228,6 +231,9 @@ class Responder
         return $this->handleInvalidCommand();
     }
 
+    /**
+     * Get tab completions
+     */
     public function tabComplete()
     {
         $input = new StringInput($this->arguments);

@@ -18,7 +18,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Password extends Action
 {
-
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
     public function configure()
     {
         $this->setName('password');

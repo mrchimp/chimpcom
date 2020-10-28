@@ -3,6 +3,7 @@
 namespace App\Mrchimp\Chimpcom\Actions;
 
 use Mrchimp\Chimpcom\Commands\Command;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
 
 class Action extends Command
 {

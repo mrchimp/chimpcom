@@ -2,20 +2,7 @@
 
 namespace Mrchimp\Chimpcom;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
-use App\Mrchimp\Chimpcom\Responder;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Mrchimp\Chimpcom\Commands\Command;
-use Mrchimp\Chimpcom\Console\Input;
-use Mrchimp\Chimpcom\Console\Output;
-use Mrchimp\Chimpcom\Format;
-use Mrchimp\Chimpcom\Models\Alias;
-use Mrchimp\Chimpcom\Models\Message;
-use Mrchimp\Chimpcom\Models\Oneliner;
-use Mrchimp\Chimpcom\Models\Shortcut;
-use Psy\Exception\FatalErrorException;
-use Symfony\Component\Console\Exception\RuntimeException;
 
 class Chimpcom
 {
@@ -54,6 +41,9 @@ class Chimpcom
      */
     protected $content;
 
+    /**
+     * Reset the action
+     */
     public function clearAction()
     {
         $this->setAction('normal');
@@ -61,7 +51,6 @@ class Chimpcom
 
     /**
      * Returns the action to perform.
-     * The action bypasses the normal command processing. e.g. for passwords
      */
     public function currentActionName(): string
     {
@@ -69,8 +58,7 @@ class Chimpcom
     }
 
     /**
-     * Sets the action - i.e. what to expect from the next command.
-     * If they've just entered a username, we're gonna expect a password.
+     * Sets the action
      */
     public function setAction($str = 'normal')
     {
@@ -87,8 +75,6 @@ class Chimpcom
 
     /**
      * Get the version number of Chimpcom
-     *
-     * @return string
      */
     public function getVersion(): string
     {

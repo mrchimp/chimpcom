@@ -19,6 +19,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Register3 extends Action
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
     protected function configure()
     {
         $this->setName('register3');

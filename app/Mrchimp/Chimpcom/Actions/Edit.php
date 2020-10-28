@@ -11,6 +11,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Edit extends Action
 {
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
     protected function configure()
     {
         $this->setName('edit');
@@ -18,6 +23,11 @@ class Edit extends Action
         $this->addOption('continue', 'c', null, 'Continue editing');
     }
 
+    /**
+     * Run the command
+     *
+     * @return int
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$input->getOption('continue')) {
