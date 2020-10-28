@@ -1,3 +1,12 @@
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .cmd-interface {
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -11,6 +20,36 @@
   @media (max-width: 600px) {
     --font-size: 14px;
     line-height: 140%;
+  }
+
+  .cmd-input-container {
+    display: flex;
+  }
+
+  .cmd-input-wrapper {
+    flex: 1 1 100%;
+    position: relative;
+    font-size: var(--font-size);
+  }
+
+  .cmd-in-caret {
+    --caret-width: 1ch;
+    --caret-offset: 0ch;
+
+    position: absolute;
+    left: var(--caret-offset);
+    top: 0;
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    width: var(--caret-width);
+    height: 1.3em;
+    animation: blink 0.4s ease-in-out alternate infinite;
+  }
+
+  .main-prompt {
+    flex: 1 1 0%;
+    white-space: nowrap;
+    padding-right: 1ch;
   }
 
   & *,
@@ -47,7 +86,21 @@
     font-family: var(--font-default);
     font-size: var(--font-size);
     outline: none;
-    width: 80%;
+    width: 100%;
+  }
+
+  input.cmd-in {
+    caret-color: var(--bg-color);
+
+    &::-moz-selection {
+      background-color: var(--bg-color);
+    }
+
+    &::before {
+      content: '';
+      width: 1em;
+      height: 1em;
+    }
   }
 
   .pass-in {

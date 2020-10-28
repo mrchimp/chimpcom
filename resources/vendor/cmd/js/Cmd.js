@@ -9,7 +9,7 @@ import CmdStack from './CmdStack';
 export default class Cmd {
   constructor(user_config) {
     this.keys_array = [9, 13, 38, 40, 27];
-    this.prompt_str = '%USERNAME% $ ';
+    this.prompt_str = '%USERNAME% $';
     this.speech_synth_support =
       'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
     this.options = Object.assign(
@@ -114,6 +114,9 @@ export default class Cmd {
     });
 
     this.container.addEventListener('keydown', this.handleKeyPress.bind(this));
+    this.container.addEventListener('keyup', this.updateCaret.bind(this));
+    this.container.addEventListener('select', this.updateCaret.bind(this));
+    this.container.addEventListener('click', this.updateCaret.bind(this));
 
     this.initTextEditor();
   }
@@ -230,7 +233,7 @@ export default class Cmd {
     });
 
     this.input.setAttribute('title', 'Cmd input');
-    this.container.append(this.input);
+    this.input_wrapper.append(this.input);
 
     this.focusOnInput();
   }
@@ -481,6 +484,7 @@ export default class Cmd {
           if (this.input.type === 'text') {
             this.cmd_stack.push(input_str);
           }
+          a;
 
           this.handleInput(input_str);
         }
@@ -518,6 +522,34 @@ export default class Cmd {
       if (this.autocomplete_controller) {
         this.autocomplete_controller.abort();
       }
+    }
+
+    this.updateCaret();
+  }
+
+  updateCaret() {
+    const startPos = this.input.selectionStart;
+    const endPos = this.input.selectionEnd;
+
+    let width = Math.max(Math.abs(endPos - startPos), 1);
+    let str = this.input.value.substr(startPos, width);
+
+    this.input_caret.innerText = str;
+    this.input_caret.style.setProperty('--caret-offset', startPos + 'ch');
+    this.input_caret.style.setProperty('--caret-width', width + 'ch');
+  }
+
+  getCaretIndex(inputField) {
+    const startPos = inputField.selectionStart;
+    const endPos = inputField.selectionEnd;
+    const dir = inputField.selectionDirection;
+
+    if (startPos === endPos) {
+      return startPos;
+    } else if (dir === 'forward') {
+      return endPos;
+    } else {
+      return startPos;
     }
   }
 
@@ -675,17 +707,29 @@ export default class Cmd {
     this.output.classList.add('cmd-output');
     this.container.append(this.output);
 
+    this.input_container = document.createElement('div');
+    this.input_container.classList.add('cmd-input-container');
+    this.container.append(this.input_container);
+
     this.prompt_elem = document.createElement('span');
     this.prompt_elem.classList.add('main-prompt');
     this.prompt_elem.classList.add('prompt');
     this.prompt_elem.innerHTML = this.makePrompt();
-    this.container.append(this.prompt_elem);
+    this.input_container.append(this.prompt_elem);
+
+    this.input_wrapper = document.createElement('div');
+    this.input_wrapper.classList.add('cmd-input-wrapper');
+    this.input_container.append(this.input_wrapper);
 
     this.input = document.createElement('input');
     this.input.classList.add('cmd-in');
     this.input.setAttribute('type', 'text');
     this.input.setAttribute('maxlength', 512);
-    this.container.append(this.input);
+    this.input_wrapper.append(this.input);
+
+    this.input_caret = document.createElement('div');
+    this.input_caret.classList.add('cmd-in-caret');
+    this.input_wrapper.append(this.input_caret);
 
     this.showInputType();
 
