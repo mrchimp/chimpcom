@@ -676,6 +676,7 @@ export default class Cmd {
     }
 
     this.input.focus();
+    this.updateCaret();
   }
 
   /**
