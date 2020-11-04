@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "allowJs": true,
+    "sourceMap": true
+  },
+  "files": [
+    "resources/js/Cmd.ts",
+    "resources/js/CmdStack.ts",
+    "resources/js/main.ts",
+    "resources/js/QueryString.ts"
+  ]
+}

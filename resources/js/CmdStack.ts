@@ -12,44 +12,43 @@
  * @param {integer} max_size Number of commands to store
  */
 export default class CmdStack {
-  constructor(id, max_size) {
+  instance_id: string;
+  cur: number;
+  arr: string[];
+  max_size: number;
+
+  constructor(id: string, max_size: number) {
     this.instance_id = id;
     this.cur = 0;
     this.arr = []; // This is a fairly meaningless name but
     // makes it sound like this function was
     // written by a pirate.  I'm keeping it.
 
-    if (typeof id !== 'string') {
-      throw 'Stack error: id should be a string.';
-    }
-
-    if (typeof max_size !== 'number') {
-      throw 'Stack error: max_size should be a number.';
-    }
-
     this.max_size = max_size;
+    this.loadArray();
   }
 
   /**
    * Store the array in localstorage
    */
-  setArray(arr) {
-    localStorage['cmd_stack_' + this.instance_id] = JSON.stringify(this.arr);
+  setArray() {
+    localStorage.setItem('cmd_stack_' + this.instance_id, JSON.stringify(this.arr));
   }
 
   /**
    * Load array from localstorage
    */
-  getArray() {
-    if (!localStorage['cmd_stack_' + this.instance_id]) {
+  loadArray() {
+    if (!localStorage.getItem('cmd_stack_' + this.instance_id)) {
       this.arr = [];
-      this.setArray(this.arr);
+      this.setArray();
+      return this.arr;
     }
 
     try {
-      this.arr = JSON.parse(localStorage['cmd_stack_' + this.instance_id]);
+      this.arr = JSON.parse(localStorage.getItem('cmd_stack_' + this.instance_id));
     } catch (err) {
-      return [];
+      this.arr = [];
     }
 
     return this.arr;
@@ -59,9 +58,7 @@ export default class CmdStack {
    * Push a command to the array
    * @param  {string} cmd Command to append to stack
    */
-  push(cmd) {
-    this.arr = this.getArray();
-
+  push(cmd: string) {
     // don't push if same as last command
     if (cmd === this.arr[this.arr.length - 1]) {
       return false;
@@ -76,14 +73,14 @@ export default class CmdStack {
 
     this.cur = this.arr.length;
 
-    this.setArray(this.arr);
+    this.setArray();
   }
 
   /**
    * Get previous command from stack (up key)
    * @return {string} Retrieved command string
    */
-  prev() {
+  prev(): string {
     this.cur -= 1;
 
     if (this.cur < 0) {
@@ -97,7 +94,7 @@ export default class CmdStack {
    * Get next command from stack (down key)
    * @return {string} Retrieved command string
    */
-  next() {
+  next(): string {
     this.cur = this.cur + 1;
 
     // Return a blank string as last item
@@ -117,7 +114,6 @@ export default class CmdStack {
    * Move cursor to last element
    */
   reset() {
-    this.arr = this.getArray();
     this.cur = this.arr.length;
   }
 
@@ -125,8 +121,7 @@ export default class CmdStack {
    * Is stack empty
    * @return {Boolean} True if stack is empty
    */
-  isEmpty() {
-    this.arr = this.getArray();
+  isEmpty(): boolean {
     return this.arr.length === 0;
   }
 
@@ -143,7 +138,7 @@ export default class CmdStack {
    * Get current cursor location
    * @return {integer} Current cursor index
    */
-  getCur() {
+  getCur(): number {
     return this.cur;
   }
 
@@ -151,7 +146,7 @@ export default class CmdStack {
    * Get entire stack array
    * @return {array} The stack array
    */
-  getArr() {
+  getArr(): string[] {
     return this.arr;
   }
 
@@ -159,7 +154,7 @@ export default class CmdStack {
    * Get size of the stack
    * @return {Integer} Size of stack
    */
-  getSize() {
-    return this.arr.size;
+  getSize(): number {
+    return this.arr.length;
   }
 }

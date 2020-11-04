@@ -12,7 +12,7 @@ const mix = require('laravel-mix');
  */
 
 mix
-  .js(['resources/js/main.js'], 'public/js')
+  .ts(['resources/js/main.ts'], 'public/js')
   .less('resources/less/main.less', 'public/css')
   .less('resources/less/blog/main.less', 'public/css/blog.css')
   .copy('resources/images', 'public/img')

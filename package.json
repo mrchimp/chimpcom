@@ -13,6 +13,8 @@
     "resolve-url-loader": "^2.3.1",
     "sass": "^1.15.2",
     "sass-loader": "^7.1.0",
+    "ts-loader": "^8.0.7",
+    "typescript": "^4.0.5",
     "vue-template-compiler": "^2.6.11"
   },
   "scripts": {

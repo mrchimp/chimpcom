@@ -41,7 +41,7 @@
 </head>
 <body>
 <noscript>Enable JavaScript.</noscript>
-<div id="chimpcom"></div>
+<div id="cmd"></div>
 <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
 <script type="text/javascript" src="{{ mix('js/main.js') }}"></script>
 </body>
