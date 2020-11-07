@@ -2,9 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 
 class IndexTest extends TestCase
@@ -19,6 +16,6 @@ class IndexTest extends TestCase
         $this
             ->get('/')
             ->assertStatus(200)
-            ->assertSee('<div id="chimpcom"></div>', false);
+            ->assertSee('<div id="cmd"></div>', false);
     }
 }
