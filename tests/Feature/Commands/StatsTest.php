@@ -15,9 +15,9 @@ class StatsTest extends TestCase
     /** @test */
     public function stats_command_gets_a_list_stats()
     {
-        factory(User::class, 2)->create();
-        factory(Memory::class, 3)->create();
-        factory(Feed::class, 4)->create();
+        User::factory()->count(2)->create();
+        Memory::factory()->count(3)->create();
+        Feed::factory()->count(4)->create();
 
         $this->getGuestResponse('stats')
             ->assertSee('Users: 2')
@@ -29,14 +29,14 @@ class StatsTest extends TestCase
     /** @test */
     public function stats_command_can_get_stats_for_single_user()
     {
-        $user = factory(User::class)->create([
+        $user = User::factory()->create([
             'name' => 'fred',
         ]);
 
-        factory(Memory::class, 5)->create([
+        Memory::factory()->count(5)->create([
             'user_id' => $user->id,
         ]);
-        factory(Feed::class, 6)->create([
+        Feed::factory()->count(6)->create([
             'user_id' => $user->id,
         ]);
 

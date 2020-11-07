@@ -12,24 +12,24 @@ class CdTest extends TestCase
 {
     protected function makeDirStructure()
     {
-        $this->user = factory(User::class)->create([
+        $this->user = User::factory()->create([
             'name' => 'fred',
         ]);
 
-        $this->home = factory(Directory::class)->create([
+        $this->home = Directory::factory()->create([
             'name' => 'home',
             'owner_id' => $this->user->id,
         ]);
-        $this->fred = factory(Directory::class)->create([
+        $this->fred = Directory::factory()->create([
             'name' => 'fred',
             'owner_id' => $this->user->id,
         ]);
-        $this->bin = factory(Directory::class)->create([
+        $this->bin = Directory::factory()->create([
             'name' => 'bin',
             'owner_id' => $this->user->id,
         ]);
 
-        $this->file = factory(File::class)->create([
+        $this->file = File::factory()->create([
             'name' => 'file',
             'owner_id' => $this->user->id,
         ]);

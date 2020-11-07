@@ -1,14 +1,20 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Mrchimp\Chimpcom\Models\Feed;
 
-$factory->define(Feed::class, function (Faker $faker) {
-    return [
-        'user_id' => 1,
-        'name' => $faker->name,
-        'url' => $faker->url,
-    ];
-});
+class FeedFactory extends Factory
+{
+    protected $model = Feed::class;
+
+    public function definition()
+    {
+        return [
+            'user_id' => 1,
+            'name' => $this->faker->name,
+            'url' => $this->faker->url,
+        ];
+    }
+}

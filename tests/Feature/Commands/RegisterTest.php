@@ -21,7 +21,7 @@ class RegisterTest extends TestCase
     /** @test */
     public function cant_register_with_username_that_already_exists()
     {
-        factory(User::class)->create([
+        User::factory()->create([
             'name' => 'fred',
         ]);
 

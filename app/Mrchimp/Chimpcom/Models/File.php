@@ -3,12 +3,16 @@
 namespace Mrchimp\Chimpcom\Models;
 
 use App\User;
+use Database\Factories\FileFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Mrchimp\Chimpcom\Filesystem\FilesystemEntity;
 
 class File extends Model implements FilesystemEntity
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -70,5 +74,10 @@ class File extends Model implements FilesystemEntity
             $this->updated_at->format('M j H:i'),
             e($this->name)
         ];
+    }
+
+    protected static function newFactory()
+    {
+        return FileFactory::new();
     }
 }

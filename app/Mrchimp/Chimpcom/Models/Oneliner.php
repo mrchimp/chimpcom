@@ -6,6 +6,7 @@
 
 namespace Mrchimp\Chimpcom\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -14,8 +15,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Oneliner extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'command',
         'response',
     ];
+
+    protected static function newFactory()
+    {
+        return OnelinerFactory::new();
+    }
 }

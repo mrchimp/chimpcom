@@ -14,8 +14,8 @@ class ProjectsTest extends TestCase
     /** @test */
     public function projects_lists_your_projects()
     {
-        $user = factory(User::class)->create();
-        factory(Project::class)->create([
+        $user = User::factory()->create();
+        Project::factory()->create([
             'name' => 'Project Name'
         ]);
 

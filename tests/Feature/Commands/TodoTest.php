@@ -15,18 +15,18 @@ class TodoTest extends TestCase
 
     protected function makeTestTasks()
     {
-        $this->user = factory(User::class)->create();
-        $this->other_user = factory(User::class)->create();
+        $this->user = User::factory()->create();
+        $this->other_user = User::factory()->create();
 
-        $this->active_project = factory(Project::class)->create([
+        $this->active_project = Project::factory()->create([
             'user_id' => $this->user->id,
         ]);
 
-        $this->other_project = factory(Project::class)->create([
+        $this->other_project = Project::factory()->create([
             'user_id' => $this->user->id,
         ]);
 
-        $this->other_users_project = factory(Project::class)->create([
+        $this->other_users_project = Project::factory()->create([
             'user_id' => $this->other_user->id,
         ]);
 
@@ -36,31 +36,31 @@ class TodoTest extends TestCase
         $this->other_user->active_project_id = $this->other_users_project->id;
         $this->other_user->save();
 
-        factory(Task::class)->create([
+        Task::factory()->create([
             'description' => 'Low priority task',
             'user_id' => $this->user->id,
             'project_id' => $this->active_project->id,
         ]);
 
-        factory(Task::class)->states('highpriority')->create([
+        Task::factory()->highpriority()->create([
             'description' => 'High priority task',
             'user_id' => $this->user->id,
             'project_id' => $this->active_project->id,
         ]);
 
-        factory(Task::class)->states('completed')->create([
+        Task::factory()->completed()->create([
             'description' => 'Completed task',
             'user_id' => $this->user->id,
             'project_id' => $this->active_project->id,
         ]);
 
-        factory(Task::class)->create([
+        Task::factory()->create([
             'description' => 'Task on other project',
             'user_id' => $this->user->id,
             'project_id' => $this->other_project->id,
         ]);
 
-        factory(Task::class)->create([
+        Task::factory()->create([
             'description' => 'Other users task',
             'user_id' => $this->other_user->id,
             'project_id' => $this->other_users_project->id,
@@ -78,7 +78,7 @@ class TodoTest extends TestCase
     /** @test */
     public function todo_returns_error_if_no_active_project()
     {
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
         $this->user->active_project_id = 0;
         $this->user->save();
 
@@ -174,9 +174,9 @@ class TodoTest extends TestCase
     /** @test */
     public function if_there_are_no_tasks_say_nothing_to_do()
     {
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
 
-        $this->active_project = factory(Project::class)->create([
+        $this->active_project = Project::factory()->create([
             'user_id' => $this->user->id,
         ]);
 
@@ -191,16 +191,16 @@ class TodoTest extends TestCase
     /** @test */
     public function if_all_tasks_are_complete_then_say_so()
     {
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
 
-        $this->active_project = factory(Project::class)->create([
+        $this->active_project = Project::factory()->create([
             'user_id' => $this->user->id,
         ]);
 
         $this->user->active_project_id = $this->active_project->id;
         $this->user->save();
 
-        factory(Task::class)->states('completed')->create([
+        Task::factory()->completed()->create([
             'description' => 'Completed task',
             'user_id' => $this->user->id,
             'project_id' => $this->active_project->id,

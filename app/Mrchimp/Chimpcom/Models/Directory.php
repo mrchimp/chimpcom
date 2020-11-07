@@ -3,20 +3,21 @@
 namespace Mrchimp\Chimpcom\Models;
 
 use App\User;
+use Database\Factories\DirectoryFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Kalnoy\Nestedset\NodeTrait;
-use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
 use Mrchimp\Chimpcom\Filesystem\FilesystemEntity;
 use Mrchimp\Chimpcom\Filesystem\Path;
 use Mrchimp\Chimpcom\Filesystem\RootDirectory;
 
 class Directory extends Model implements FilesystemEntity
 {
-    use NodeTrait;
+    use NodeTrait, HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -184,5 +185,10 @@ class Directory extends Model implements FilesystemEntity
             $this->updated_at->format('M j H:i'),
             e($this->name)
         ];
+    }
+
+    protected static function newFactory()
+    {
+        return DirectoryFactory::new();
     }
 }

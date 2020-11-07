@@ -47,7 +47,7 @@ class ManTest extends TestCase
     /** @test */
     public function man_supports_tab_complete()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $responses = $this->actingAs($user)
             ->get('/ajax/tabcomplete?cmd_in=man lo')

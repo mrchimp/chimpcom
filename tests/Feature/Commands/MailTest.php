@@ -31,8 +31,8 @@ class MailTest extends TestCase
     /** @test */
     public function a_user_can_delete_messages_they_received()
     {
-        $user = factory(User::class)->create();
-        $message = factory(Message::class)->create([
+        $user = User::factory()->create();
+        $message = Message::factory()->create([
             'recipient_id' => $user->id,
         ]);
 
@@ -44,7 +44,7 @@ class MailTest extends TestCase
     /** @test */
     public function cant_delete_messages_with_invalid_ids()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->getUserResponse('mail --delete 9999999', $user)
             ->assertSee('There was a problem.')
@@ -62,8 +62,8 @@ class MailTest extends TestCase
     /** @test */
     public function users_can_read_messages_sent_to_them()
     {
-        $user = factory(User::class)->create();
-        factory(Message::class)->create([
+        $user = User::factory()->create();
+        Message::factory()->create([
             'recipient_id' => $user->id,
             'message' => 'Here is a message.',
         ]);

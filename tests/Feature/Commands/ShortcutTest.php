@@ -21,7 +21,7 @@ class ShortcutTest extends TestCase
     /** @test */
     public function shortcut_command_lists_shortcuts()
     {
-        factory(Shortcut::class)->create([
+        Shortcut::factory()->create([
             'name' => 'testshortcut',
         ]);
 

@@ -32,8 +32,8 @@ class SetpublicTest extends TestCase
     /** @test */
     public function setpublic_doesnt_work_on_other_peoples_memories()
     {
-        $user = factory(User::class)->create();
-        $memory = factory(Memory::class)->create([
+        $user = User::factory()->create();
+        $memory = Memory::factory()->create([
             'user_id' => 9999,
         ]);
 
@@ -51,8 +51,8 @@ class SetpublicTest extends TestCase
     /** @test */
     public function setpublic_marks_memories_as_public()
     {
-        $user = factory(User::class)->create();
-        $memory = factory(Memory::class)->create([
+        $user = User::factory()->create();
+        $memory = Memory::factory()->create([
             'user_id' => $user->id,
         ]);
 

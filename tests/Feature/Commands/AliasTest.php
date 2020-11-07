@@ -23,7 +23,7 @@ class AliasTest extends TestCase
 
     public function testAdminListResponse()
     {
-        factory(Alias::class)->create([
+        Alias::factory()->create([
             'name' => 'welcome',
             'alias' => 'hi',
         ]);

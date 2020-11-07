@@ -67,7 +67,7 @@ class ChimpcomTest extends TestCase
     /** @test */
     public function shortcuts_can_be_used()
     {
-        factory(Shortcut::class)->create([
+        Shortcut::factory()->create([
             'name' => 'testshortcut',
             'url' => 'http://example.com',
         ]);

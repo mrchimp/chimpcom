@@ -2,14 +2,14 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Mrchimp\Chimpcom\Models\Directory;
 use Mrchimp\Chimpcom\Models\Project;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasFactory;
 
     /**
      * The attributes that are mass assignable.

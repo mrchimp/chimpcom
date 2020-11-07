@@ -1,14 +1,21 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Mrchimp\Chimpcom\Models\File;
 
-$factory->define(File::class, function (Faker\Generator $faker) {
-    return [
-        'directory_id' => 1,
-        'owner_id' => 1,
-        'name' => $faker->word,
-        'content' => $faker->sentence,
-    ];
-});
+class FileFactory extends Factory
+{
+    protected $model = File::class;
+
+    public function definition()
+    {
+        return [
+            'directory_id' => 1,
+            'owner_id' => 1,
+            'name' => $this->faker->word,
+            'content' => $this->faker->sentence,
+        ];
+    }
+}

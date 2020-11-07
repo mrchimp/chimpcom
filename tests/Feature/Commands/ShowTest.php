@@ -12,14 +12,14 @@ class ShowTest extends TestCase
     /** @test */
     public function show_returns_memories_that_match()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'match',
             'content' => 'This is a match',
             'user_id' => $user->id,
         ]);
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'non_match',
             'content' => 'This is not a match',
             'user_id' => $user->id,
@@ -34,21 +34,21 @@ class ShowTest extends TestCase
     /** @test */
     public function show_can_accept_multiple_search_words()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'one',
             'content' => 'Memory one',
             'user_id' => $user->id
         ]);
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'two',
             'content' => 'Memory two',
             'user_id' => $user->id
         ]);
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'three',
             'content' => 'Memory three',
             'user_id' => $user->id
@@ -64,21 +64,21 @@ class ShowTest extends TestCase
     /** @test */
     public function can_get_a_list_of_words()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'one',
             'content' => 'Memory one',
             'user_id' => $user->id
         ]);
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'two',
             'content' => 'Memory two',
             'user_id' => $user->id
         ]);
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'three',
             'content' => 'Memory three',
             'user_id' => $user->id
@@ -94,15 +94,15 @@ class ShowTest extends TestCase
     /** @test */
     public function can_list_only_public_memories()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Memory::class)->states('public')->create([
+        Memory::factory()->public()->create([
             'name' => 'test',
             'content' => 'Public memory',
             'user_id' => $user->id,
         ]);
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'test',
             'content' => 'Private memory',
             'user_id' => $user->id
@@ -117,15 +117,15 @@ class ShowTest extends TestCase
     /** @test */
     public function can_list_only_private_memories()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Memory::class)->states('public')->create([
+        Memory::factory()->public()->create([
             'name' => 'test',
             'content' => 'Public memory',
             'user_id' => $user->id,
         ]);
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'test',
             'content' => 'Private memory',
             'user_id' => $user->id
@@ -140,15 +140,15 @@ class ShowTest extends TestCase
     /** @test */
     public function can_show_only_my_memories()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Memory::class)->states('public')->create([
+        Memory::factory()->public()->create([
             'name' => 'test',
             'content' => 'My memory',
             'user_id' => $user->id,
         ]);
 
-        factory(Memory::class)->states('public')->create([
+        Memory::factory()->public()->create([
             'name' => 'test',
             'content' => 'Others memory',
             'user_id' => 9999
@@ -163,13 +163,13 @@ class ShowTest extends TestCase
     /** @test */
     public function memories_can_be_ordered_by_date()
     {
-        $old = factory(Memory::class)->create([
+        $old = Memory::factory()->create([
             'created_at' => Carbon::now()->subYear(),
             'name' => 'test',
             'content' => 'Older memory',
         ]);
 
-        $new = factory(Memory::class)->create([
+        $new = Memory::factory()->create([
             'created_at' => Carbon::now(),
             'name' => 'test',
             'content' => 'Recent memory',

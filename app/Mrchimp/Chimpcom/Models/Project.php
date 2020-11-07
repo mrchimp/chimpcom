@@ -6,7 +6,9 @@
 
 namespace Mrchimp\Chimpcom\Models;
 
+use Database\Factories\ProjectFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,6 +19,8 @@ use Mrchimp\Chimpcom\Models\Task;
  */
 class Project extends Model
 {
+    use HasFactory;
+
     public function user(): BelongsTo
     {
         return $this->belongsTo('app\User');
@@ -46,5 +50,10 @@ class Project extends Model
         } else {
             $query->where('name', $identifier);
         }
+    }
+
+    protected static function newFactory()
+    {
+        return ProjectFactory::new();
     }
 }

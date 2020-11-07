@@ -14,11 +14,11 @@ class BlogIndexTest extends TestCase
     /** @test */
     public function blog_index_can_be_accessed()
     {
-        factory(User::class)->create([
+        User::factory()->create([
             'name' => 'mrchimp'
         ]);
         $home_dir = $this->createPath('/home/mrchimp/blog');
-        $post = factory(File::class)->create([
+        $post = File::factory()->create([
             'name' => 'postname',
             'content' => 'Here is a post',
         ]);
@@ -46,11 +46,11 @@ class BlogIndexTest extends TestCase
     /** @test */
     public function if_path_points_to_a_file_then_404_is_returned()
     {
-        factory(User::class)->create([
+        User::factory()->create([
             'name' => 'mrchimp'
         ]);
         $home_dir = $this->createPath('/home/mrchimp');
-        $blog_file = factory(File::class)->create([
+        $blog_file = File::factory()->create([
             'name' => 'blog',
             'content' => 'Here is a file where a directory should be',
         ]);

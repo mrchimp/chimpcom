@@ -5,6 +5,8 @@
 
 namespace Mrchimp\Chimpcom\Models;
 
+use Database\Factories\ShortcutFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -15,5 +17,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Shortcut extends Model
 {
-    //
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return ShortcutFactory::new();
+    }
 }

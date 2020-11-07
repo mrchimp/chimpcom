@@ -39,7 +39,7 @@ abstract class TestCase extends BaseTestCase
     protected function getUserResponse($cmd_in, $user = null)
     {
         if (!$this->user && is_null($user)) {
-            $this->user = factory(User::class)->create();
+            $this->user = User::factory()->create();
         }
 
         return $this
@@ -58,7 +58,7 @@ abstract class TestCase extends BaseTestCase
     protected function getUserEditSaveResponse($content, $user = null, $cmd_in = '')
     {
         if (!$this->user && is_null($user)) {
-            $this->user = factory(User::class)->create();
+            $this->user = User::factory()->create();
         }
 
         return $this
@@ -75,7 +75,7 @@ abstract class TestCase extends BaseTestCase
     protected function getAdminResponse($cmd_in, $user = null)
     {
         if (!$this->admin && is_null($user)) {
-            $this->admin = factory(User::class)->states('admin')->create();
+            $this->admin = User::factory()->admin()->create();
             $this->admin->save();
         }
 
@@ -109,7 +109,7 @@ abstract class TestCase extends BaseTestCase
                 continue;
             }
 
-            $new = factory(Directory::class)->create([
+            $new = Directory::factory()->create([
                 'name' => $part,
             ]);
 

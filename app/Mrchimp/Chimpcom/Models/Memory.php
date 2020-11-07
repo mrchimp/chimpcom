@@ -6,7 +6,9 @@
 namespace Mrchimp\Chimpcom\Models;
 
 use App\User;
+use Database\Factories\MemoryFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -17,6 +19,8 @@ use Illuminate\Support\Facades\Auth;
  */
 class Memory extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'content',
@@ -96,5 +100,10 @@ class Memory extends Model
         $user = Auth::user();
 
         return (int) $user->id === (int) $this->user_id;
+    }
+
+    protected static function newFactory()
+    {
+        return MemoryFactory::new();
     }
 }

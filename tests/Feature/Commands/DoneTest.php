@@ -28,8 +28,8 @@ class DoneTest extends TestCase
     /** @test */
     public function done_command_fails_if_task_cannot_be_found()
     {
-        $user = factory(User::class)->create();
-        $project = factory(Project::class)->create([
+        $user = User::factory()->create();
+        $project = Project::factory()->create([
             'user_id' => $user->id,
         ]);
         $user->active_project_id = $project->id;
@@ -43,13 +43,13 @@ class DoneTest extends TestCase
     /** @test */
     public function done_command_cues_up_the_done_action_if_all_is_well()
     {
-        $user = factory(User::class)->create();
-        $project = factory(Project::class)->create([
+        $user = User::factory()->create();
+        $project = Project::factory()->create([
             'user_id' => $user->id,
         ]);
         $user->active_project_id = $project->id;
         $user->save();
-        $task = factory(Task::class)->create([
+        $task = Task::factory()->create([
             'project_id' => $project->id,
         ]);
 

@@ -14,7 +14,7 @@ class PasswordActionTest extends TestCase
     /** @test */
     public function user_can_provide_a_password_after_starting_login()
     {
-        factory(User::class)->create([
+        User::factory()->create([
             'name' => 'testuser',
             'password' => bcrypt('hunter2')
         ]);
@@ -35,7 +35,7 @@ class PasswordActionTest extends TestCase
     /** @test */
     public function user_cant_log_in_with_the_wrong_password()
     {
-        factory(User::class)->create([
+        User::factory()->create([
             'name' => 'testuser',
             'password' => bcrypt('hunter2')
         ]);

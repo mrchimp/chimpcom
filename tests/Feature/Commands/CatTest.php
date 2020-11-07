@@ -23,15 +23,15 @@ class CatTest extends TestCase
     /** @test */
     public function cat_can_show_a_files_contents()
     {
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
 
-        $directory = factory(Directory::class)->create([
+        $directory = Directory::factory()->create([
             'owner_id' => $this->user->id,
         ]);
 
         $directory->setCurrent($this->user);
 
-        factory(File::class)->create([
+        File::factory()->create([
             'name' => 'test_file',
             'directory_id' => $directory->id,
             'content' => 'file contents',
@@ -46,9 +46,9 @@ class CatTest extends TestCase
     /** @test */
     public function if_a_file_doesnt_exists_you_cant_read_it_i_think_thats_fair()
     {
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
 
-        $directory = factory(Directory::class)->create([
+        $directory = Directory::factory()->create([
             'owner_id' => $this->user->id,
         ]);
 
@@ -62,14 +62,14 @@ class CatTest extends TestCase
     /** @test */
     public function cannot_read_other_peoples_files()
     {
-        $this->user = factory(User::class)->create();
-        $this->otheruser = factory(User::class)->create();
+        $this->user = User::factory()->create();
+        $this->otheruser = User::factory()->create();
 
-        $directory = factory(Directory::class)->create([
+        $directory = Directory::factory()->create([
             'owner_id' => $this->otheruser->id,
         ]);
 
-        factory(File::class)->create([
+        File::factory()->create([
             'name' => 'test_file',
             'directory_id' => $directory->id,
             'content' => 'file contents',
@@ -86,15 +86,15 @@ class CatTest extends TestCase
     /** @test */
     public function cat_will_render_markdown_as_html()
     {
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
 
-        $directory = factory(Directory::class)->create([
+        $directory = Directory::factory()->create([
             'owner_id' => $this->user->id,
         ]);
 
         $directory->setCurrent($this->user);
 
-        factory(File::class)->create([
+        File::factory()->create([
             'name' => 'test_file',
             'directory_id' => $directory->id,
             'content' => '# This is a title',

@@ -6,6 +6,8 @@
 
 namespace Mrchimp\Chimpcom\Models;
 
+use Database\Factories\MessageFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -15,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  */
 class Message extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'message',
         'recipient_id',
@@ -35,5 +39,10 @@ class Message extends Model
     public function recipient(): HasOne
     {
         return $this->hasOne('App\User', 'id', 'recipient_id');
+    }
+
+    protected static function newFactory()
+    {
+        return MessageFactory::new();
     }
 }

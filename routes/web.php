@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ChimpcomController;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -11,16 +15,16 @@
 |
 */
 
-Route::get('/', 'ChimpcomController@index');
-Route::get('ajax/respond/json', 'ChimpcomController@respond');
-Route::post('ajax/respond/json', 'ChimpcomController@respond');
-Route::get('ajax/commands', 'ChimpcomController@commandList');
-Route::post('ajax/commands', 'ChimpcomController@commandList');
-Route::get('ajax/tabcomplete', 'ChimpcomController@tabComplete');
+Route::get('/', [ChimpcomController::class, 'index']);
+Route::get('ajax/respond/json', [ChimpcomController::class, 'respond']);
+Route::post('ajax/respond/json', [ChimpcomController::class, 'respond']);
+Route::get('ajax/commands', [ChimpcomController::class, 'commandList']);
+Route::post('ajax/commands', [ChimpcomController::class, 'commandList']);
+Route::get('ajax/tabcomplete', [ChimpcomController::class, 'tabComplete']);
 
 // Password reset routes...
 // Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
 // Route::post('password/reset', 'Auth\PasswordController@postReset');
 
-Route::get('blog/{username}', 'BlogController@index')->name('blog.index');
-Route::get('blog/{username}/{filename}', 'BlogController@show')->name('blog.show');
+Route::get('blog/{username}', [BlogController::class, 'index'])->name('blog.index');
+Route::get('blog/{username}/{filename}', [BlogController::class, 'show'])->name('blog.show');

@@ -1,12 +1,21 @@
 <?php
 
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Mrchimp\Chimpcom\Models\Project;
 
-$factory->define(Project::class, function (Faker\Generator $faker) {
-    return [
-        'is_new' => 0,
-        'name' => $faker->word,
-        'description' => $faker->sentence,
-        'user_id' => 1,
-    ];
-});
+class ProjectFactory extends Factory
+{
+    protected $model = Project::class;
+
+    public function definition()
+    {
+        return [
+            'is_new' => 0,
+            'name' => $this->faker->word,
+            'description' => $this->faker->sentence,
+            'user_id' => 1,
+        ];
+    }
+}

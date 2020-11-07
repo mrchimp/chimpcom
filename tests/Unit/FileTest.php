@@ -12,11 +12,11 @@ class FileTest extends TestCase
     /** @test */
     public function files_can_be_put_in_directories()
     {
-        $file = factory(File::class)->create([
+        $file = File::factory()->create([
             'name' => 'myfile',
         ]);
 
-        $directory = factory(Directory::class)->create([
+        $directory = Directory::factory()->create([
             'name' => 'my_dir',
         ]);
 
@@ -30,11 +30,11 @@ class FileTest extends TestCase
     /** @test */
     public function file_can_have_an_owner_and_can_provide_an_owner_name()
     {
-        $file = factory(File::class)->create();
+        $file = File::factory()->create();
 
         $this->assertEquals('root', $file->ownerName());
 
-        $user = factory(User::class)->create([
+        $user = User::factory()->create([
             'name' => 'Some User',
         ]);
 

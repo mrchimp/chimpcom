@@ -30,7 +30,7 @@ class LoginTest extends TestCase
     /** @test */
     public function if_a_username_exists_you_can_start_the_login_process()
     {
-        factory(User::class)->create([
+        User::factory()->create([
             'name' => 'testuser',
         ]);
 

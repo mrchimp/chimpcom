@@ -14,15 +14,15 @@ class PwdTest extends TestCase
     /** @test */
     public function pwd_shows_current_working_directory()
     {
-        $user = factory(User::class)->create([
+        $user = User::factory()->create([
             'name' => 'fred',
         ]);
 
-        $home = factory(Directory::class)->create([
+        $home = Directory::factory()->create([
             'name' => 'home',
             'owner_id' => $user->id,
         ]);
-        $fred = factory(Directory::class)->create([
+        $fred = Directory::factory()->create([
             'name' => 'fred',
             'owner_id' => $user->id,
         ]);

@@ -1,11 +1,18 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Mrchimp\Chimpcom\Models\Directory;
 
-$factory->define(Directory::class, function (Faker\Generator $faker) {
-    return [
-        'name' => $faker->word,
-    ];
-});
+class DirectoryFactory extends Factory
+{
+    protected $model = Directory::class;
+
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->word,
+        ];
+    }
+}

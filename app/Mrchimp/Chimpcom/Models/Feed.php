@@ -5,6 +5,8 @@
 
 namespace Mrchimp\Chimpcom\Models;
 
+use Database\Factories\FeedFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SimplePie;
@@ -14,6 +16,8 @@ use SimplePie;
  */
 class Feed extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'url'
@@ -36,5 +40,10 @@ class Feed extends Model
         $feed->init();
 
         return $feed;
+    }
+
+    protected static function newFactory()
+    {
+        return FeedFactory::new();
     }
 }

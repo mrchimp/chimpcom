@@ -1,31 +1,33 @@
 <?php
 
+namespace Database\Factories;
+
+use App\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| Here you may define all of your model factories. Model factories give
-| you a convenient way to create models for testing and seeding your
-| database. Just tell the factory how a default model should look.
-|
-*/
+class UserFactory extends Factory
+{
+    protected $model = User::class;
 
-$factory->define(App\User::class, function (Faker\Generator $faker) {
-    return [
-        'name' => $faker->name,
-        'email' => $faker->safeEmail,
-        'password' => bcrypt($faker->password),
-        'remember_token' => Str::random(10),
-        'active_project_id' => 0,
-        'is_admin' => 0,
-    ];
-});
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->name,
+            'email' => $this->faker->safeEmail,
+            'password' => bcrypt($this->faker->password),
+            'remember_token' => Str::random(10),
+            'active_project_id' => 0,
+            'is_admin' => 0,
+        ];
+    }
 
-$factory->state(App\User::class, 'admin', function (Faker\Generator $faker) {
-    return [
-        'is_admin' => 1,
-    ];
-});
+    public function admin()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'is_admin' => 1,
+            ];
+        });
+    }
+}

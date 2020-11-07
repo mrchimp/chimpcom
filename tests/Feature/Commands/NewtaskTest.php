@@ -31,8 +31,8 @@ class NewtaskTest extends TestCase
     /** @test */
     public function newtask_can_create_a_new_task()
     {
-        $user = factory(User::class)->create();
-        $project = factory(Project::class)->create();
+        $user = User::factory()->create();
+        $project = Project::factory()->create();
         $user->setActiveProject($project);
 
         $this->getUserResponse('newtask Do a thing', $user)
@@ -52,8 +52,8 @@ class NewtaskTest extends TestCase
     /** @test */
     public function newtask_can_set_a_high_priority_on_tasks()
     {
-        $user = factory(User::class)->create();
-        $project = factory(Project::class)->create();
+        $user = User::factory()->create();
+        $project = Project::factory()->create();
         $user->setActiveProject($project);
 
         $this->getUserResponse('newtask Do an important thing --priority 10', $user)

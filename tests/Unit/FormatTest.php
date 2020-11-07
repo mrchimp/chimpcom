@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
-class TestFormat extends TestCase
+class FormatTest extends TestCase
 {
     use DatabaseMigrations;
 

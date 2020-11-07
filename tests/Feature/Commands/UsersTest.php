@@ -13,8 +13,8 @@ class UsersTest extends TestCase
     /** @test */
     public function users_lists_users()
     {
-        $user_1 = factory(User::class)->create();
-        $user_2 = factory(User::class)->create();
+        $user_1 = User::factory()->create();
+        $user_2 = User::factory()->create();
 
         $this->getAdminResponse('users')
             ->assertSee($user_1->name)

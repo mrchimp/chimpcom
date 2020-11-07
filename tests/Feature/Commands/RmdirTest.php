@@ -8,7 +8,7 @@ use Mrchimp\Chimpcom\Models\Directory;
 use Mrchimp\Chimpcom\Models\File;
 use Tests\TestCase;
 
-class Rmdirtest extends TestCase
+class RmdirTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -22,13 +22,13 @@ class Rmdirtest extends TestCase
     /** @test */
     public function users_can_remove_directories_they_own()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $parent_dir = factory(Directory::class)->create([
+        $parent_dir = Directory::factory()->create([
             'name' => 'parent_dir',
             'owner_id' => $user->id,
         ]);
-        $child_dir = factory(Directory::class)->create([
+        $child_dir = Directory::factory()->create([
             'name' => 'child_dir',
             'owner_id' => $user->id,
         ]);
@@ -49,14 +49,14 @@ class Rmdirtest extends TestCase
     /** @test */
     public function users_cant_remove_directories_that_belong_to_another_user()
     {
-        $user = factory(User::class)->create();
-        $other_user = factory(User::class)->create();
+        $user = User::factory()->create();
+        $other_user = User::factory()->create();
 
-        $parent_dir = factory(Directory::class)->create([
+        $parent_dir = Directory::factory()->create([
             'name' => 'parent_dir',
             'owner_id' => $user->id,
         ]);
-        $child_dir = factory(Directory::class)->create([
+        $child_dir = Directory::factory()->create([
             'name' => 'child_dir',
             'owner_id' => $user->id,
         ]);
@@ -76,14 +76,14 @@ class Rmdirtest extends TestCase
     /** @test */
     public function admin_can_remove_other_users_directories()
     {
-        $user = factory(User::class)->create();
-        $admin = factory(User::class)->states('admin')->create();
+        $user = User::factory()->create();
+        $admin = User::factory()->admin()->create();
 
-        $parent_dir = factory(Directory::class)->create([
+        $parent_dir = Directory::factory()->create([
             'name' => 'parent_dir',
             'owner_id' => $user->id,
         ]);
-        $child_dir = factory(Directory::class)->create([
+        $child_dir = Directory::factory()->create([
             'name' => 'child_dir',
             'owner_id' => $user->id,
         ]);
@@ -104,17 +104,17 @@ class Rmdirtest extends TestCase
     /** @test */
     public function cant_remove_directory_if_it_contains_a_subdirectory()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $parent_dir = factory(Directory::class)->create([
+        $parent_dir = Directory::factory()->create([
             'name' => 'parent_dir',
             'owner_id' => $user->id,
         ]);
-        $child_dir = factory(Directory::class)->create([
+        $child_dir = Directory::factory()->create([
             'name' => 'child_dir',
             'owner_id' => $user->id,
         ]);
-        $grandchild_dir = factory(Directory::class)->create([
+        $grandchild_dir = Directory::factory()->create([
             'name' => 'grandchild_dir',
             'owner_id' => $user->id,
         ]);
@@ -135,17 +135,17 @@ class Rmdirtest extends TestCase
     /** @test */
     public function cant_remove_directory_if_it_contains_a_file()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $parent_dir = factory(Directory::class)->create([
+        $parent_dir = Directory::factory()->create([
             'name' => 'parent_dir',
             'owner_id' => $user->id,
         ]);
-        $child_dir = factory(Directory::class)->create([
+        $child_dir = Directory::factory()->create([
             'name' => 'child_dir',
             'owner_id' => $user->id,
         ]);
-        $file = factory(File::class)->create([
+        $file = File::factory()->create([
             'name' => 'file',
         ]);
         $parent_dir->appendNode($child_dir);
@@ -175,13 +175,13 @@ class Rmdirtest extends TestCase
     /** @test */
     public function users_cant_remove_directories_that_dont_exist()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $parent_dir = factory(Directory::class)->create([
+        $parent_dir = Directory::factory()->create([
             'name' => 'parent_dir',
             'owner_id' => $user->id,
         ]);
-        $child_dir = factory(Directory::class)->create([
+        $child_dir = Directory::factory()->create([
             'name' => 'child_dir',
             'owner_id' => $user->id,
         ]);

@@ -21,7 +21,7 @@ class WhoamiTest extends TestCase
     /** @test */
     public function whoami_tells_users_their_name()
     {
-        $user = factory(User::class)->create([
+        $user = User::factory()->create([
             'name' => 'fred',
         ]);
 

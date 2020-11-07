@@ -11,9 +11,9 @@ class FindTest extends TestCase
     /** @test */
     public function find_command_finds_memory_by_name()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Memory::class)->states('public')->create([
+        Memory::factory()->public()->create([
             'name' => 'memory_name',
             'content' => 'Memory Content',
             'user_id' => $user->id,
@@ -28,9 +28,9 @@ class FindTest extends TestCase
     /** @test */
     public function private_memories_cant_be_seen_by_other_users()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'memory_name',
             'content' => 'Memory Content',
             'user_id' => $user->id,
@@ -45,9 +45,9 @@ class FindTest extends TestCase
     /** @test */
     public function private_memories_can_be_seen_by_owner()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'memory_name',
             'content' => 'Memory Content',
             'user_id' => $user->id,
@@ -62,15 +62,15 @@ class FindTest extends TestCase
     /** @test */
     public function find_commands_public_flag_shows_only_public_memories()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'memory_name',
             'content' => 'Private Memory',
             'user_id' => $user->id,
         ]);
 
-        factory(Memory::class)->states('public')->create([
+        Memory::factory()->public()->create([
             'name' => 'memory_name',
             'content' => 'Public Memory',
             'user_id' => $user->id,
@@ -86,15 +86,15 @@ class FindTest extends TestCase
     /** @test */
     public function find_commands_private_flag_shows_only_private_memories()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'memory_name',
             'content' => 'Private Memory',
             'user_id' => $user->id,
         ]);
 
-        factory(Memory::class)->states('public')->create([
+        Memory::factory()->public()->create([
             'name' => 'memory_name',
             'content' => 'Public Memory',
             'user_id' => $user->id,
@@ -110,16 +110,16 @@ class FindTest extends TestCase
     /** @test */
     public function find_commands_mine_flag_only_shows_memories_owned_by_the_current_user()
     {
-        $user = factory(User::class)->create();
-        $other_user = factory(User::class)->create();
+        $user = User::factory()->create();
+        $other_user = User::factory()->create();
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'memory_name',
             'content' => 'My Memory',
             'user_id' => $user->id,
         ]);
 
-        factory(Memory::class)->create([
+        Memory::factory()->create([
             'name' => 'memory_name',
             'content' => 'Other Persons Memory',
             'user_id' => $other_user->id,

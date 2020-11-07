@@ -24,7 +24,7 @@ class Register3Test extends TestCase
     /** @test */
     public function providing_email_address_completes_registration()
     {
-        factory(Directory::class)->create(['name' => 'home']);
+        Directory::factory()->create(['name' => 'home']);
 
         $this->getGuestResponse('fred@example.com')
             ->assertStatus(200)

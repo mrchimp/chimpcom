@@ -13,8 +13,8 @@ class DirectoryTest extends TestCase
     /** @test */
     public function users_can_have_a_current_directory()
     {
-        $directory = factory(Directory::class)->create();
-        $user = factory(User::class)->create();
+        $directory = Directory::factory()->create();
+        $user = User::factory()->create();
 
         $user->currentDirectory()->associate($directory)->save();
 
@@ -27,7 +27,7 @@ class DirectoryTest extends TestCase
     /** @test */
     public function if_user_has_no_current_null_is_returned()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->assertInstanceOf(RootDirectory::class, Directory::current($user));
         $this->assertEquals('/', Directory::current($user)->fullPath());
@@ -37,9 +37,9 @@ class DirectoryTest extends TestCase
     /** @test */
     public function directories_can_have_parent_child_relationship()
     {
-        $parent = factory(Directory::class)->create();
-        $child_1 = factory(Directory::class)->create();
-        $child_2 = factory(Directory::class)->create();
+        $parent = Directory::factory()->create();
+        $child_1 = Directory::factory()->create();
+        $child_2 = Directory::factory()->create();
 
         $parent->appendNode($child_1);
         $parent->appendNode($child_2);
@@ -52,11 +52,11 @@ class DirectoryTest extends TestCase
     /** @test */
     public function fullPath_gets_the_full_path_as_you_would_expect()
     {
-        $directory = factory(Directory::class)->create([
+        $directory = Directory::factory()->create([
             'name' => 'directory',
         ]);
 
-        $child = factory(Directory::class)->create([
+        $child = Directory::factory()->create([
             'name' => 'child',
         ]);
 

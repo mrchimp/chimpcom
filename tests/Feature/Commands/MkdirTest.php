@@ -20,8 +20,8 @@ class MkdirTest extends TestCase
     /** @test */
     public function user_can_create_dir_within_dir_they_own()
     {
-        $user = factory(User::class)->create();
-        $parent_dir = factory(Directory::class)->create([
+        $user = User::factory()->create();
+        $parent_dir = Directory::factory()->create([
             'name' => 'Parent Dir',
             'owner_id' => $user->id,
         ]);
@@ -40,9 +40,9 @@ class MkdirTest extends TestCase
     /** @test */
     public function admins_can_create_dir_within_somebody_elses_directory()
     {
-        $regular_user = factory(User::class)->create();
-        $admin_user = factory(User::class)->states('admin')->create();
-        $parent_dir = factory(Directory::class)->create([
+        $regular_user = User::factory()->create();
+        $admin_user = User::factory()->admin()->create();
+        $parent_dir = Directory::factory()->create([
             'name' => 'Parent Dir',
             'owner_id' => $regular_user->id,
         ]);
@@ -61,8 +61,8 @@ class MkdirTest extends TestCase
     /** @test */
     public function directory_names_get_sanitised_when_creating_them()
     {
-        $user = factory(User::class)->create();
-        $parent_dir = factory(Directory::class)->create([
+        $user = User::factory()->create();
+        $parent_dir = Directory::factory()->create([
             'name' => 'Parent Dir',
             'owner_id' => $user->id,
         ]);
@@ -89,13 +89,13 @@ class MkdirTest extends TestCase
     /** @test */
     public function cant_create_files_with_same_name_as_directories()
     {
-        $user = factory(User::class)->create();
-        $directory = factory(Directory::class)->create([
+        $user = User::factory()->create();
+        $directory = Directory::factory()->create([
             'name' => 'Parent Dir',
             'owner_id' => $user->id,
         ]);
 
-        $file = factory(File::class)->create([
+        $file = File::factory()->create([
             'name' => 'file',
         ]);
         $directory->files()->save($file);

@@ -43,8 +43,8 @@ class ProjectTest extends TestCase
     /** @test */
     public function user_can_set_their_active_project()
     {
-        $this->user = factory(User::class)->create();
-        $project = factory(Project::class)->create([
+        $this->user = User::factory()->create();
+        $project = Project::factory()->create([
             'name' => 'myproject',
             'user_id' => $this->user->id,
         ]);
@@ -61,8 +61,8 @@ class ProjectTest extends TestCase
     /** @test */
     public function users_can_remove_their_projects()
     {
-        $this->user = factory(User::class)->create();
-        $project = factory(Project::class)->create([
+        $this->user = User::factory()->create();
+        $project = Project::factory()->create([
             'name' => 'myproject',
             'user_id' => $this->user->id,
         ]);
@@ -86,10 +86,10 @@ class ProjectTest extends TestCase
     /** @test */
     public function users_cannot_remove_other_peoples_projects()
     {
-        $this->user = factory(User::class)->create();
-        $other_user = factory(User::class)->create();
+        $this->user = User::factory()->create();
+        $other_user = User::factory()->create();
 
-        factory(Project::class)->create([
+        Project::factory()->create([
             'name' => 'myproject',
             'user_id' => $other_user->id,
         ]);
@@ -102,7 +102,7 @@ class ProjectTest extends TestCase
     /** @test */
     public function if_there_is_no_active_project_there_is_a_message()
     {
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
 
         $this->getUserResponse('project')
             ->assertSee('No active project')
@@ -128,8 +128,8 @@ class ProjectTest extends TestCase
     /** @test */
     public function can_list_current_project()
     {
-        $this->user = factory(User::class)->create();
-        $project = factory(Project::class)->create([
+        $this->user = User::factory()->create();
+        $project = Project::factory()->create([
             'name' => 'myproject',
             'user_id' => $this->user->id,
         ]);
@@ -144,9 +144,9 @@ class ProjectTest extends TestCase
     /** @test */
     public function can_get_a_commands_tab_completions()
     {
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
 
-        factory(Project::class)->create([
+        Project::factory()->create([
             'user_id' => $this->user->id,
             'name' => 'chimpcom',
         ]);
@@ -163,9 +163,9 @@ class ProjectTest extends TestCase
     /** @test */
     public function will_get_empty_array_if_tab_completion_fails()
     {
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
 
-        factory(Project::class)->create([
+        Project::factory()->create([
             'user_id' => $this->user->id,
             'name' => 'chimpcom',
         ]);

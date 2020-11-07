@@ -21,9 +21,9 @@ class MkfileTest extends TestCase
     /** @test */
     public function mkfile_creates_a_file_in_current_directory()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $directory = factory(Directory::class)->create([
+        $directory = Directory::factory()->create([
             'owner_id' => $user->id,
         ]);
 
@@ -41,10 +41,10 @@ class MkfileTest extends TestCase
     /** @test */
     public function cant_create_file_in_a_directory_that_is_not_your_own()
     {
-        $user = factory(User::class)->create();
-        $other_user = factory(User::class)->create();
+        $user = User::factory()->create();
+        $other_user = User::factory()->create();
 
-        factory(Directory::class)->create([
+        Directory::factory()->create([
             'owner_id' => $other_user->id,
         ]);
 
@@ -61,11 +61,11 @@ class MkfileTest extends TestCase
     /** @test */
     public function cant_create_files_with_same_name_as_dir()
     {
-        $user = factory(User::class)->create();
-        $directory = factory(Directory::class)->create([
+        $user = User::factory()->create();
+        $directory = Directory::factory()->create([
             'owner_id' => $user->id,
         ]);
-        $child = factory(Directory::class)->create([
+        $child = Directory::factory()->create([
             'name' => 'child',
         ]);
         $directory->appendNode($child);

@@ -30,8 +30,8 @@ class PriorityTest extends TestCase
     /** @test */
     public function users_can_set_priority_on_tasks()
     {
-        $task = factory(Task::class)->create();
-        $user = factory(User::class)->create();
+        $task = Task::factory()->create();
+        $user = User::factory()->create();
 
         $this->getUserResponse('priority ' . $task->id . ' 10', $user)
             ->assertStatus(200)
@@ -49,8 +49,8 @@ class PriorityTest extends TestCase
     /** @test */
     public function cant_set_priority_on_a_task_you_dont_own()
     {
-        $user = factory(User::class)->create();
-        $task = factory(Task::class)->create([
+        $user = User::factory()->create();
+        $task = Task::factory()->create([
             'user_id' => 9999,
         ]);
 

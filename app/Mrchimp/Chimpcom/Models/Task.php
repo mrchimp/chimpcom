@@ -6,7 +6,9 @@
 
 namespace Mrchimp\Chimpcom\Models;
 
+use Database\Factories\TaskFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -15,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Task extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'description',
         'user_id',
@@ -67,5 +71,10 @@ class Task extends Model
         if (!is_null($value)) {
             $query->where('project_id', $value);
         }
+    }
+
+    protected static function newFactory()
+    {
+        return TaskFactory::new();
     }
 }

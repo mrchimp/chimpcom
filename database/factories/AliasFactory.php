@@ -1,19 +1,29 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| Here you may define all of your model factories. Model factories give
-| you a convenient way to create models for testing and seeding your
-| database. Just tell the factory how a default model should look.
-|
-*/
+namespace Database\Factories;
 
-$factory->define(\Mrchimp\Chimpcom\Models\Alias::class, function (Faker\Generator $faker) {
-    return [
-        'name' => 'welcome',
-        'alias' => 'hi',
-    ];
-});
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Mrchimp\Chimpcom\Models\Alias;
+
+class AliasFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Alias::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => 'welcome',
+            'alias' => 'hi',
+        ];
+    }
+}

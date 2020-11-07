@@ -14,20 +14,20 @@ class PathTest extends TestCase
     /** @test */
     public function path_allows_traversing_via_segment()
     {
-        $this->parent = factory(Directory::class)->create([
+        $this->parent = Directory::factory()->create([
             'name' => 'parent',
         ]);
-        $this->child = factory(Directory::class)->create([
+        $this->child = Directory::factory()->create([
             'name' => 'child',
         ]);
-        $this->grandchild = factory(Directory::class)->create([
+        $this->grandchild = Directory::factory()->create([
             'name' => 'grandchild',
         ]);
 
         $this->parent->appendNode($this->child);
         $this->child->appendNode($this->grandchild);
 
-        $directory = factory(Directory::class)->create();
+        $directory = Directory::factory()->create();
 
         $path = Path::make('/parent/child/grandchild', $directory);
 
@@ -44,10 +44,10 @@ class PathTest extends TestCase
     {
         $path_str = '/home/test';
 
-        $home = factory(Directory::class)->create([
+        $home = Directory::factory()->create([
             'name' => 'home',
         ]);
-        $test = factory(Directory::class)->create([
+        $test = Directory::factory()->create([
             'name' => 'test',
         ]);
 
@@ -66,7 +66,7 @@ class PathTest extends TestCase
     {
         $path_str = '/home/test';
 
-        factory(Directory::class)->create([
+        Directory::factory()->create([
             'name' => 'home',
         ]);
 
@@ -80,13 +80,13 @@ class PathTest extends TestCase
     {
         $path_str = '/home/test/file';
 
-        $home = factory(Directory::class)->create([
+        $home = Directory::factory()->create([
             'name' => 'home',
         ]);
-        $test = factory(Directory::class)->create([
+        $test = Directory::factory()->create([
             'name' => 'test',
         ]);
-        $file = factory(File::class)->create([
+        $file = File::factory()->create([
             'name' => 'file',
         ]);
 
@@ -112,10 +112,10 @@ class PathTest extends TestCase
     /** @test */
     public function paths_that_go_above_root_throw_an_exception()
     {
-        $directory = factory(Directory::class)->create([
+        $directory = Directory::factory()->create([
             'name' => 'directory',
         ]);
-        $subdirectory = factory(Directory::class)->create([
+        $subdirectory = Directory::factory()->create([
             'name' => 'subdirectory',
         ]);
         $directory->appendNode($subdirectory);
@@ -127,7 +127,7 @@ class PathTest extends TestCase
     public function paths_that_point_to_something_that_doesnt_exist_do_just_that()
     {
         // Create a directory to avoid "filesystem unavailable" error
-        factory(Directory::class)->create();
+        Directory::factory()->create();
 
         $path_1 = Path::make('/file_that_does_not_exist');
         $this->assertFalse($path_1->exists());
@@ -139,10 +139,10 @@ class PathTest extends TestCase
     /** @test */
     public function if_a_path_doesnt_exist_but_its_parent_directory_does_then_we_can_get_that()
     {
-        $home = factory(Directory::class)->create([
+        $home = Directory::factory()->create([
             'name' => 'home',
         ]);
-        $fred = factory(Directory::class)->create([
+        $fred = Directory::factory()->create([
             'name' => 'fred',
         ]);
 
@@ -158,8 +158,8 @@ class PathTest extends TestCase
     /** @test */
     public function a_directory_can_be_created_in_the_parent_directory()
     {
-        $user = factory(User::class)->create();
-        $home = factory(Directory::class)->create([
+        $user = User::factory()->create();
+        $home = Directory::factory()->create([
             'name' => 'home',
             'owner_id' => $user->id,
         ]);
@@ -178,8 +178,8 @@ class PathTest extends TestCase
     /** @test */
     public function a_file_can_be_created_in_the_parent_directory()
     {
-        $user = factory(User::class)->create();
-        $home = factory(Directory::class)->create([
+        $user = User::factory()->create();
+        $home = Directory::factory()->create([
             'name' => 'home',
             'owner_id' => $user->id,
         ]);

@@ -21,7 +21,7 @@ class LsTest extends TestCase
     /** @test */
     public function ls_shows_current_directory_listing_for_guests()
     {
-        factory(Directory::class)->create([
+        Directory::factory()->create([
             'name' => 'top_level',
         ]);
 
@@ -33,9 +33,9 @@ class LsTest extends TestCase
     /** @test */
     public function ls_shows_files_in_directory()
     {
-        $user = factory(User::class)->create();
-        $dir = factory(Directory::class)->create();
-        $file = factory(File::class)->create([
+        $user = User::factory()->create();
+        $dir = Directory::factory()->create();
+        $file = File::factory()->create([
             'name' => 'My File',
         ]);
 
@@ -51,10 +51,10 @@ class LsTest extends TestCase
     /** @test */
     public function ls_shows_list_of_bins_if_theres_a_bin_lister_cos_the_bin_lister_lists_bins()
     {
-        $user = factory(User::class)->create([
+        $user = User::factory()->create([
             'name' => 'Fred Test',
         ]);
-        $dir = factory(Directory::class)->create([
+        $dir = Directory::factory()->create([
             'name' => 'top_level',
             'lister' => Bin::class,
         ]);

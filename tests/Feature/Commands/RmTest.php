@@ -16,12 +16,12 @@ class RmTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = factory(User::class)->create();
-        $this->file = factory(File::class)->create([
+        $this->user = User::factory()->create();
+        $this->file = File::factory()->create([
             'name' => 'testfile',
             'owner_id' => $this->user->id,
         ]);
-        $this->dir = factory(Directory::class)->create();
+        $this->dir = Directory::factory()->create();
         $this->dir->files()->save($this->file);
         $this->dir->setCurrent($this->user);
     }
@@ -61,7 +61,7 @@ class RmTest extends TestCase
     /** @test */
     public function cant_delete_other_peoples_files()
     {
-        $other_user = factory(User::class)->create();
+        $other_user = User::factory()->create();
         $this->dir->setCurrent($other_user);
 
         $this->getUserResponse('rm testfile', $other_user)

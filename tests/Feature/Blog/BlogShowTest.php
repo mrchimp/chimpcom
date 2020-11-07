@@ -14,11 +14,11 @@ class BlogShowTest extends TestCase
     /** @test */
     public function blog_post_can_be_viewed()
     {
-        factory(User::class)->create([
+        User::factory()->create([
             'name' => 'mrchimp'
         ]);
         $blog_dir = $this->createPath('/home/mrchimp/blog');
-        $post = factory(File::class)->create([
+        $post = File::factory()->create([
             'name' => 'postname',
             'content' => 'Here is a post',
         ]);
@@ -46,7 +46,7 @@ class BlogShowTest extends TestCase
     /** @test */
     public function blog_post_returns_404_if_path_is_a_directory()
     {
-        factory(User::class)->create([
+        User::factory()->create([
             'name' => 'mrchimp'
         ]);
         $this->createPath('/home/mrchimp/blog/post');

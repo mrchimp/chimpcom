@@ -56,7 +56,7 @@ class RssTest extends TestCase
     /** @test */
     public function getting_a_list_of_rss_feeds_when_you_have_none_gives_a_message()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this
             ->getUserResponse('rss list', $user)
@@ -67,9 +67,9 @@ class RssTest extends TestCase
     /** @test */
     public function a_list_of_rss_feeds_can_be_displayed()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Feed::class)->create([
+        Feed::factory()->create([
             'user_id' => $user->id,
             'name' => 'test_feed_name',
             'url' => 'http://example.com/my_rss_feed.xml',
@@ -85,7 +85,7 @@ class RssTest extends TestCase
     /** @test */
     public function removing_a_feed_requires_a_name()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this
             ->getUserResponse('rss remove', $user)
@@ -96,10 +96,10 @@ class RssTest extends TestCase
     /** @test */
     public function a_user_cant_remove_another_users_feed()
     {
-        $user = factory(User::class)->create();
-        $other_user = factory(User::class)->create();
+        $user = User::factory()->create();
+        $other_user = User::factory()->create();
 
-        factory(Feed::class)->create([
+        Feed::factory()->create([
             'user_id' => $other_user->id,
             'name' => 'test_feed_name',
             'url' => 'http://example.com/my_rss_feed.xml',
@@ -113,9 +113,9 @@ class RssTest extends TestCase
     /** @test */
     public function a_feed_can_be_removed()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        factory(Feed::class)->create([
+        Feed::factory()->create([
             'user_id' => $user->id,
             'name' => 'test_feed_name',
             'url' => 'http://example.com/my_rss_feed.xml',

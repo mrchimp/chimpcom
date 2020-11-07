@@ -41,8 +41,8 @@ class ForgetTest extends TestCase
     /** @test */
     public function if_memory_does_exist_then_the_action_is_queued_up()
     {
-        $user = factory(User::class)->create();
-        $memory = factory(Memory::class)->create([
+        $user = User::factory()->create();
+        $memory = Memory::factory()->create([
             'user_id' => $user->id,
         ]);
 
@@ -58,8 +58,8 @@ class ForgetTest extends TestCase
     /** @test */
     public function if_a_negative_is_given_the_forget_procedure_is_abbandonned_is_that_how_you_spell_abbandonned_whatever()
     {
-        $user = factory(User::class)->create();
-        $memory = factory(Memory::class)->create([
+        $user = User::factory()->create();
+        $memory = Memory::factory()->create([
             'user_id' => $user->id,
         ]);
 
@@ -75,8 +75,8 @@ class ForgetTest extends TestCase
     /** @test */
     public function if_an_unrecognised_response_is_given_the_forget_procedure_is_aborted_but_with_sass()
     {
-        $user = factory(User::class)->create();
-        $memory = factory(Memory::class)->create([
+        $user = User::factory()->create();
+        $memory = Memory::factory()->create([
             'user_id' => $user->id,
         ]);
 
@@ -92,8 +92,8 @@ class ForgetTest extends TestCase
     /** @test */
     public function if_an_affirmative_is_given_the_memory_is_forgotten()
     {
-        $user = factory(User::class)->create();
-        $memory = factory(Memory::class)->create([
+        $user = User::factory()->create();
+        $memory = Memory::factory()->create([
             'user_id' => $user->id,
         ]);
 
