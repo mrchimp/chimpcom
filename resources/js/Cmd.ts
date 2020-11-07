@@ -301,11 +301,9 @@ export default class Cmd {
   }
 
   /**
-   * Takes the client's input and the server's output
-   * and displays them appropriately.
+   * Take command output and display it appropriately.
    *
-   * @param   string  cmd_in      The command as entered by the user
-   * @param   string  cmd_out     The server output to write to screen
+   * @param  string  cmd_out  The server output to write to screen
    */
   output(cmd_out: string) {
     if (this.output_el.innerHTML.length > 0) {
@@ -507,19 +505,19 @@ export default class Cmd {
    * @param  {object} res Cmd command object
    */
   handleExternalResponse(response: CmdResponse) {
-    if (response.redirect !== undefined) {
+    if (!!response.redirect) {
       document.location.href = response.redirect;
     }
 
-    if (response.openWindow !== undefined) {
+    if (!!response.openWindow) {
       window.open(response.openWindow, '_blank', response.openWindowSpecs);
     }
 
-    if (response.log !== null) {
+    if (!!response.log) {
       console.log(response.log);
     }
 
-    if (response.show_pass === true) {
+    if (!!response.show_pass) {
       this.showInputType('password');
     } else {
       this.showInputType();
@@ -536,7 +534,7 @@ export default class Cmd {
       this.prompt_el.innerText = this.makePromptStr();
     }
 
-    if (response.cmd_fill !== null) {
+    if (!!response.cmd_fill) {
       this.input_el.value = response.cmd_fill;
     }
   }
@@ -878,6 +876,12 @@ export default class Cmd {
     });
 
     return fetch(request)
+      .then((response) => {
+        if (!([200, 404].includes(response.status))) {
+          throw 'Invalid response';
+        }
+        return response;
+      })
       .then((response) => response.json())
       .then((data) => {
         this.handleExternalResponse(data);
@@ -892,7 +896,6 @@ export default class Cmd {
   /**
    * Handle a command input
    * @param  string cmd_in The command string
-   * @param  object cmd    Reference to Cmd instance
    * @return various
    */
   respond(cmd_in: string) {
