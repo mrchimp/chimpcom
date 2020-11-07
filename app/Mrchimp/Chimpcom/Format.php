@@ -63,13 +63,8 @@ class Format
     /**
      * Converts an dimensional array into an html table
      */
-    public static function listToTable(array $list, int $cols = 1, bool $sort_list = false): string
+    public static function listToTable(array $list, int $cols = 1, bool $sort_list = false, $titles = []): string
     {
-        if (!is_array($list)) {
-            trigger_error('That wasn\'t an array.', E_USER_NOTICE);
-            return false;
-        }
-
         $cols = ($cols < 1 ? 1 : $cols);
 
         if ($sort_list) {
@@ -80,6 +75,14 @@ class Format
         $output_count = 0;
         $row_count = 1;
         $s = '<table>';
+
+        if (!empty($titles)) {
+            $s .= '<tr>';
+            foreach ($titles as $title) {
+                $s .= '<th>' . e($title) . '</th>';
+            }
+            $s .= '</tr>';
+        }
 
         while (isset($list[$output_count])) {
             $s .= ($row_count == 1 ? '<tr>' : '');

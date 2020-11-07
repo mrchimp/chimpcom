@@ -48,12 +48,28 @@ class Styles extends Command
         $output->write(
             Format::listToTable(
                 [
-                    'Title', 'Thing 1', 'Thing 2', 'Thing 3',
-                    'Title 2', 'Blah 1', 'Blah 2', 'Blah 3'
+                    'Title 1', 'Title 2', 'Title 3',
+                    'Thing 1', 'Thing 2', 'Thing 3',
+                    'Blah 1', 'Blah 2', 'Blah 3'
                 ],
                 3
             ),
             true
+        );
+        $output->write(
+            Format::listToTable(
+                [
+                    'Thing 1', 'Thing 2', 'Thing 3',
+                    'Blah 1', 'Blah 2', 'Blah 3',
+                ],
+                3,
+                false,
+                [
+                    'Title 1',
+                    'Title 2',
+                    'Title 3',
+                ]
+            )
         );
 
         $output->cFill('This text was automatically inserted');
