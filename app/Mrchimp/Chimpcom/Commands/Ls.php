@@ -44,7 +44,17 @@ class Ls extends Command
             $items = $this->getItems($dir);
         }
 
-        $output->write(Format::listToTable($items, 4));
+        $output->write(Format::listToTable(
+            $items,
+            4,
+            false,
+            [
+                '',
+                'Owner',
+                'Updated',
+                'Name',
+            ]
+        ));
 
         return 0;
     }
