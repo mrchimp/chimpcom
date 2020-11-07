@@ -64,6 +64,7 @@ export default class Cmd {
   input_container_el: HTMLElement;
   input_el: HTMLInputElement | HTMLTextAreaElement;
   input_wrapper_el: HTMLElement;
+  loading_el: HTMLElement;
   local_cmds: string[];
   prompt_str: string;
   options: Options;
@@ -85,7 +86,7 @@ export default class Cmd {
       'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
     this.options = Object.assign(
       {
-        busy_text: '...',
+        busy_text: 'Processing... ',
         external_processor: this.respond.bind(this),
         history_id: 'cmd_history',
         remote_cmd_list_url: 'ajax/commands',
@@ -820,15 +821,30 @@ export default class Cmd {
    */
   disableInput() {
     this.input_el.setAttribute('disabled', 'true');
-    this.input_el.value = this.options.busy_text;
+    this.input_el.value = '';
+    this.input_el.style.display = 'none';
+
+    this.input_caret_el.style.display = 'none';
+
+    this.loading_el = document.createElement('div');
+    this.loading_el.innerText = this.options.busy_text;
+    this.loading_el.classList.add('loading-spinner');
+
+    this.input_wrapper_el.append(this.loading_el);
   }
 
   /**
    * Reenable input after running disableInput()
    */
   enableInput() {
+    if (this.loading_el) {
+      this.loading_el.remove();
+    }
+
     this.input_el.removeAttribute('disabled');
-    this.input_el.value = '';
+    this.input_el.style.display = 'block';
+
+    this.input_caret_el.style.display = 'block';
   }
 
   /**
@@ -886,7 +902,8 @@ export default class Cmd {
       .then((data) => {
         this.handleExternalResponse(data);
       })
-      .catch(() => {
+      .catch((e) => {
+        console.error(e)
         this.handleExternalResponse({
           cmd_out: 'Server error. Try again.',
         });
