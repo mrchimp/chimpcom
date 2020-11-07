@@ -5,6 +5,9 @@
   "author": "MrChimp <chimpytk@gmail.com>",
   "main": "index.php",
   "private": true,
+  "engines": {
+    "yarn": "use npm!"
+  },
   "devDependencies": {
     "cross-env": "^5.1",
     "laravel-mix": "^5.0.5",
