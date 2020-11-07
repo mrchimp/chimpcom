@@ -9,6 +9,7 @@ namespace Mrchimp\Chimpcom\Actions;
 use App\Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Mrchimp\Chimpcom\Traits\LogCommandNameOnly;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,6 +19,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Password extends Action
 {
+    use LogCommandNameOnly;
+
     /**
      * Configure the command
      *
@@ -72,8 +75,10 @@ class Password extends Action
         ], false, true)) {
             $output->getUserDetails();
             $output->alert('Welcome back.');
+            $this->log->info('User ' . e($username) . ' logged in.');
         } else {
             $output->error('Hmmmm... No.');
+            $this->log->info('User ' . e($username) . ' failed to log in.');
         }
 
         return 0;

@@ -6,12 +6,15 @@ use App\Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Traits\LogCommandNameOnly;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Chpass_1 extends Action
 {
+    use LogCommandNameOnly;
+
     protected function configure()
     {
         $this->setName('chpass_1');

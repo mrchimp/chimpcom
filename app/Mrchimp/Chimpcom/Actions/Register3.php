@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Filesystem\Path;
 use Mrchimp\Chimpcom\Models\Directory;
+use Mrchimp\Chimpcom\Traits\LogCommandNameOnly;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,6 +20,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Register3 extends Action
 {
+    use LogCommandNameOnly;
+
     /**
      * Configure the command
      *

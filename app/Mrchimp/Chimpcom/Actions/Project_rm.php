@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Booleanate;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Project;
+use Mrchimp\Chimpcom\Traits\DoNotLog;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,6 +22,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Project_rm extends Action
 {
+    use DoNotLog;
+
     /**
      * Configure the command
      *

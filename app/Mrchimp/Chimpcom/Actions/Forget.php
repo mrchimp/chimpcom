@@ -24,8 +24,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Forget extends Action
 {
 
-    protected $log_this = false;
-
     /**
      * Configure the command
      *

@@ -200,6 +200,8 @@ class Responder
             $output->error('Bad input: ' . $e->getMessage());
         }
 
+        $this->log->info('Action: ' . $action_name);
+
         return $output;
     }
 

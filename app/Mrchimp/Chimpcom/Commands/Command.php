@@ -14,9 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Command extends SymfonyCommand
 {
-    // @todo fix per-command logging
-    protected $log_this = true;
-
     protected $relatedCommands = [];
 
     protected $log;
@@ -217,6 +214,11 @@ class Command extends SymfonyCommand
     {
         parent::run($input, $output);
 
-        $this->log->info($this->getName());
+        $this->doLog($input);
+    }
+
+    protected function doLog(InputInterface $input)
+    {
+        $this->log->info($this->getName() . ' ' . (string) $input);
     }
 }

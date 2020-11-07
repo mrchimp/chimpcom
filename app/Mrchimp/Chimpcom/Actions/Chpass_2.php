@@ -8,12 +8,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Traits\LogCommandNameOnly;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Chpass_2 extends Action
 {
+    use LogCommandNameOnly;
+
     protected function configure()
     {
         $this->setName('chpass_2');
