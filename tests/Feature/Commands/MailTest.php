@@ -115,11 +115,12 @@ class MailTest extends TestCase
         Message::factory()->create([
             'recipient_id' => $recipient->id,
             'author_id' => $author->id,
-            'message' => 'This was sent by Author to Recipient.',
+            'message' => 'This is a message.',
         ]);
 
         $this->getUserResponse('mail --outbox', $author)
             ->assertStatus(200)
-            ->assertSee('This was sent by Author to Recipient.');
+            ->assertSee('This is a message.')
+            ->assertSee('<td>Author<\/td>', false);
     }
 }

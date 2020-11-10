@@ -99,7 +99,7 @@ class Mail extends Command
             ->when($outbox, function ($query) use ($user) {
                 $query->where('author_id', $user->id);
             })
-            ->When(!$outbox, function ($query) use ($user) {
+            ->when(!$outbox, function ($query) use ($user) {
                 $query->where('recipient_id', $user->id);
             })
             ->get();

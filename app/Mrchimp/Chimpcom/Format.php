@@ -283,10 +283,10 @@ class Format
 
         foreach ($messages as $msg) {
             $output .= '<tr>' .
-                '<td style="padding-right: 50px;">' . $msg->id . '</td>' .
-                '<td style="padding-right: 50px;">' . e($msg->recipient ? $msg->recipient->name : 'Unknown user') . '</td>' .
-                '<td style="padding-right: 50px;">' . e($msg->message) . '</td>' .
-                '<td style="padding-right: 50px;">' . ($msg->has_been_read ? '&nbsp;' : Format::alert('New')) . '</td>' .
+                '<td>' . $msg->id . '</td>' .
+                '<td>' . e($msg->author ? $msg->author->name : 'Unknown user') . '</td>' .
+                '<td>' . e($msg->message) . '</td>' .
+                '<td>' . ($msg->has_been_read ? '&nbsp;' : Format::alert('New')) . '</td>' .
                 '</tr>';
         }
 
