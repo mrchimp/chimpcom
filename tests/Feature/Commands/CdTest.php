@@ -173,6 +173,24 @@ class CdTest extends TestCase
     }
 
     /** @test */
+    public function you_can_cd_to_a_dir_called_penguin()
+    {
+        $user = User::factory()->create();
+
+        Directory::factory()->create([
+            'name' => 'penguin',
+        ]);
+
+        (new RootDirectory)->setCurrent($this->user);
+
+        $this->getUserResponse('cd penguin', $user)
+            ->assertStatus(200)
+            ->assertSee('You go.');
+
+        $this->assertEquals('penguin', Directory::current($this->user)->name);
+    }
+
+    /** @test */
     public function cd_c_gives_a_joke_answer()
     {
         $this->getGuestResponse('cd c:')

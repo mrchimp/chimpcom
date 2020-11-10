@@ -59,10 +59,6 @@ class Cd extends Command
         }
 
         switch ($path_string) {
-            // @todo what if there is a directory called penguin?
-            case 'penguin':
-                $output->write('You are inside a penguin. It is dark.');
-                return 0;
             case 'c:':
             case 'C:':
                 $output->write(e('What d\'you think this is, Windows?'));
@@ -86,6 +82,11 @@ class Cd extends Command
                 }
 
                 if (!$path->exists()) {
+                    if ($path_string === 'penguin') {
+                        $output->write('You are inside a penguin. It is dark.');
+                        return 0;
+                    }
+
                     $output->error('No such file or directory');
                     return 2;
                 }
