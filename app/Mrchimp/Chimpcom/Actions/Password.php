@@ -9,6 +9,7 @@ namespace Mrchimp\Chimpcom\Actions;
 use App\Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Mrchimp\Chimpcom\Models\Message;
 use Mrchimp\Chimpcom\Traits\LogCommandNameOnly;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -69,17 +70,28 @@ class Password extends Action
             return 2;
         }
 
-        if (Auth::attempt([
+        if (!Auth::attempt([
             'name' => $username,
             'password' => $password
         ], false, true)) {
-            $output->getUserDetails();
-            $output->alert('Welcome back.');
-            $this->log->info('User ' . e($username) . ' logged in.');
-        } else {
             $output->error('Hmmmm... No.');
             $this->log->info('User ' . e($username) . ' failed to log in.');
+            return 3;
         }
+
+        $output->getUserDetails();
+        $output->alert('Welcome back.');
+
+        $unread_count = Auth::user()->messages()->whereUnread()->count();
+
+        if ($unread_count > 0) {
+            $output->write(
+                '<br>You have ' . $unread_count . ' unread message' . ($unread_count > 1 ? 's' : '') . '. ' .
+                'Use the command <code>mail</code> to read ' . ($unread_count > 1 ? 'them' : 'it') .  '.'
+            );
+        }
+
+        $this->log->info('User ' . e($username) . ' logged in.');
 
         return 0;
     }

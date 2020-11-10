@@ -7,6 +7,7 @@
 namespace Mrchimp\Chimpcom\Models;
 
 use Database\Factories\MessageFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -44,5 +45,10 @@ class Message extends Model
     protected static function newFactory()
     {
         return MessageFactory::new();
+    }
+
+    public function scopeWhereUnread(Builder $query)
+    {
+        $query->where('has_been_read', false);
     }
 }

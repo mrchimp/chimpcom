@@ -65,4 +65,9 @@ class User extends Authenticatable
     {
         $project->activeUsers()->save($this);
     }
+
+    public function messages()
+    {
+        return $this->hasMany('Mrchimp\Chimpcom\Models\Message', 'recipient_id');
+    }
 }
