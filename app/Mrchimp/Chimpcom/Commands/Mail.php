@@ -28,8 +28,8 @@ class Mail extends Command
             'Use --dont-read to prevent this.');
         $this->addRelated('message');
         $this->addOption(
-            'sent',
-            's',
+            'outbox',
+            'o',
             null,
             'Show sent messages.'
         );
@@ -92,10 +92,16 @@ class Mail extends Command
             return 0;
         }
 
-        $mailbox = $input->getOption('sent') ? 'outbox' : 'inbox';
+        $outbox = $input->getOption('outbox');
 
-        $messages = MessageModel::where('recipient_id', $user->id)
+        $messages = MessageModel::query()
             ->with('author', 'recipient')
+            ->when($outbox, function ($query) use ($user) {
+                $query->where('author_id', $user->id);
+            })
+            ->When(!$outbox, function ($query) use ($user) {
+                $query->where('recipient_id', $user->id);
+            })
             ->get();
 
         if ($input->getOption('read')) {

@@ -105,4 +105,21 @@ class MailTest extends TestCase
 
         $this->assertEquals(0, $user->messages()->whereUnread()->count());
     }
+
+    /** @test */
+    public function using_the_outbox_flag_can_show_sent_messages()
+    {
+        $author = User::factory()->create(['name' => 'Author']);
+        $recipient = User::factory()->create(['name' => 'Recipient']);
+
+        Message::factory()->create([
+            'recipient_id' => $recipient->id,
+            'author_id' => $author->id,
+            'message' => 'This was sent by Author to Recipient.',
+        ]);
+
+        $this->getUserResponse('mail --outbox', $author)
+            ->assertStatus(200)
+            ->assertSee('This was sent by Author to Recipient.');
+    }
 }
