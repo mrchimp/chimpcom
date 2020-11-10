@@ -4,7 +4,6 @@ namespace Tests\Feature\Commands;
 
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Message;
 use Tests\TestCase;
 
@@ -71,5 +70,39 @@ class MailTest extends TestCase
         $this->getUserResponse('mail', $user)
             ->assertSee('Here is a message')
             ->assertStatus(200);
+    }
+
+    /** @test */
+    public function reading_messages_doesnt_mark_them_as_read()
+    {
+        $user = User::factory()->create();
+
+        Message::factory()->create([
+            'recipient_id' => $user->id,
+            'message' => 'Here is a message.',
+        ]);
+
+        $this->assertEquals(1, $user->messages()->whereUnread()->count());
+
+        $this->getUserResponse('mail', $user);
+
+        $this->assertEquals(1, $user->messages()->whereUnread()->count());
+    }
+
+    /** @test */
+    public function using_the_r_flag_marks_messages_as_read()
+    {
+        $user = User::factory()->create();
+
+        Message::factory()->create([
+            'recipient_id' => $user->id,
+            'message' => 'Here is a message.',
+        ]);
+
+        $this->assertEquals(1, $user->messages()->whereUnread()->count());
+
+        $this->getUserResponse('mail -r', $user);
+
+        $this->assertEquals(0, $user->messages()->whereUnread()->count());
     }
 }

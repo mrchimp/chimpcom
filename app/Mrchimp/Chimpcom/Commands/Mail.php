@@ -28,22 +28,16 @@ class Mail extends Command
             'Use --dont-read to prevent this.');
         $this->addRelated('message');
         $this->addOption(
-            'all',
-            'a',
-            null,
-            'Show read and unread messages.'
-        );
-        $this->addOption(
             'sent',
             's',
             null,
             'Show sent messages.'
         );
         $this->addOption(
-            'dont-read',
+            'read',
             'r',
             null,
-            'Don\'t mark messages as read when reading them.'
+            'Mark messages as read.'
         );
         $this->addOption(
             'delete',
@@ -98,13 +92,18 @@ class Mail extends Command
             return 0;
         }
 
-        // @todo - something with these options
-        $showAll = $input->getOption('all');
         $mailbox = $input->getOption('sent') ? 'outbox' : 'inbox';
 
         $messages = MessageModel::where('recipient_id', $user->id)
             ->with('author', 'recipient')
             ->get();
+
+        if ($input->getOption('read')) {
+            foreach ($messages as $message) {
+                $message->has_been_read = true;
+                $message->save();
+            }
+        }
 
         if (count($messages) === 0) {
             $output->write('No messages');
@@ -112,14 +111,6 @@ class Mail extends Command
         }
 
         $output->write(Format::messages($messages));
-
-        if (!$input->getOption('dont-read')) {
-            foreach ($messages as $message) {
-                $message->has_been_read = true;
-                $message->save();
-            }
-        }
-
         return 0;
     }
 }
