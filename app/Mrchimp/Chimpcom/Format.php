@@ -252,7 +252,7 @@ class Format
                 $output .= Format::grey(' ' . e($task->description));
                 $output .= Format::grey(' (' . $task->time_completed . ')');
             } else {
-                $output .= ' ' . e($task->description); // @todo - set this a block title instead
+                $output .= ' ' . e($task->description);
             }
 
             if ($show_dates) {
