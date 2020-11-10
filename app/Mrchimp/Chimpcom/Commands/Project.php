@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Mrchimp\Chimpcom\Console\Input;
+use Mrchimp\Chimpcom\Console\Output;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Project as ProjectModel;
 use Symfony\Component\Console\Input\InputInterface;
@@ -62,91 +64,16 @@ class Project extends Command
             return 1;
         }
 
-        $user = Auth::user();
-        $subcommand = $input->getArgument('subcommand');
-
-        // id or name depending on subcommand
-        $project_id = $input->getArgument('project');
-
-        // Create new project
-        if ($subcommand === 'new') {
-            $validator = Validator::make([
-                'project' => $project_id,
-            ], [
-                'project' => 'required|alpha_dash'
-            ]);
-
-            if ($validator->fails()) {
-                $output->writeErrors($validator);
-
-                return 2;
-            }
-
-            $project = new ProjectModel();
-            $project->is_new  = true;
-            $project->name    = $project_id;
-            $user->projects()->save($project);
-
-            // @todo check current project logic and tidy up this logic
-            Session::put('current_project_id', $project->id);
-
-            $user->active_project_id = $project->id;
-            $user->save();
-
-            $output->write('Creating project "' . $project->name . '"...<br>');
-            $output->write('Please add a description:');
-            Chimpcom::setAction('newproject');
-
-            return 0;
+        switch ($input->getArgument('subcommand')) {
+            case 'new':
+                return $this->newProject($input, $output);
+            case 'set':
+                return $this->setProject($input, $output);
+            case 'rm':
+                return $this->removeProject($input, $output);
+            default:
+                return $this->showCurrentProject($input, $output);
         }
-
-        // Set current project
-        if ($subcommand === 'set') {
-            $project = $user
-                ->projects()
-                ->nameOrId($project_id)
-                ->first();
-
-            if (!$project) {
-                $output->error('That project ID is invalid.');
-                return 3;
-            }
-
-            $user->setActiveProject($project);
-            $output->alert(e($project->name) . ' is now the current project.');
-
-            return 0;
-        }
-
-        // remove project etc
-        if ($subcommand === 'rm') {
-            $project = $user->projects()
-                ->nameOrId($project_id)
-                ->first();
-
-            if (!$project) {
-                $output->error('Cannot remove that.');
-                return 5;
-            }
-
-            $output->title('Are you sure you want to delete the project `' . e($project->name) . '`?');
-            Session::put('projectrm', $project->id);
-            Chimpcom::setAction('project_rm');
-
-            return 0;
-        }
-
-        $project = $user->activeProject;
-
-        if (!$project) {
-            $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
-            return 4;
-        }
-
-        // Show info about current project
-        $output->say('Current project: ' . $project->name);
-
-        return 0;
     }
 
     /**
@@ -177,5 +104,106 @@ class Project extends Command
         }
 
         return [];
+    }
+
+    /**
+     * Create a new project
+     */
+    protected function newProject(InputInterface $input, OutputInterface $output): int
+    {
+        $project_name = $input->getArgument('project');
+
+        $validator = Validator::make([
+            'project' => $project_name,
+        ], [
+            'project' => 'required|alpha_dash'
+        ]);
+
+        if ($validator->fails()) {
+            $output->writeErrors($validator);
+
+            return 2;
+        }
+
+        $project = new ProjectModel();
+        $project->is_new  = true;
+        $project->name    = $project_name;
+
+        $user = Auth::user();
+        $user->projects()->save($project);
+
+        // @todo check current project logic and tidy up this logic
+        Session::put('current_project_id', $project->id);
+
+        $user->active_project_id = $project->id;
+        $user->save();
+
+        $output->write('Creating project "' . $project->name . '"...<br>');
+        $output->write('Please add a description:');
+        Chimpcom::setAction('newproject');
+
+        return 0;
+    }
+
+    /**
+     * Set the user's current project
+     */
+    protected function setProject(InputInterface $input, OutputInterface $output): int
+    {
+        $project_id = $input->getArgument('project');
+
+        $project = Auth::user()
+            ->projects()
+            ->nameOrId($project_id)
+            ->first();
+
+        if (!$project) {
+            $output->error('That project ID is invalid.');
+            return 3;
+        }
+
+        Auth::user()->setActiveProject($project);
+        $output->alert(e($project->name) . ' is now the current project.');
+
+        return 0;
+    }
+
+    /**
+     * Remove a project
+     */
+    protected function removeProject(InputInterface $input, OutputInterface $output): int
+    {
+        $project_id = $input->getArgument('project');
+
+        $project = Auth::user()->projects()
+            ->nameOrId($project_id)
+            ->first();
+
+        if (!$project) {
+            $output->error('Cannot remove that.');
+            return 5;
+        }
+
+        $output->title('Are you sure you want to delete the project `' . e($project->name) . '`?');
+        Session::put('projectrm', $project->id);
+        Chimpcom::setAction('project_rm');
+
+        return 0;
+    }
+
+    /**
+     * Show the name of the user's active project
+     */
+    protected function showCurrentProject(InputInterface $input, OutputInterface $output): int
+    {
+        $project = Auth::user()->activeProject;
+
+        if (!$project) {
+            $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
+            return 4;
+        }
+
+        $output->say('Current project: ' . $project->name);
+        return 0;
     }
 }
