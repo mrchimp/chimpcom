@@ -14,11 +14,30 @@ class Tag extends Command
     {
         $this->setName('tag');
         $this->setDescription('View tags');
+        $this->addArgument('tag', InputArgument::OPTIONAL, 'List memories for a given tag');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($input->getArgument('tag')) {
+            return $this->showTag($input, $output);
+        }
+
         return $this->listTags($input, $output);
+    }
+
+    public function showTag(InputInterface $input, OutputInterface $output)
+    {
+        $tag = TagModel::where('tag', $input->getArgument('tag'))->first();
+
+        if (!$tag) {
+            $output->error('Tag not found.');
+            return 1;
+        }
+
+        $output->write(Format::memories($tag->memories));
+
+        return 0;
     }
 
     public function listTags(InputInterface $input, OutputInterface $output)
