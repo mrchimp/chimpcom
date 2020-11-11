@@ -125,21 +125,17 @@ class Project extends Command
             return 2;
         }
 
-        $project = new ProjectModel();
-        $project->is_new  = true;
-        $project->name    = $project_name;
+        $project = ProjectModel::create([
+            'is_new' => true,
+            'name' => $project_name,
+            'user_id' => Auth::id(),
+        ]);
 
-        $user = Auth::user();
-        $user->projects()->save($project);
-
-        // @todo check current project logic and tidy up this logic
-        Session::put('current_project_id', $project->id);
-
-        $user->active_project_id = $project->id;
-        $user->save();
+        Auth::user()->setActiveProject($project);
 
         $output->write('Creating project "' . $project->name . '"...<br>');
         $output->write('Please add a description:');
+
         Chimpcom::setAction('newproject');
 
         return 0;

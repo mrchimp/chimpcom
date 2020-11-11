@@ -21,6 +21,12 @@ class Project extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'is_new',
+        'name',
+        'user_id',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo('app\User');

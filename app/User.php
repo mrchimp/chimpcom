@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Models\Project;
 
 class User extends Authenticatable
@@ -63,6 +64,8 @@ class User extends Authenticatable
 
     public function setActiveProject(Project $project)
     {
+        Session::put('current_project_id', $project->id);
+
         $project->activeUsers()->save($this);
     }
 
