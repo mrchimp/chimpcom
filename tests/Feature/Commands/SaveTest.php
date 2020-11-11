@@ -30,4 +30,15 @@ class SaveTest extends TestCase
         $this->assertEquals('name', $memory->name);
         $this->assertEquals('Here is the content', $memory->content);
     }
+
+    /** @test */
+    public function memories_can_be_tagged()
+    {
+        $this->getUserResponse('save name Here is #some content #hashtag')
+            ->assertStatus(200);
+
+        $memory = Memory::first();
+
+        $this->assertCount(2, $memory->tags);
+    }
 }

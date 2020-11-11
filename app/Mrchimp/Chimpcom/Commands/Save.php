@@ -4,6 +4,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
 use Mrchimp\Chimpcom\Models\Memory;
+use Mrchimp\Chimpcom\Models\Tag;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -93,12 +94,14 @@ DESC);
             return 2;
         }
 
-        // @todo get tags working
-        // foreach ($this->input->getTags() as $tag_word) {
-        //   $tag = new Tag();
-        //   $tag->tag = $tag_word;
-        //   $memory->tags()->save($tag);
-        // }
+        $tags = Tag::fromString($content);
+
+        foreach ($tags as $tag_name) {
+            $tag = Tag::firstOrCreate([
+                'tag' => $tag_name,
+            ]);
+            $memory->tags()->save($tag);
+        }
 
         $output->alert('Memory saved. Id: ' . $memory->id);
 
