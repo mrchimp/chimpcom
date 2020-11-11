@@ -2,10 +2,14 @@
 
 namespace Mrchimp\Chimpcom\Models;
 
+use Database\Factories\TagFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'tag',
     ];
@@ -28,5 +32,10 @@ class Tag extends Model
         preg_match_all('/[$ ]\#([^ ]+)/m', $input, $output);
 
         return $output[1];
+    }
+
+    protected static function newFactory()
+    {
+        return TagFactory::new();
     }
 }
