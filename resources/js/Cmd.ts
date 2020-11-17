@@ -118,7 +118,7 @@ export default class Cmd {
       'timer',
       'volume',
     ];
-    this.themes = ['default', 'light', 'solarized', 'solarized-light'];
+    this.themes = ['default', 'solarized'];
     this.theme = 'default';
     this.autocomplete_attempted = false;
     this.tab_mode = false;
