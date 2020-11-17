@@ -1,13 +1,62 @@
-@keyframes blink {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
+body,
+html,
+#cmd {
+  height: 100%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-size: var(--font-size);
+  box-sizing: border-box;
+
+  @media screen and (max-width: 600px) {
+    font-size: 10px;
   }
 }
 
 .cmd-interface {
+  --bg-color: #101010;
+  --text-color: #ccc;
+  --prompt-color: #00b700;
+  --error-color: #900;
+  --title-color: #578998;
+  --success-color: #669866;
+  --grey-color: #9e9e9e;
+  --link-color: #ccc;
+  --code-color: #808080;
+  --text-hover-color: #bbb;
+  --font-size: 18px;
+  --font-default: Menlo, Consolas, Monaco, monospace;
+
+  @media screen and (prefers-color-scheme: light) {
+    --bg-color: var(--text-color);
+    --text-color: var(--bg-color);
+    --code-color: var(--grey-color);
+  }
+
+  &.theme-solarized {
+    --bg-color: #002b36;
+    --text-color: #fdf6e3;
+    --text-color: #fdf6e3;
+    --link-color: #fdf6e3;
+    --code-color: #fdf6e3;
+    --text-hover-color: #eee8d5;
+    --prompt-color: #b58900;
+    --error-color: #cb4b16;
+    --title-color: #268bd2;
+    --success-color: #859900;
+    --grey-color: #586e75;
+
+    @media screen and (prefers-color-scheme: light) {
+      --bg-color: #fdf6e3;
+      --text-color: #002b36;
+      --link-color: #002b36;
+      --code-color: #002b36;
+      --text-hover-color: #586e75;
+    }
+  }
+
   background-color: var(--bg-color);
   color: var(--text-color);
   cursor: text;
@@ -22,48 +71,13 @@
     line-height: 140%;
   }
 
-  .cmd-input-container {
-    display: flex;
-  }
-
-  .cmd-input-wrapper {
-    flex: 1 1 100%;
-    position: relative;
-    font-size: var(--font-size);
-  }
-
-  .cmd-in-caret {
-    --caret-width: 1ch;
-    --caret-offset: 0ch;
-
-    position: absolute;
-    left: var(--caret-offset);
-    top: 0;
-    background-color: var(--text-color);
-    color: var(--bg-color);
-    width: var(--caret-width);
-    height: 1.3em;
-    animation: blink 0.4s ease-in-out alternate infinite;
-  }
-
-  .main-prompt {
-    flex: 1 1 0%;
-    white-space: nowrap;
-  }
-
-  .prompt {
-    padding-right: 1ch;
-  }
-
   & *,
   & *:before,
   & *:after {
+    background-color: var(--bg-color);
+    color: var(--text-color);
     margin: 0;
     padding: 0;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    color: var(--text-color);
   }
 
   &::selection,
@@ -72,101 +86,112 @@
     background-color: var(--text-color);
     color: var(--bg-color);
   }
+}
 
-  .cmd-container {
-    background-color: transparent;
-    transform: translateZ(0);
-    width: 100%;
-  }
+.cmd-container {
+  background-color: transparent;
+  transform: translateZ(0);
+  width: 100%;
+}
 
-  .cmd-in,
-  .pass-in,
-  .cmd-editor-content {
+.cmd-input-container {
+  display: flex;
+}
+
+.cmd-input-wrapper {
+  flex: 1 1 100%;
+  position: relative;
+  font-size: var(--font-size);
+}
+
+.cmd-in-caret {
+  --caret-width: 1ch;
+  --caret-offset: 0ch;
+
+  position: absolute;
+  left: var(--caret-offset);
+  top: 0;
+  background-color: var(--text-color);
+  color: var(--bg-color);
+  width: var(--caret-width);
+  height: 1.3em;
+  animation: blink 0.4s ease-in-out alternate infinite;
+}
+
+.main-prompt {
+  flex: 1 1 0%;
+  white-space: nowrap;
+}
+
+.cmd-in,
+.cmd-editor-content {
+  border: 0;
+  font-family: var(--font-default);
+  font-size: var(--font-size);
+  outline: none;
+  width: 100%;
+}
+
+input.cmd-in {
+  caret-color: var(--bg-color);
+
+  &::-moz-selection {
     background-color: var(--bg-color);
-    border: 0;
-    color: var(--text-color);
-    font-family: var(--font-default);
-    font-size: var(--font-size);
-    outline: none;
-    width: 100%;
   }
 
-  input.cmd-in {
-    caret-color: var(--bg-color);
-
-    &::-moz-selection {
-      background-color: var(--bg-color);
-    }
-
-    &::before {
-      content: '';
-      width: 1em;
-      height: 1em;
-    }
+  &::before {
+    content: '';
+    width: 1em;
+    height: 1em;
   }
+}
 
-  .pass-in {
-    display: none;
-  }
+.autofill {
+  cursor: pointer;
+}
 
-  .cmd-out {
-    margin: 0;
-    padding: 0;
-  }
+table {
+  display: inline-table;
+}
 
-  .autofill {
-    cursor: pointer;
-  }
+td {
+  vertical-align: text-top;
+  padding-right: 50px;
+}
 
-  table {
-    padding: 0;
-    margin: 0;
-    display: inline-table;
-  }
+th {
+  font-style: italic;
+  padding-right: 50px;
+  text-align: left;
+}
 
-  td {
-    vertical-align: text-top;
-    padding: 0 50px 0 0;
-    margin: 0;
-  }
+ul,
+dl,
+dd {
+  display: inline-block;
+}
 
-  th {
-    font-style: italic;
-    padding: 0 50px 0 0;
-    margin: 0;
-    text-align: left;
-  }
+ul {
+  padding-left: 20px;
+}
 
-  ul,
-  dl,
-  dd {
-    display: inline-block;
-    margin: 0;
-  }
+dd {
+  margin-left: 18px;
+  color: var(--grey-color);
+}
 
-  ul {
-    padding-left: 20px;
-  }
+dt:before {
+  content: '\2022 \0020';
+}
 
-  dd {
-    margin-left: 18px;
-    color: var(--grey-color);
-  }
+strong {
+  font-weight: bold;
+}
 
-  dt:before {
-    content: '\2022 \0020';
-  }
+.autofill {
+  cursor: pointer;
+}
 
-  a {
-    color: var(--link-color);
-
-    &:hover {
-      color: var(--bg-color);
-      background-color: var(--link-color);
-    }
-  }
-
-  strong {
-    font-weight: bold;
-  }
+.lipsum p {
+  margin-bottom: 1rem;
 }

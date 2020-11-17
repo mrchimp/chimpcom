@@ -1,61 +1,66 @@
-.cmd-interface {
-  a {
-    &:hover {
-      --text-color: var(--bg-color);
-    }
-  }
+a {
+  color: var(--link-color);
 
-  span,
-  a {
-    background-color: var(--bg-color);
-
-    &::selection,
-    &::-webkit-selection,
-    &::-moz-selection,
-    &.inverted {
-      color: var(--bg-color);
-      background-color: var(--text-color);
-    }
-  }
-
-  .prompt {
-    --text-color: var(--prompt-color);
-    font-weight: 300;
-  }
-
-  .red_highlight {
-    --text-color: var(--error-color);
-    font-weight: bold;
-  }
-
-  .blue_highlight {
-    --text-color: var(--title-color);
-    font-weight: bold;
-  }
-
-  .green_highlight {
-    --text-color: var(--success-color);
-    font-weight: 300;
-  }
-
-  .grey_text {
-    --text-color: var(--grey-color);
-  }
-
-  .inverted {
+  &:hover {
     --text-color: var(--bg-color);
+  }
+}
+
+span {
+  background-color: var(--bg-color);
+
+  &::selection,
+  &::-webkit-selection,
+  &::-moz-selection,
+  &.inverted {
+    color: var(--bg-color);
     background-color: var(--text-color);
   }
 
-  .ascii {
-    line-height: 50%;
-    letter-spacing: -1px;
+  &:hover {
+    color: var(--bg-color);
+    background-color: var(--link-color);
   }
+}
 
-  code {
-    font-family: 'courier new', monospace;
-    font-weight: 300;
-    font-size: 15px;
-    color: var(--code-color);
-  }
+.prompt {
+  --text-color: var(--prompt-color);
+  font-weight: 300;
+  padding-right: 1ch;
+}
+
+.red_highlight {
+  --text-color: var(--error-color);
+  font-weight: bold;
+}
+
+.blue_highlight {
+  --text-color: var(--title-color);
+  font-weight: bold;
+}
+
+.green_highlight {
+  --text-color: var(--success-color);
+  font-weight: 300;
+}
+
+.grey_text {
+  --text-color: var(--grey-color);
+}
+
+.inverted {
+  --text-color: var(--bg-color);
+  background-color: var(--text-color);
+}
+
+.ascii {
+  line-height: 50%;
+  letter-spacing: -1px;
+}
+
+code {
+  font-family: 'courier new', monospace;
+  font-weight: 300;
+  font-size: 15px;
+  color: var(--code-color);
 }

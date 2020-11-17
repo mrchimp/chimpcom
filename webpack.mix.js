@@ -13,7 +13,7 @@ const mix = require('laravel-mix');
 
 mix
   .ts(['resources/js/main.ts'], 'public/js')
-  .less('resources/less/main.less', 'public/css')
+  .less('resources/less/cmd/main.less', 'public/css')
   .less('resources/less/blog/main.less', 'public/css/blog.css')
   .copy('resources/images', 'public/img')
   .version(['public/js/main.js', 'public/css/main.css']);
