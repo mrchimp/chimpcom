@@ -104,8 +104,6 @@ export default class Cmd {
     this.remote_cmds = [];
     this.all_commands = [];
     this.local_cmds = [
-      'alarm',
-      'alert',
       'bash',
       'clear',
       'clr',
@@ -115,7 +113,6 @@ export default class Cmd {
       'shh',
       'talk',
       'theme',
-      'timer',
       'volume',
     ];
     this.themes = ['default', 'solarized'];
@@ -452,16 +449,6 @@ export default class Cmd {
           document.getElementsByTagName('body')[0].prepend(this.bash_el);
         }
         return "Ow! I hope you're going to fix that!";
-      case 'alert':
-      case 'alarm':
-      case 'timer':
-        window.open(
-          'timer.php?time=60', // @todo Make changeable!
-          'chimpcom_timer',
-          'height=90,width=350,left=100,top=100,menubar=no,location=no,scrollbars=no,status=no,toolbar=no,titlebar=no'
-        );
-
-        return 'Clock has opened in new window.';
       case 'fix':
         if (this.bash_el) {
           this.bash_el.remove();
