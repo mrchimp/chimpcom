@@ -31,19 +31,24 @@ class Responder
 
     public function __construct(string $cmd_in = null, ?string $content = null)
     {
-        $this->cmd_in = $cmd_in;
+        $cmd_in = trim($cmd_in);
 
-        if (!$this->cmd_in) {
-            $this->cmd_in = '';
+        if (!$cmd_in) {
+            $cmd_in = '';
         }
 
         // Catch "@username foo" messages shorthand
-        if (substr($this->cmd_in, 0, 1) === '@') {
-            $this->cmd_in = 'message ' . $this->cmd_in;
+        if (substr($cmd_in, 0, 1) === '@') {
+            $cmd_in = 'message ' . $cmd_in;
         }
 
-        $this->parts = explode(' ', trim($this->cmd_in), 2);
+        $this->parts = explode(' ', $cmd_in, 2);
         $this->cmd_name = Alias::lookup($this->parts[0]);
+
+        $this->cmd_in = implode(' ', [
+            $this->cmd_name,
+            ...array_slice($this->parts, 1)
+        ]);
         $this->content = $content;
         $this->log = new Log;
 

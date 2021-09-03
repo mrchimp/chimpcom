@@ -17,7 +17,7 @@ class Alias extends Model
     {
         $alias = self::where('name', $cmd_name)->take(1)->first();
 
-        return ($alias ? $alias->alias : $cmd_name);
+        return trim($alias ? $alias->alias : $cmd_name);
     }
 
     protected static function newFactory()
