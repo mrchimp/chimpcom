@@ -105,7 +105,7 @@ class Responder
     protected function handleOneliner(Oneliner $oneliner): Output
     {
         $output = new Output();
-        $output->write($oneliner->response);
+        $output->write(e($oneliner->response));
         $this->log->info('Oneliner: ' . $this->cmd_name);
         return $output;
     }
@@ -117,7 +117,7 @@ class Responder
     {
         $output = new Output();
         $this->log->error('Invalid command: ' . $this->cmd_in);
-        $output->error('Invalid command: ' . htmlspecialchars($this->cmd_name));
+        $output->error('Invalid command: ' . e($this->cmd_name));
         $output->setStatusCode(404);
         return $output;
     }

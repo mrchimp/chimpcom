@@ -13,6 +13,11 @@ class Alias extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'alias',
+    ];
+
     public static function lookup(string $cmd_name): string
     {
         $alias = self::where('name', $cmd_name)->take(1)->first();

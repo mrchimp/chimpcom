@@ -35,7 +35,7 @@ class Shortcuts extends Command
         }
 
         foreach ($shortcuts as $shortcut) {
-            $output->write($shortcut->name . ' - ' . $shortcut->url . '<br>');
+            $output->write(e($shortcut->name) . ' - ' . e($shortcut->url) . '<br>');
         }
 
         return 0;

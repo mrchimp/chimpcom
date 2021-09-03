@@ -65,9 +65,9 @@ class Alias extends Command
             $out = [];
 
             foreach ($aliases as $alias) {
-                $out[] = $alias->name;
+                $out[] = e($alias->name);
                 $out[] = ' ➞ ';
-                $out[] = $alias->alias;
+                $out[] = e($alias->alias);
             }
 
             $output->write(Format::listToTable(
@@ -96,10 +96,10 @@ class Alias extends Command
             return 3;
         }
 
-        // @todo Fix these column names
-        $alias = new ChimpcomAlias();
-        $alias->name  = $alias_name;
-        $alias->alias = $command_name;
+        $alias = ChimpcomAlias::create([
+            'name' => $alias_name,
+            'alias' => $command_name,
+        ]);
 
         if ($alias->save()) {
             $output->alert('Ok.');
