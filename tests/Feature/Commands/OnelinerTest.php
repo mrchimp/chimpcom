@@ -81,4 +81,35 @@ class OnelinerTest extends TestCase
         $this->assertEquals('command', $oneliners->first()->command);
         $this->assertEquals('Response is multiple words. --this-looks-like-an-option', $oneliners->first()->response);
     }
+
+    /** @test */
+    public function duplicate_oneliners_cant_be_created_without_flag()
+    {
+        Oneliner::factory()->create([
+            'command' => 'foo',
+            'response' => 'bar'
+        ]);
+
+        $this->getAdminResponse('oneliner foo bar')
+            ->assertSee('These oneliners already exist.')
+            ->assertSee('Use --force to create another.')
+            ->assertSee('foo')
+            ->assertSee('bar');
+
+        $this->assertEquals(1, Oneliner::count());
+    }
+
+    /** @test */
+    public function duplicate_oneliners_can_be_created_with_the_force_flag()
+    {
+        Oneliner::factory()->create([
+            'command' => 'foo',
+            'response' => 'bar'
+        ]);
+
+        $this->getAdminResponse('oneliner --force foo bar')
+            ->assertSee('Ok');
+
+        $this->assertEquals(2, Oneliner::count());
+    }
 }

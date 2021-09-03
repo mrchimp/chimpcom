@@ -32,6 +32,12 @@ class Oneliner extends Command
             InputArgument::REQUIRED | InputArgument::IS_ARRAY,
             'The output to respond with.'
         );
+        $this->addOption(
+            'force',
+            'f',
+            null,
+            'Force creating the oneliner.'
+        );
     }
 
     /**
@@ -60,10 +66,23 @@ class Oneliner extends Command
         $command = $input->getArgument('command');
         $response = implode(' ', $input->getArgument('response'));
 
-        $oneliner = new OnelinerModel();
-        $oneliner->command = $command;
-        $oneliner->response = $response;
-        $oneliner->save();
+        $oneliners = OnelinerModel::where('command', $command)->get();
+
+        if ($oneliners->isNotEmpty() && !$input->getOption('force')) {
+            $output->error('These oneliners already exist. Use --force to create another.');
+
+            $oneliners->each(function ($oneliner) use ($output) {
+                $output->write($oneliner->command . ' - ' . $oneliner->response . '<br>');
+            });
+
+            return 3;
+        }
+
+
+        OnelinerModel::create([
+            'command' => $command,
+            'response' => $response,
+        ]);
 
         $output->alert('Ok.');
 

@@ -6,6 +6,7 @@
 
 namespace Mrchimp\Chimpcom\Models;
 
+use Database\Factories\OnelinerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
