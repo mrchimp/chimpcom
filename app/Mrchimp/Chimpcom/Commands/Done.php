@@ -4,6 +4,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use App\Mrchimp\Chimpcom\Id;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Task;
@@ -34,6 +35,12 @@ class Done extends Command
             'task_id',
             InputArgument::REQUIRED,
             'ID of the task to complete.'
+        );
+        $this->addOption(
+            'force',
+            'f',
+            null,
+            'Bypass confirmation.'
         );
     }
 
@@ -70,12 +77,21 @@ class Done extends Command
             return 3;
         }
 
-        Session::put('task_to_complete', $task->id);
+        if ($input->getOption('force')) {
+            $task->completed = true;
+            $task->time_completed = now();
+            $task->save();
+            $output->alert('Ok.');
 
-        $output->alert('Are you sure you want to mark this as complete?<br>');
-        $output->say($task->description);
+            return 0;
+        } else {
+            Session::put('task_to_complete', $task->id);
 
-        Chimpcom::setAction('done');
+            $output->alert('Are you sure you want to mark this as complete?<br>');
+            $output->say($task->description);
+
+            Chimpcom::setAction('done');
+        }
 
         return 0;
     }

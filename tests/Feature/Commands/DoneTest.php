@@ -49,7 +49,7 @@ class DoneTest extends TestCase
         ]);
         $user->active_project_id = $project->id;
         $user->save();
-        $task = Task::factory()->create([
+        Task::factory()->create([
             'project_id' => $project->id,
         ]);
 
@@ -59,5 +59,29 @@ class DoneTest extends TestCase
             ->assertSessionHas('action', 'done');
     }
 
+    /** @test */
+    public function done_command_force_option_skips_confirmation()
+    {
+        $user = User::factory()->create();
+        $project = Project::factory()->create([
+            'user_id' => $user->id,
+        ]);
+        $user->active_project_id = $project->id;
+        $user->save();
+        Task::factory()->count(2)->create([
+            'project_id' => $project->id,
+        ]);
 
+        $this->getUserResponse('done 1 --force', $user)
+            ->assertStatus(200)
+            ->assertSee('Ok')
+            ->assertSessionMissing('action');
+
+        $this->getUserResponse('done 2 -f', $user)
+            ->assertStatus(200)
+            ->assertSee('Ok')
+            ->assertSessionMissing('action');
+
+        $this->assertEquals(0, Task::where('completed', 0)->count());
+    }
 }
