@@ -19,6 +19,11 @@ class Shortcut extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'url',
+    ];
+
     protected static function newFactory()
     {
         return ShortcutFactory::new();

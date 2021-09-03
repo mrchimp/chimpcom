@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands;
 
+use Mrchimp\Chimpcom\Models\Shortcut;
 use Tests\TestCase;
 
 class AddShortcutTest extends TestCase
@@ -36,5 +37,21 @@ class AddShortcutTest extends TestCase
         $this->getAdminResponse('addshortcut foo this_is_not_a_url')
             ->assertStatus(200)
             ->assertSee('There was a problem');
+    }
+
+    /** @test */
+    public function addshortcut_fails_if_name_already_exists()
+    {
+        Shortcut::factory()->create([
+            'name' => 'example',
+            'url' => 'https://example.com',
+        ]);
+
+        $this->getAdminResponse('addshortcut example https://example.com/update')
+            ->assertStatus(200)
+            ->assertSee('A shortcut with that name already exists.');
+
+        $this->assertEquals(1, Shortcut::count());
+        $this->assertEquals('https://example.com', Shortcut::first()->url);
     }
 }

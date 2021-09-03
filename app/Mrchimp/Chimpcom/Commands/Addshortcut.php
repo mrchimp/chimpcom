@@ -78,12 +78,20 @@ class Addshortcut extends Command
 
         if ($validator->fails()) {
             $output->writeErrors($validator);
-            return 0;
+            return 1;
         }
 
-        $shortcut = new Shortcut();
-        $shortcut->name = $name;
-        $shortcut->url = $url;
+        $shortcut = Shortcut::where('name', $name)->first();
+
+        if ($shortcut) {
+            $output->error('A shortcut with that name already exists.');
+            return 1;
+        }
+
+        $shortcut = Shortcut::create([
+            'name' => $name,
+            'url' => $url,
+        ]);
 
         if ($shortcut->save()) {
             $output->alert('Ok.');
