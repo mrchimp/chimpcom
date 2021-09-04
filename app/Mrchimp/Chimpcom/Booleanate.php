@@ -32,7 +32,8 @@ class Booleanate
         'yeppers',
         'do it',
         'fuck yes',
-        'hell yes'
+        'hell yes',
+        '1',
     );
 
     /**
@@ -49,7 +50,8 @@ class Booleanate
         'nope',
         'nein',
         'fuck no',
-        'hell no'
+        'hell no',
+        '0',
     );
 
     /**
