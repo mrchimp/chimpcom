@@ -28,6 +28,10 @@ class ChimpcomController extends Controller
      */
     public function respond(Request $request)
     {
+        if (config('app.env') === 'production' && $request->method() !== 'POST') {
+            abort(405);
+        }
+
         $input = $request->input('cmd_in');
         $content = $request->input('content');
         $response = (new Responder($input, $content))->run();
@@ -42,8 +46,12 @@ class ChimpcomController extends Controller
     /**
      * Get a list of commands
      */
-    public function commandList(): JsonResponse
+    public function commandList(Request $request): JsonResponse
     {
+        if (config('app.env') === 'production' && $request->method() !== 'POST') {
+            abort(405);
+        }
+
         return response()->json(Chimpcom::getCommandList());
     }
 
@@ -52,6 +60,10 @@ class ChimpcomController extends Controller
      */
     public function tabComplete(Request $request): JsonResponse
     {
+        if (config('app.env') === 'production' && $request->method() !== 'POST') {
+            abort(405);
+        }
+
         return (new Responder($request->input('cmd_in')))->tabComplete();
     }
 }
