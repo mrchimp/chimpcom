@@ -6,7 +6,7 @@ a {
   }
 }
 
-span {
+.cmd-output span {
   background-color: var(--bg-color);
 
   &::selection,
@@ -25,7 +25,7 @@ span {
 
 .prompt {
   --text-color: var(--prompt-color);
-  font-weight: 300;
+  font-weight: var(--prompt-weight);
   padding-right: 1ch;
 }
 
@@ -61,6 +61,6 @@ span {
 code {
   font-family: 'courier new', monospace;
   font-weight: 300;
-  font-size: 15px;
+  font-size: calc(var(--font-size) * 0.9);
   color: var(--code-color);
 }
