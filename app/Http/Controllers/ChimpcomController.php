@@ -48,10 +48,6 @@ class ChimpcomController extends Controller
      */
     public function commandList(Request $request): JsonResponse
     {
-        if (config('app.env') === 'production' && $request->method() !== 'POST') {
-            abort(405);
-        }
-
         return response()->json(Chimpcom::getCommandList());
     }
 
