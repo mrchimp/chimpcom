@@ -248,6 +248,12 @@ class Responder
 
         $command = Command::make($this->cmd_name);
 
-        return response()->json($command->tabcomplete($input, $output));
+        if (!$command) {
+            $output = [];
+        } else {
+            $output = $command->tabcomplete($input, $output);
+        }
+
+        return response()->json($output);
     }
 }
