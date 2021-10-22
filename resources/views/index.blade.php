@@ -37,12 +37,12 @@
 <meta name="msapplication-TileColor" content="#111112">
 <meta name="msapplication-TileImage" content="/mstile-144x144.png">
 <meta name="theme-color" content="#111112">
-<link href='{{ mix('css/main.css') }}' rel='stylesheet' type='text/css'>
+<link nonce="{{ csp_nonce() }}" href='{{ mix('css/main.css') }}' rel='stylesheet' type='text/css'>
 </head>
 <body>
 <noscript>Enable JavaScript.</noscript>
 <div id="cmd"></div>
 <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
-<script type="text/javascript" src="{{ mix('js/main.js') }}"></script>
+<script nonce="{{ csp_nonce() }}" type="text/javascript" src="{{ mix('js/main.js') }}"></script>
 </body>
 </html>
