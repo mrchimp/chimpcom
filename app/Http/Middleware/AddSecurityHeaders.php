@@ -20,6 +20,7 @@ class AddSecurityHeaders
 
         if (config('app.env') === 'production') {
             $response->header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+            $response->header('Referrer-Policy', 'same-origin');
         }
 
         return $response;
