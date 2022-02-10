@@ -15,3 +15,5 @@ servers.yml
 public/build
 .phpunit.result.cache
 yarn.lock
+rr
+.rr.yaml
