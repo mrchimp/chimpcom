@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\User as User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserTableSeeder extends Seeder
 {
@@ -20,7 +21,15 @@ class UserTableSeeder extends Seeder
         User::create([
             'email' => 'admin@deviouschimp.co.uk',
             'password' => Hash::make('password'),
-            'name' => 'root'
+            'name' => 'root',
+            'is_admin' => true,
+        ]);
+
+        User::create([
+            'email' => 'guest@deviouschimp.co.uk',
+            'password' => Hash::make('password'),
+            'name' => 'guest',
+            'is_admin' => false,
         ]);
 
         Model::reguard();

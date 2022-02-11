@@ -17,10 +17,6 @@ class Policy extends BasePolicy
     {
         return $this
             ->addDirective(Directive::BASE, 'self')
-            ->addNonceForDirective(Directive::SCRIPT)
-            ->addNonceForDirective(Directive::STYLE)
-            ->addDirective(Directive::SCRIPT, [])
-            ->addDirective(Directive::STYLE, [])
             ->addDirective(Directive::FORM_ACTION, [
                 'deviouschimp.co.uk',
                 'chimpcom.test',
