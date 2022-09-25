@@ -7,21 +7,24 @@ use Tests\TestCase;
 
 class AliasTest extends TestCase
 {
-    public function testGuestResponse()
+    /** @test */
+    public function GuestResponse()
     {
         $this->getGuestResponse('alias foo bar')
             ->assertStatus(200)
             ->assertSee(__('chimpcom.must_log_in'));
     }
 
-    public function testUserResponse()
+    /** @test */
+    public function UserResponse()
     {
         $this->getUserResponse('alias foo bar')
             ->assertStatus(200)
             ->assertSee(__('chimpcom.not_admin'));
     }
 
-    public function testAdminListResponse()
+    /** @test */
+    public function AdminListResponse()
     {
         Alias::factory()->create([
             'name' => 'welcome',
@@ -32,10 +35,33 @@ class AliasTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testAdminResponse()
+    /** @test */
+    public function AdminResponse()
     {
         $this->getAdminResponse('alias foo bar')
             ->assertStatus(200)
             ->assertSee('Ok.');
+    }
+
+    /** @test */
+    public function admin_can_create_global_aliases()
+    {
+        $this->getAdminResponse('alias foo bar --global')
+            ->assertOk();
+
+        $alias = Alias::first();
+
+        $this->assertNull($alias->user_id);
+    }
+
+    /** @test */
+    public function user_cant_create_global_aliases()
+    {
+        $this->getUserResponse('alias foo bar --global')
+            ->assertOk();
+
+        $alias = Alias::first();
+
+        $this->assertEquals($this->user->id, $alias->user_id);
     }
 }

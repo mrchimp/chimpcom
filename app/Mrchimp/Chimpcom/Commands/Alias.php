@@ -34,6 +34,12 @@ class Alias extends Command
             InputArgument::OPTIONAL,
             'The command that ALIAS will be translated to.'
         );
+        $this->addOption(
+            'global',
+            'g',
+            null,
+            'Allow this alias to work for anyone'
+        );
     }
 
     /**
@@ -52,8 +58,10 @@ class Alias extends Command
 
         $user = Auth::user();
 
-        if (!$user->is_admin) {
-            $output->error(__('chimpcom.not_admin'));
+        $user_id = $user->id;
+
+        if ($user->is_admin && $input->getOption('global')) {
+            $user_id = null;
             return 1;
         }
 
@@ -99,6 +107,7 @@ class Alias extends Command
         $alias = ChimpcomAlias::create([
             'name' => $alias_name,
             'alias' => $command_name,
+            'user_id' => $user_id,
         ]);
 
         if ($alias->save()) {

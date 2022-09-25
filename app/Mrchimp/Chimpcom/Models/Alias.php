@@ -16,6 +16,7 @@ class Alias extends Model
     protected $fillable = [
         'name',
         'alias',
+        'user_id',
     ];
 
     public static function lookup(string $cmd_name): string
