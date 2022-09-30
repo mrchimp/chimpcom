@@ -4,7 +4,6 @@ return [
     'command_log_file' => base_path() . '/storage/logs/chimpcom.log',
     'unknown_cmd_txt' => 'Unknown command. ',
     'commands' => [
-        'addshortcut' => \Mrchimp\Chimpcom\Commands\Addshortcut::class,
         'alias' => \Mrchimp\Chimpcom\Commands\Alias::class,
         'are' => \Mrchimp\Chimpcom\Commands\Are::class,
         'base64decode' => \Mrchimp\Chimpcom\Commands\Base64decode::class,
@@ -53,6 +52,7 @@ return [
         'scale' => \Mrchimp\Chimpcom\Commands\Scale::class,
         'setpublic' => \Mrchimp\Chimpcom\Commands\Setpublic::class,
         'show' => \Mrchimp\Chimpcom\Commands\Show::class,
+        'shortcut' => \Mrchimp\Chimpcom\Commands\Shortcut::class,
         'shortcuts' => \Mrchimp\Chimpcom\Commands\Shortcuts::class,
         'stats' => \Mrchimp\Chimpcom\Commands\Stats::class,
         'styles' => \Mrchimp\Chimpcom\Commands\Styles::class,

@@ -3,9 +3,9 @@
 namespace Tests\Unit;
 
 use App\Mrchimp\Chimpcom\Actions\Action;
+use App\User;
 use Illuminate\Support\Facades\Config;
 use Mrchimp\Chimpcom\Actions\Candyman;
-use Mrchimp\Chimpcom\Chimpcom;
 use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Commands\Hi;
 use Mrchimp\Chimpcom\Models\Shortcut;
@@ -65,16 +65,77 @@ class ChimpcomTest extends TestCase
     }
 
     /** @test */
-    public function shortcuts_can_be_used()
+    public function global_shortcuts_can_be_used()
     {
+        $this->user = User::factory()->create();
+        $this->other_user = User::factory()->create();
+
         Shortcut::factory()->create([
             'name' => 'testshortcut',
             'url' => 'http://example.com',
+            'user_id' => null,
         ]);
 
-        $json = $this->getGuestResponse('testshortcut')->json();
+        $guest_json = $this
+            ->getGuestResponse('testshortcut')
+            ->assertOk()
+            ->json();
+        $this->assertEquals('http://example.com', $guest_json['redirect']);
 
-        $this->assertEquals('http://example.com', $json['redirect']);
+        $user_json = $this
+            ->getUserResponse('testshortcut')
+            ->assertOk()
+            ->json();
+        $this->assertEquals('http://example.com', $user_json['redirect']);
+
+        $other_user_json = $this
+            ->getUserResponse('testshortcut', $this->other_user)
+            ->assertOk()
+            ->json();
+        $this->assertEquals('http://example.com', $other_user_json['redirect']);
+
+        $admin_json = $this
+            ->getAdminResponse('testshortcut')
+            ->assertOk()
+            ->json();
+        $this->assertEquals('http://example.com', $admin_json['redirect']);
+    }
+
+    /** @test */
+    public function private_shortcuts_can_be_used_by_their_owners()
+    {
+        $this->user = User::factory()->create();
+        $this->other_user = User::factory()->create();
+
+        Shortcut::factory()->create([
+            'name' => 'testshortcut',
+            'url' => 'http://example.com',
+            'user_id' => $this->user->id,
+        ]);
+
+        $guest_json = $this
+            ->getGuestResponse('testshortcut')
+            ->assertNotFound()
+            ->json();
+        $this->assertArrayNotHasKey('redirect', $guest_json);
+
+        $user_json = $this
+            ->getUserResponse('testshortcut')
+            ->assertOk()
+            ->json();
+        $this->assertEquals('http://example.com', $user_json['redirect']);
+
+        $other_user_json = $this
+            ->getUserResponse('testshortcut', $this->other_user)
+            ->assertNotFound()
+            ->json();
+        $this->assertArrayNotHasKey('redirect', $other_user_json);
+
+        $admin_json = $this
+            ->getAdminResponse('testshortcut')
+            ->assertNotFound()
+            ->json();
+        $this->assertArrayNotHasKey('redirect', $admin_json);
     }
 
     /** @test */

@@ -3,6 +3,7 @@
 namespace App\Mrchimp\Chimpcom;
 
 use App\Mrchimp\Chimpcom\Actions\Action;
+use Auth;
 use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Console\Input;
 use Mrchimp\Chimpcom\Console\Output;
@@ -85,7 +86,15 @@ class Responder
      */
     protected function isShortcut(): ?Shortcut
     {
-        return Shortcut::where('name', strtolower($this->cmd_name))->take(1)->first();
+        $shortcut = Shortcut::query()
+            ->where('name', strtolower($this->cmd_name))
+            ->where(function ($query) {
+                $query->whereNull('user_id')->orWhere('user_id', Auth::id());
+            })
+            ->take(1)
+            ->first();
+
+        return $shortcut;
     }
 
     /**

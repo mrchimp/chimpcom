@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Auth;
 use Mrchimp\Chimpcom\Models\Shortcut;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,7 +27,10 @@ class Shortcuts extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $shortcuts = Shortcut::get();
+        $shortcuts = Shortcut::query()
+            ->whereNull('user_id')
+            ->orWhere('user_id', Auth::id())
+            ->get();
 
         if (count($shortcuts) === 0) {
             $output->error('There are currently no shortcuts.');

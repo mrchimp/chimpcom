@@ -22,6 +22,7 @@ class Shortcut extends Model
     protected $fillable = [
         'name',
         'url',
+        'user_id',
     ];
 
     protected static function newFactory()

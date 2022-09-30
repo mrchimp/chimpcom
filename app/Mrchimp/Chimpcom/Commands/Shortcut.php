@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
-use Mrchimp\Chimpcom\Models\Shortcut;
+use Mrchimp\Chimpcom\Models\Shortcut as ShortcutModel;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Addshortcut extends Command
+class Shortcut extends Command
 {
     /**
      * Configure the command
@@ -20,7 +20,7 @@ class Addshortcut extends Command
      */
     protected function configure()
     {
-        $this->setName('addshortcut');
+        $this->setName('shortcut');
         $this->setDescription('Add a shortcut command.');
         $this->addArgument(
             'name',
@@ -31,6 +31,12 @@ class Addshortcut extends Command
             'url',
             InputArgument::REQUIRED,
             'Search URL. Should be a valid URL with an optional %PARAM placeholder for search term'
+        );
+        $this->addOption(
+            'global',
+            'g',
+            null,
+            'Allows the shortcut to be used by anybody. Admins only.'
         );
     }
 
@@ -49,14 +55,21 @@ class Addshortcut extends Command
         }
 
         $user = Auth::user();
-
-        if (!$user->is_admin) {
-            $output->error(__('chimpcom.not_admin'));
-            return 1;
-        }
-
         $name = $input->getArgument('name');
         $url = $input->getArgument('url');
+        $global = $input->getOption('global');
+
+        if ($global && !$user->is_admin) {
+            $output->error('--global is only available to admins.');
+            $output->setStatusCode(403);
+            return 2;
+        }
+
+        $user_id = Auth::id();
+
+        if ($global && $user->is_admin) {
+            $user_id = null;
+        }
 
         $validator = Validator::make(
             [
@@ -69,7 +82,7 @@ class Addshortcut extends Command
                 ],
                 'url' => [
                     'url',
-                ],
+                ]
             ],
             [
                 'not_in' => 'Shortcut name must not match other shortcut or command names.',
@@ -78,18 +91,16 @@ class Addshortcut extends Command
 
         if ($validator->fails()) {
             $output->writeErrors($validator);
-            return 1;
+            return 3;
         }
 
-        if (Shortcut::where('name', $name)->count() > 0) {
-            $output->error('A shortcut with that name already exists.');
-            return 1;
-        }
-
-        Shortcut::create([
+        $shortcut = ShortcutModel::firstOrNew([
             'name' => $name,
-            'url' => $url,
+            'user_id' => $user_id,
         ]);
+
+        $shortcut->url = $url;
+        $shortcut->save();
 
         $output->alert('Ok.');
 
