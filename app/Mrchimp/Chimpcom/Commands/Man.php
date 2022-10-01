@@ -23,7 +23,6 @@ class Man extends Command
     {
         $this->setName('man');
         $this->setDescription('Gets help on a given command. Use --commands to get a list of available commands.');
-        $this->addUsage('man [&lt;command_name&gt;|--commands|-c]');
         $this->addUsage('man projects');
 
         $this->addOption(
@@ -57,7 +56,7 @@ class Man extends Command
         }
 
         if (!$input->getArgument('command_name')) {
-            $output->write('This is how you get help. Type <code>man man</code> for more help on the help.');
+            $output->write('This is how you get help about a command. Type <code>man man</code> for more help on the help.');
 
             return 0;
         }

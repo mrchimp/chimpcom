@@ -55,7 +55,7 @@ class Hi extends Command
             }
         } else {
             $output->write(Format::title('Chimpcom ' . Chimpcom::getVersion()), true);
-            $output->write('Go ahead');
+            $output->write('Type <code>man</code> for help.');
         }
 
         return 0;
