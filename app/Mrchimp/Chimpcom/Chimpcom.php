@@ -9,7 +9,7 @@ class Chimpcom
     /**
      * Chimpcom verion number
      */
-    const VERSION = 'v7.0b';
+    const VERSION = 'v8.1';
 
     /**
      * Input string
