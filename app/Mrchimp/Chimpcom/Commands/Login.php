@@ -49,10 +49,7 @@ class Login extends Command
 
         // User doesn't exist
         if (count($user) === 0) {
-            $output->error('You fail. The username ' . htmlspecialchars($username) . ' does not exist.
-                            Create a new account by using the register command.');
-
-            $output->cFill('register ' . $username);
+            $output->error('Account not found. If you need to create an account, use the register command.');
 
             $output->usePasswordInput(false);
 

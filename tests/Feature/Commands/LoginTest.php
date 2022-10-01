@@ -22,7 +22,7 @@ class LoginTest extends TestCase
     public function if_a_username_doesnt_exist_then_you_cant_log_in_as_that_user()
     {
         $this->getGuestResponse('login mysteryman')
-            ->assertSee('You fail.')
+            ->assertSee('Account not found.')
             ->assertStatus(200)
             ->assertSessionHas('action', 'normal');
     }
