@@ -22,6 +22,7 @@ class Shortcut extends Command
     {
         $this->setName('shortcut');
         $this->setDescription('Add a shortcut command.');
+        $this->addUsage('shortcut --global google https://www.google.com/search?q=%PARAM');
         $this->addArgument(
             'name',
             InputArgument::REQUIRED,
