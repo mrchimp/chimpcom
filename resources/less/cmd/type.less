@@ -2,25 +2,21 @@ a {
   color: var(--link-color);
 
   &:hover {
-    --text-color: var(--bg-color);
+    color: var(--bg-color);
+    background-color: var(--link-color);
   }
+}
+
+&::selection,
+&::-webkit-selection,
+&::-moz-selection,
+&.inverted {
+  color: var(--bg-color);
+  background-color: var(--text-color);
 }
 
 .cmd-output span {
   background-color: var(--bg-color);
-
-  &::selection,
-  &::-webkit-selection,
-  &::-moz-selection,
-  &.inverted {
-    color: var(--bg-color);
-    background-color: var(--text-color);
-  }
-
-  &:hover {
-    color: var(--bg-color);
-    background-color: var(--link-color);
-  }
 }
 
 .prompt {
