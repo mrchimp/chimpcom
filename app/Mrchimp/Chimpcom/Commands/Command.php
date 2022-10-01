@@ -131,7 +131,7 @@ class Command extends SymfonyCommand
      *
      * @return array An array of aliases for the command
      */
-    public function getAliases()
+    public function getAliases(): array
     {
         return ChimpcomAlias::where('alias', $this->getName())
                             ->pluck('name')
@@ -210,11 +210,13 @@ class Command extends SymfonyCommand
      * @see setCode()
      * @see execute()
      */
-    public function run(InputInterface $input, OutputInterface $output)
+    public function run(InputInterface $input, OutputInterface $output): int
     {
         parent::run($input, $output);
 
         $this->doLog($input);
+
+        return 0;
     }
 
     protected function doLog(InputInterface $input)
