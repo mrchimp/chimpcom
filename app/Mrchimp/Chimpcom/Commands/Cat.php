@@ -19,7 +19,8 @@ class Cat extends Command
     protected function configure()
     {
         $this->setName('cat');
-        $this->setDescription('Concatenate files and print on the standard output.<br><br>I\'m Catman.');
+        $this->setDescription('Concatenate files and print on the standard output.');
+        $this->setHelp('I\'m Catman.');
         $this->addArgument(
             'filename',
             InputArgument::REQUIRED,

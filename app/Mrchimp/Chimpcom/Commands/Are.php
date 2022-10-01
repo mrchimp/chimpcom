@@ -2,8 +2,6 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Auth;
-use Mrchimp\Chimpcom\Format;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,7 +20,7 @@ class Are extends Command
     {
         $this->setName('are');
         $this->setDescription('Answer some questions.');
-
+        $this->addUsage('are these commands useful?');
         $this->addArgument(
             'question',
             InputArgument::IS_ARRAY | InputArgument::REQUIRED,

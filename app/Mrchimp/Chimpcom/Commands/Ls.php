@@ -18,7 +18,8 @@ class Ls extends Command
     protected function configure()
     {
         $this->setName('ls');
-        $this->setDescription('List directory contents');
+        $this->setDescription('List contents of the current directory.');
+        $this->addRelated('cd');
     }
 
     /**

@@ -21,6 +21,7 @@ class Base64decode extends Command
         $this->setName('base64decode');
         $this->setDescription('Decodes a base64 encoded string.');
         $this->setHelp('If the resulting output is binary it will not be displayed.');
+        $this->addUsage('base64decode SGVsbG8sIHdvcmxkIQ==');
         $this->addArgument(
             'input',
             InputArgument::REQUIRED,

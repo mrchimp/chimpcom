@@ -72,7 +72,7 @@ class Command extends SymfonyCommand
         $out .= '&nbsp;&nbsp;' . $this->getName() . ' - '. $this->getDescription() . '<br><br>';
 
         if ($this->getHelp()) {
-            $out .= e($this->getHelp()) . '<br><br>';
+            $out .= '&nbsp;&nbsp;' . e($this->getHelp()) . '<br><br>';
         }
 
         $out .= Format::title('SYNTAX') . '<br><br>';

@@ -25,8 +25,8 @@ class Cd extends Command
     {
         $this->setName('cd');
         $this->setDescription('Change the shell working directory.');
-        $this->setHelp('Change the current directory to DIR. The default DIR is the value of the HOME shell variable.');
-
+        $this->setHelp('Change the current directory to DIR. DIR defaults to the home directory.');
+        $this->addRelated('ls');
         $this->addArgument(
             'dir',
             InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
