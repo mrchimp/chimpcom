@@ -19,6 +19,7 @@
     "laravel/framework": "^9.0",
     "laravel/legacy-factories": "^1.1",
     "laravel/octane": "^1.2",
+    "laravel/sanctum": "^3.0",
     "laravel/telescope": "^4.7",
     "laravel/tinker": "^2.0",
     "simplepie/simplepie": "^1.3",

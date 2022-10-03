@@ -62,6 +62,7 @@ return [
         'tea' => \Mrchimp\Chimpcom\Commands\Tea::class,
         'tetris' => \Mrchimp\Chimpcom\Commands\Tetris::class,
         'todo' => \Mrchimp\Chimpcom\Commands\Todo::class,
+        'token' => \Mrchimp\Chimpcom\Commands\Token::class,
         'uname' => \Mrchimp\Chimpcom\Commands\Uname::class,
         'users' => \Mrchimp\Chimpcom\Commands\Users::class,
         'version' => \Mrchimp\Chimpcom\Commands\Version::class,

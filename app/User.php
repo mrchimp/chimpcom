@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Session;
+use Laravel\Sanctum\HasApiTokens;
 use Mrchimp\Chimpcom\Models\Project;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasFactory;
+    use HasApiTokens, Notifiable, HasFactory;
 
     /**
      * The attributes that are mass assignable.
