@@ -2,7 +2,7 @@
 
 namespace App\Mrchimp\Chimpcom;
 
-use Mrchimp\Chimpcom\Format;
+use Mrchimp\Chimpcom\Facades\Format;
 
 /**
  * Render a progress bar string from a value and total

@@ -8,7 +8,7 @@ use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Console\Input;
 use Mrchimp\Chimpcom\Console\Output;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
-use Mrchimp\Chimpcom\Format;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Log;
 use Mrchimp\Chimpcom\Models\Alias;
 use Mrchimp\Chimpcom\Models\Oneliner;

@@ -4,7 +4,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Log as ErrorLog;
 use Mrchimp\Chimpcom\Console\Output;
-use Mrchimp\Chimpcom\Format;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Log;
 use Mrchimp\Chimpcom\Models\Alias as ChimpcomAlias;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;

@@ -213,6 +213,7 @@ return [
         'View'         => Illuminate\Support\Facades\View::class,
 
         'Chimpcom'     => Mrchimp\Chimpcom\Facades\Chimpcom::class,
+        'Format'       => Mrchimp\Chimpcom\Facades\Format::class,
     ],
 
 ];

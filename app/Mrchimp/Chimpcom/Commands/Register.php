@@ -4,7 +4,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
 use Chimpcom;
-use Mrchimp\Chimpcom\Format;
+use Mrchimp\Chimpcom\Facades\Format;
 use Session;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

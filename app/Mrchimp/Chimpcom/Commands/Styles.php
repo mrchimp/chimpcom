@@ -2,7 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Mrchimp\Chimpcom\Format;
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

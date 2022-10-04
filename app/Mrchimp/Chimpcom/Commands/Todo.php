@@ -4,7 +4,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use App\Mrchimp\Chimpcom\ProgressBar;
 use Illuminate\Support\Facades\Auth;
-use Mrchimp\Chimpcom\Format;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Task;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
