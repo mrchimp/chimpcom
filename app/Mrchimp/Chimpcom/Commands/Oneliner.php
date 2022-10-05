@@ -3,6 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Oneliner as OnelinerModel;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -72,7 +73,7 @@ class Oneliner extends Command
             $output->error('These oneliners already exist. Use --force to create another.');
 
             $oneliners->each(function ($oneliner) use ($output) {
-                $output->write($oneliner->command . ' - ' . $oneliner->response . '<br>');
+                $output->write($oneliner->command . ' - ' . $oneliner->response . Format::nl());
             });
 
             return 3;

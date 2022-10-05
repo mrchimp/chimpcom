@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -59,7 +60,7 @@ EOT);
             }
         }
 
-        $output->write(implode('<br>', $values));
+        $output->write(implode(Format::nl(), $values));
 
         return 0;
     }

@@ -5,6 +5,7 @@ namespace Mrchimp\Chimpcom\Commands;
 use App\Mrchimp\Chimpcom\Id;
 use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Task;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -71,7 +72,7 @@ class Priority extends Command
             ->first();
 
         if (!$task) {
-            $output->error(e('Couldn\'t find that task, or it\'s not yours to edit.'));
+            $output->error(Format::escape('Couldn\'t find that task, or it\'s not yours to edit.'));
 
             return 4;
         }

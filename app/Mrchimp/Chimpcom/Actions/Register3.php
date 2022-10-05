@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Filesystem\Path;
 use Mrchimp\Chimpcom\Models\Directory;
 use Mrchimp\Chimpcom\Traits\LogCommandNameOnly;
@@ -78,7 +79,7 @@ class Register3 extends Action
         Session::forget('register_password');
         Session::forget('register_password2');
 
-        $output->write('Hello, ' . e($data['name']) . '! Welcome to Chimpcom.');
+        $output->write('Hello, ' . Format::escape($data['name']) . '! Welcome to Chimpcom.');
         $output->populateUserDetails();
         Chimpcom::setAction('normal');
         $output->usePasswordInput(false);
@@ -105,7 +106,7 @@ class Register3 extends Action
 
         if ($home_dir->exists()) {
             $home_dir->target()->appendNode(Directory::create([
-                'name' => e($user->name),
+                'name' => Format::escape($user->name),
                 'owner_id' => $user->id,
             ]));
         }

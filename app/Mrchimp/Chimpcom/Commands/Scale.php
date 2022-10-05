@@ -3,6 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Arr;
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -78,21 +79,21 @@ class Scale extends Command
         $scale = strtolower(implode(' ', $input->getArgument('scale', [])));
 
         $root_num = array_search($root, $notes) - 1;
-        $output->title("Root note: $root <br>");
+        $output->title("Root note: $root " . Format::nl());
 
         if ($scale && isset($scales[$scale])) { // show one scale
-            $output->title("Scale: $scale<br>");
+            $output->title("Scale: $scale" . Format::nl());
 
             foreach ($scales[$scale] as $note) {
                 $output->say($notes[($note + $root_num) % 12] . ', ');
             }
         } else { // show all scales
             foreach ($scales as $scale_name => $scale_notes) {
-                $output->title("$scale_name <br>");
+                $output->title("$scale_name " . Format::nl());
                 foreach ($scales[$scale_name] as $note) {
                     $output->say($notes[($note + $root_num) % 12] . ', ');
                 }
-                $output->say('<br>');
+                $output->say(Format::nl());
             }
         }
 

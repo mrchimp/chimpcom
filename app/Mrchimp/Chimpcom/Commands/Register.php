@@ -37,7 +37,7 @@ class Register extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (Auth::check()) {
-            $output->error(e('You\'re already logged in.'));
+            $output->error(Format::escape('You\'re already logged in.'));
 
             return 1;
         }

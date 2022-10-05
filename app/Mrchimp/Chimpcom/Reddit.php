@@ -88,7 +88,7 @@ class Reddit
         }
 
         if ($this->show_selftext) {
-            Format::alert('showing selftext<br>');
+            Format::alert('showing selftext' . Format::nl());
         }
 
         if (Cache::has($cache_file)) {
@@ -149,7 +149,7 @@ class Reddit
         //   case 'more': // more replies
         //     return $this->renderMore($node['data']);
         //   default:
-        //     return 'Ummm...'.$node['kind'].'<br>';
+        //     return 'Ummm...'.$node['kind'].Format::nl();
         // }
     }
 
@@ -198,7 +198,7 @@ class Reddit
     //   $out .= "<span data-type=\"autofill\" data-autofill=\"reddit -c {$node['id']}\" title=\"$tooltip\">{$node['title']}</span> ";
 
     //   if (!empty($node['selftext']) && $this->show_selftext) {
-    //     $out .= '<br>' . nl2br($node['selftext']);
+    //     $out .= Format::nl() . nl2br($node['selftext']);
     //   }
 
     //   $out .= '</div>';

@@ -9,6 +9,7 @@ namespace Mrchimp\Chimpcom\Actions;
 use App\Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Message;
 use Mrchimp\Chimpcom\Traits\LogCommandNameOnly;
 use Symfony\Component\Console\Input\InputArgument;
@@ -75,7 +76,7 @@ class Password extends Action
             'password' => $password
         ], false, true)) {
             $output->error('Hmmmm... No.');
-            $this->log->info('User ' . e($username) . ' failed to log in.');
+            $this->log->info('User ' . Format::escape($username) . ' failed to log in.');
             return 3;
         }
 
@@ -86,12 +87,12 @@ class Password extends Action
 
         if ($unread_count > 0) {
             $output->write(
-                '<br>You have ' . $unread_count . ' unread message' . ($unread_count > 1 ? 's' : '') . '. ' .
+                Format::nl() . 'You have ' . $unread_count . ' unread message' . ($unread_count > 1 ? 's' : '') . '. ' .
                 'Use the command <code>mail</code> to read ' . ($unread_count > 1 ? 'them' : 'it') .  '.'
             );
         }
 
-        $this->log->info('User ' . e($username) . ' logged in.');
+        $this->log->info('User ' . Format::escape($username) . ' logged in.');
 
         return 0;
     }

@@ -7,6 +7,7 @@ use Database\Factories\FileFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Filesystem\FilesystemEntity;
 
 class File extends Model implements FilesystemEntity
@@ -70,9 +71,9 @@ class File extends Model implements FilesystemEntity
     {
         return [
             '📄',
-            e($this->ownerName()),
+            Format::escape($this->ownerName()),
             $this->updated_at->format('M j H:i'),
-            e($this->name)
+            Format::escape($this->name)
         ];
     }
 

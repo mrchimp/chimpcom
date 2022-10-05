@@ -3,6 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Mrchimp\Chimpcom\Chimpcom;
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -71,15 +72,15 @@ class Parser extends Command
         // $this->response->say('<pre>' . print_r($this->input, true) . '</pre>');
         // return;
 
-        $output->title('<br>keys<br>');
+        $output->title(Format::nl() . 'keys' . Format::nl());
 
-        $output->write($input->getArgument('first_name') . '<br>');
-        $output->write($input->getArgument('second_name') . '<br>');
+        $output->write($input->getArgument('first_name') . Format::nl());
+        $output->write($input->getArgument('second_name') . Format::nl());
 
-        $output->title('Arguments<br>');
+        $output->title('Arguments' . Format::nl());
 
         foreach ($input->getArgument('arguments') as $argument) {
-            $output->write($argument . '<br>');
+            $output->write($argument . Format::nl());
         }
 
         if ($input->getOption('option')) {
@@ -87,19 +88,19 @@ class Parser extends Command
         }
 
         if ($input->getOption('other_option')) {
-            $output->writeLn('Other Option was set to: ' . e($input->getOption('other_option')));
+            $output->writeLn('Other Option was set to: ' . Format::escape($input->getOption('other_option')));
         }
 
         // foreach ($input as $key => $spec) {
         //     // echo '<pre>';
         //     // var_dump($spec);
         //     // echo '</pre>';
-        //     $output->say($key . ' - ' . $spec->value . '<br>');
+        //     $output->say($key . ' - ' . $spec->value . Format::nl());
         // }
         //
-        // $output->title('<br>Arguments<br>');
+        // $output->title(Format::nl() . 'Arguments' . Format::nl());
         // foreach ($this->input->arguments as $word) {
-        //     $output->say($word . '<br>');
+        //     $output->say($word . Format::nl());
         // }
         // exit;
 

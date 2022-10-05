@@ -5,6 +5,7 @@ namespace Mrchimp\Chimpcom\Commands;
 use App\Mrchimp\Chimpcom\Id;
 use Auth;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -67,7 +68,7 @@ class Setpublic extends Command
         }
 
         if (!$memory->isMine()) {
-            $output->error(e('That isn\'t your memory to change.'));
+            $output->error(Format::escape('That isn\'t your memory to change.'));
 
             return 3;
         }

@@ -46,7 +46,7 @@ class Output extends SymfonyOutput
         $this->out['cmd_out'] .= $message;
 
         if ($newline) {
-            $this->out['cmd_out'] .= '<br>';
+            $this->out['cmd_out'] .= Format::nl();
         }
     }
 
@@ -203,10 +203,10 @@ class Output extends SymfonyOutput
     {
         $errors = $validator->errors();
 
-        $this->error($message . '<br>');
+        $this->error($message . Format::nl());
 
         foreach ($errors->all() as $message) {
-            $this->error(' &bullet; ' . $message . '<br>');
+            $this->error(' &bullet; ' . $message . Format::nl());
         }
     }
 

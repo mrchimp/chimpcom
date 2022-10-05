@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Kalnoy\Nestedset\NodeTrait;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Filesystem\FilesystemEntity;
 use Mrchimp\Chimpcom\Filesystem\Path;
 use Mrchimp\Chimpcom\Filesystem\RootDirectory;
@@ -181,9 +182,9 @@ class Directory extends Model implements FilesystemEntity
     {
         return [
             '📁',
-            e($this->ownerName()),
+            Format::escape($this->ownerName()),
             $this->updated_at->format('M j H:i'),
-            e($this->name)
+            Format::escape($this->name)
         ];
     }
 

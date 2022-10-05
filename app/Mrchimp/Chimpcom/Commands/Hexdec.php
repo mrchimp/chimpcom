@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -60,7 +61,7 @@ class Hexdec extends Command
                         hexdec($parts[2]) . ') ';
                     $output_val .= '<span style="color:#' . $value . '">███████</span>';
                 } else {
-                    $output->error(e('I don\'t know how to handle this.'));
+                    $output->error(Format::escape('I don\'t know how to handle this.'));
                     return 1;
                 }
             } else {
@@ -70,7 +71,7 @@ class Hexdec extends Command
             $output_vals[] = $output_val;
         }
 
-        $output->write(implode('<br>', $output_vals));
+        $output->write(implode(Format::nl(), $output_vals));
 
         return 0;
     }

@@ -65,9 +65,9 @@ class Alias extends Command
             $out = [];
 
             foreach ($aliases as $alias) {
-                $out[] = e($alias->name);
+                $out[] = Format::escape($alias->name);
                 $out[] = ' ➞ ';
-                $out[] = e($alias->alias);
+                $out[] = Format::escape($alias->alias);
             }
 
             $output->write(Format::listToTable(

@@ -54,7 +54,7 @@ class Deal extends Command
 
         foreach ($hand as $card) {
             if ($x % 10 == 0 && $x > 0) {
-                $output->write('<br>');
+                $output->write(Format::nl());
             }
 
             $output->write(Format::style($card->getSuit() . $card->getRank(), 'card ' . $card->getColor()));

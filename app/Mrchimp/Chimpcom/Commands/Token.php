@@ -3,6 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -83,7 +84,7 @@ class Token extends Command
 
         $token = Auth::user()->createToken($input->getArgument('name'));
 
-        $output->write('Here is your new token. Keep it safe. It won\'t be shown again.<br><br>');
+        $output->write('Here is your new token. Keep it safe. It won\'t be shown again.' . Format::nl(2));
         $output->write('<code>' . $token->plainTextToken . '</code>');
 
         return 0;
@@ -128,7 +129,7 @@ class Token extends Command
 
         $output->title('Name - Created At', true);
         $tokens->each(function ($token) use ($output) {
-            $output->write($token->name . ' - ' . $token->created_at->diffForHumans() . '<br>');
+            $output->write($token->name . ' - ' . $token->created_at->diffForHumans() . Format::nl());
         });
 
         return 0;

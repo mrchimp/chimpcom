@@ -68,58 +68,58 @@ class Command extends SymfonyCommand
     {
         $out = '';
 
-        $out .= Format::title(strtoupper('NAME')) . '<br><br>';
-        $out .= '&nbsp;&nbsp;' . $this->getName() . ' - '. $this->getDescription() . '<br><br>';
+        $out .= Format::title(strtoupper('NAME')) . Format::nl(2);
+        $out .= Format::nbsp(2) . $this->getName() . ' - '. $this->getDescription() . Format::nl(2);
 
         if ($this->getHelp()) {
-            $out .= '&nbsp;&nbsp;' . e($this->getHelp()) . '<br><br>';
+            $out .= Format::nbsp(2) . Format::escape($this->getHelp()) . Format::nl(2);
         }
 
-        $out .= Format::title('SYNTAX') . '<br><br>';
-        $out .= '&nbsp;&nbsp;' . e($this->getSynopsis('long', true)) . '<br><br>';
+        $out .= Format::title('SYNTAX') . Format::nl(2);
+        $out .= Format::nbsp(2) . Format::escape($this->getSynopsis('long', true)) . Format::nl(2);
 
         if (count($this->getUsages())) {
-            $out .= Format::title('USAGE') . '<br><br>';
+            $out .= Format::title('USAGE') . Format::nl(2);
 
             foreach ($this->getUsages() as $usage) {
-                $out .= '&nbsp;&nbsp;<code>' . $usage . '</code><br>';
+                $out .= Format::nbsp(2) . '<code>' . $usage . '</code>' . Format::nl();
             }
 
-            $out .= '<br>';
+            $out .= Format::nl();
         }
 
         if ($this->getRelated()) {
-            $out .= Format::title('SEE ALSO') . '<br><br>';
-            $out .= '&nbsp;&nbsp;' . implode(', ', $this->getRelated()) . '<br><br>';
+            $out .= Format::title('SEE ALSO') . Format::nl(2);
+            $out .= Format::nbsp(2) . implode(', ', $this->getRelated()) . Format::nl(2);
         }
 
         if (count($this->getAliases())) {
-            $out .= Format::title('ALIASES') . '<br><br>';
-            $out .= '&nbsp;&nbsp;' . implode(', ', $this->getAliases()) . '<br><br>';
+            $out .= Format::title('ALIASES') . Format::nl(2);
+            $out .= Format::nbsp(2) . implode(', ', $this->getAliases()) . Format::nl(2);
         }
 
         $definition = $this->getDefinition();
 
         if (count($definition->getArguments())) {
-            $out .= Format::title('ARGUMENTS') . '<br><br>';
+            $out .= Format::title('ARGUMENTS') . Format::nl(2);
 
             foreach ($definition->getArguments() as $argument) {
-                $out .= '&nbsp;&nbsp;<strong>' . $argument->getName() . '</strong><br>';
-                $out .= '&nbsp;&nbsp;' . $argument->getDescription() . '<br><br>';
+                $out .= Format::nbsp(2) . '<strong>' . $argument->getName() . '</strong>' . Format::nl();
+                $out .= Format::nbsp(2) . $argument->getDescription() . Format::nl(2);
             }
         }
 
         if (count($definition->getOptions())) {
-            $out .= Format::title('OPTIONS') . '<br><br>';
+            $out .= Format::title('OPTIONS') . Format::nl(2);
 
             foreach ($definition->getOptions() as $option) {
-                $out .= '&nbsp;&nbsp;<strong>';
+                $out .= Format::nbsp(2) . '<strong>';
                 $out .= '--' . $option->getName();
                 if ($option->getShortcut()) {
                     $out .= ' / -' . $option->getShortcut();
                 }
-                $out .= '</strong><br>';
-                $out .= '&nbsp;&nbsp;' . $option->getDescription() . '<br>';
+                $out .= '</strong>' . Format::nl();
+                $out .= Format::nbsp(2) . $option->getDescription() . Format::nl();
             }
         }
 

@@ -6,6 +6,7 @@ use App\Mrchimp\Chimpcom\Id;
 use Chimpcom;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,7 +58,7 @@ class Forget extends Command
         $mem_ids = $input->getArgument('id');
 
         if ($mem_ids[0] == 'everything' || $mem_ids[0] == 'all') {
-            $output->write(e('Where am I? Who are you? WHAT THE HELL\'S GOING ON?!'));
+            $output->write(Format::escape('Where am I? Who are you? WHAT THE HELL\'S GOING ON?!'));
             return 2;
         }
 
@@ -68,18 +69,18 @@ class Forget extends Command
                         ->get();
 
         if ($memories->isEmpty()) {
-            $output->error(e('Couldn\'t find that memory or it\'s not yours to forget.'));
+            $output->error(Format::escape('Couldn\'t find that memory or it\'s not yours to forget.'));
             return 3;
         }
 
-        $output->title('Are you sure you want to forget these memories?<br>');
+        $output->title('Are you sure you want to forget these memories?' . Format::nl());
 
         $outs = [];
         foreach ($memories as $memory) {
-            $outs[] = e($memory->name) . ': ' . e($memory->content);
+            $outs[] = Format::escape($memory->name) . ': ' . Format::escape($memory->content);
         }
 
-        $output->write(implode('<br>', $outs));
+        $output->write(implode(Format::nl(), $outs));
 
         Session::put('forget_id', $ids);
         Chimpcom::setAction('forget');

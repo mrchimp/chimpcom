@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,7 +31,7 @@ class Monkeys extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->title('Chimpcom Infinite Monkey Shakespeare Project<br>');
+        $output->title('Chimpcom Infinite Monkey Shakespeare Project' . Format::nl());
 
         // Define an alphabet to choose letters from.
         // I think I added extra spaces so that it spaces the
@@ -51,7 +52,7 @@ class Monkeys extends Command
         // First, check if we've got the whole thing.
         if (strpos($apechat, $target) !== false) {
             $apechat = str_replace($target, $this->alert($target, [], true), $apechat);
-            $output->alert('<br>SUCCESS!<br><br>');
+            $output->alert(Format::nl() . 'SUCCESS!' . Format::nl(2));
             $output->write($apechat);
 
             return 0;
@@ -65,10 +66,10 @@ class Monkeys extends Command
         ];
 
         $replace = [
-            '<span class="blue_highlight">to</span>',
-            '<span class="blue_highlight">be</span>',
-            '<span class="blue_highlight">or</span>',
-            '<span class="blue_highlight">not</span>'
+            Format::title('to'),
+            Format::title('be'),
+            Format::title('or'),
+            Format::title('not'),
         ];
 
         $apechat  = str_replace($search, $replace, $apechat);

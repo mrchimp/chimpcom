@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Booleanate;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Project;
 use Mrchimp\Chimpcom\Traits\DoNotLog;
 use Symfony\Component\Console\Input\InputArgument;
@@ -81,7 +82,7 @@ class Project_rm extends Action
 
         $project->delete();
 
-        $output->alert(e('Ok. It\'s gone.'));
+        $output->alert(Format::escape('Ok. It\'s gone.'));
 
         return 0;
     }

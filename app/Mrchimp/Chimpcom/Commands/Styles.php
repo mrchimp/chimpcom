@@ -27,7 +27,7 @@ class Styles extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $output->write(Format::title('This Is A Title'), true);
-        $output->write(e('Here\'s some regular text (say)'), true);
+        $output->write(Format::escape('Here\'s some regular text (say)'), true);
         $output->write(Format::alert('This is an alert!'), true);
         $output->write(Format::error('Oh no! This is an error!'), true);
         $output->write('<code>$this === some($code)</code>', true);

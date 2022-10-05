@@ -12,7 +12,7 @@ class FormatTest extends TestCase
     /** @test */
     public function can_format_tables()
     {
-        $output = \Mrchimp\Chimpcom\Format::listToTable([
+        $output = \Mrchimp\Chimpcom\FormatHtml::listToTable([
             '1', '2',
             '3', '4',
             '5',

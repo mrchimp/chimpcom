@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,12 +31,12 @@ class Tetris extends Command
     {
         $tetrinos = [
             '&#x25A0;&#x25A0;&#x25A0;&#x25A0;',                     // Line
-            '&#x25A0;<br>&#x25A0;<br>&#x25A0;&#x25A0;',             // J
-            '&nbsp;&#x25A0;<br>&nbsp;&#x25A0;<br>&#x25A0;&#x25A0;', // L
-            '&#x25A0;&#x25A0;<br>&#x25A0;&#x25A0;',                 // Square
-            '&nbsp;&#x25A0;<br>&#x25A0;&#x25A0;&#x25A0;',           // T
-            '&#x25A0;&#x25A0;<br>&nbsp;&#x25A0;&#x25A0;',           // Z
-            '&nbsp;&#x25A0;&#x25A0;<br>&#x25A0;&#x25A0;'            // S
+            '&#x25A0;' . Format::nl() . '&#x25A0;' . Format::nl() . '&#x25A0;&#x25A0;',             // J
+            Format::nbsp() . '&#x25A0;' . Format::nl() . Format::nbsp() . '&#x25A0;' . Format::nl() . '&#x25A0;&#x25A0;', // L
+            '&#x25A0;&#x25A0;' . Format::nl() . '&#x25A0;&#x25A0;',                 // Square
+            Format::nbsp() . '&#x25A0;' . Format::nl() . '&#x25A0;&#x25A0;&#x25A0;',           // T
+            '&#x25A0;&#x25A0;' . Format::nl() . Format::nbsp() . '&#x25A0;&#x25A0;',           // Z
+            Format::nbsp() . '&#x25A0;&#x25A0;' . Format::nl() . '&#x25A0;&#x25A0;'            // S
         ];
 
         $output->write('<div class="tetris">' . $tetrinos[rand(0, count($tetrinos) - 1)] . '</div>');

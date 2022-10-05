@@ -121,16 +121,16 @@ class Todo extends Command
             ->count();
 
         if ($show_all_projects) {
-            $output->write('Showing task from all projects.<br>');
+            $output->write('Showing task from all projects.' . Format::nl());
         } else {
-            $output->write('Current project: ' . e($project->name) . '<br>');
+            $output->write('Current project: ' . Format::escape($project->name) . Format::nl());
 
             $all_count = Task::forProject($user->activeProject->id)->count();
             $completed_count = Task::forProject($user->activeProject->id)->completed(true)->count();
             $completed_str = $completed_count . ' / ' . $all_count . ' tasks complete.';
 
-            $output->write('<br>' . $completed_str . '<br>');
-            $output->write(ProgressBar::make($completed_count, $all_count)->toString(20) . '<br><br>');
+            $output->write(Format::nl() . $completed_str . Format::nl());
+            $output->write(ProgressBar::make($completed_count, $all_count)->toString(20) . Format::nl() . Format::nl());
         }
 
 
@@ -145,7 +145,7 @@ class Todo extends Command
         }
 
         $output->write(Format::tasks($tasks, $input->getOption('dates'), $show_all_projects));
-        $output->write('<br>' . $total_task_count . ' tasks.');
+        $output->write(Format::nl() . $total_task_count . ' tasks.');
 
         return 0;
     }

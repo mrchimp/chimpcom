@@ -3,6 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -54,10 +55,10 @@ class Projects extends Command
         $output_chunks = [];
 
         foreach ($user->projects as $project) {
-            $output_chunks[] = '#' . $project->id . ' <span data-type="autofill" data-autofill="project ' . $project->id . '"> ' . e($project->name) . ' - ' . count($project->tasks) . ' tasks</span>';
+            $output_chunks[] = '#' . $project->id . ' <span data-type="autofill" data-autofill="project ' . $project->id . '"> ' . Format::escape($project->name) . ' - ' . count($project->tasks) . ' tasks</span>';
         }
 
-        $output->write(implode('<br>', $output_chunks));
+        $output->write(implode(Format::nl(), $output_chunks));
 
         return 0;
     }

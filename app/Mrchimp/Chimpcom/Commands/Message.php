@@ -4,6 +4,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Message as MessageModel;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -64,13 +65,13 @@ class Message extends Command
 
         $success_count = 0;
 
-        $output->write('Sending to...<br>');
+        $output->write('Sending to...' . Format::nl());
 
         foreach ($recipient_names as $name) {
             $recipient = User::where('name', $name)->first();
 
             if (!$recipient) {
-                $output->error(e($name) . ' ✘<br>');
+                $output->error(Format::escape($name) . ' ✘' . Format::nl());
 
                 continue;
             }
@@ -82,7 +83,7 @@ class Message extends Command
             $message->has_been_read = false;
             $message->save();
 
-            $output->alert(e($name) . ' ✔<br>');
+            $output->alert(Format::escape($name) . ' ✔' . Format::nl());
 
             $success_count++;
         }

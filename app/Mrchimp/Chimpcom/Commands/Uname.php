@@ -4,6 +4,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Arr;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -114,7 +115,7 @@ class Uname extends Command
 
         foreach ($flags as $key => $flag) {
             if ($input->getOption($flag)) {
-                $output->write($key . '<br>');
+                $output->write($key . Format::nl());
                 $output->write($bits[$key]);
                 return true;
             }

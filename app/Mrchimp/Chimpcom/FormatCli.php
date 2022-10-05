@@ -22,7 +22,7 @@ class FormatCli implements Format
      */
     public static function error($str, array $attr = []): string
     {
-        return self::style($str, 'red_highlight', $attr);
+        return "\033[0;31m" . $str . "\033[0;30m";
     }
 
     /**
@@ -30,7 +30,7 @@ class FormatCli implements Format
      */
     public static function grey($str, array $attr = []): string
     {
-        return self::style($str, 'grey_text', $attr);
+        return "\033[0;37m" . $str . "\033[0;30m";
     }
 
     /**
@@ -38,7 +38,7 @@ class FormatCli implements Format
      */
     public static function alert($str, array $attr = []): string
     {
-        return self::style($str, 'green_highlight', $attr);
+        return "\033[0;32m" . $str . "\033[0;30m";
     }
 
     /**
@@ -46,7 +46,7 @@ class FormatCli implements Format
      */
     public static function title($str, array $attr = []): string
     {
-        return self::style($str, 'blue_highlight', $attr);
+        return "\033[0;34m" . $str . "\033[0;30m";
     }
 
     /**
@@ -71,22 +71,19 @@ class FormatCli implements Format
         $num_of_items = count($list);
         $output_count = 0;
         $row_count = 1;
-        $s = '<table>';
+        $s = '';
 
         if (!empty($titles)) {
-            $s .= '<tr>';
             foreach ($titles as $title) {
-                $s .= '<th>' . e($title) . '</th>';
+                $s .= e($title) . "\t";
             }
-            $s .= '</tr>';
         }
 
         while (isset($list[$output_count])) {
-            $s .= ($row_count == 1 ? '<tr>' : '');
-            $s .= '<td>' . $list[$output_count] . '</td>';
+            $s .= $list[$output_count] . "\t";
 
             if ($row_count === $cols || $output_count + 1 === $num_of_items) {
-                $s .= '</tr>';
+                $s .= "\n";
             }
 
             if ($output_count === $num_of_items) {
@@ -97,7 +94,6 @@ class FormatCli implements Format
             $output_count++;
         }
 
-        $s .= '</table>';
         return $s;
     }
 
@@ -217,7 +213,7 @@ class FormatCli implements Format
 
         $output .= static::grey(
             ($show_dates ? ' Created' : '') . ' Completed' .
-            ($show_project ? ', Project' : '') . '<br><br>'
+            ($show_project ? ', Project' : '') . "\n\n"
         );
 
         foreach ($tasks as $task) {
@@ -260,7 +256,7 @@ class FormatCli implements Format
                 $output .= static::grey(' (' . $task->project->name . ')');
             }
 
-            $output .= '<br>';
+            $output .= "\n";
         }
 
         return $output;
@@ -277,9 +273,9 @@ class FormatCli implements Format
 
         foreach ($messages as $msg) {
             $output .= $msg->id . "\t" .
-                e($msg->author ? $msg->author->name : 'Unknown user') . "\t" .
-                e($msg->message) . "\t" .
-                ($msg->has_been_read ? '&nbsp;' : static::alert('New'));
+                ($msg->author ? $msg->author->name : 'Unknown user') . "\t" .
+                $msg->message . "\t" .
+                ($msg->has_been_read ? ' ' : static::alert('New'));
         }
 
         return $output;
@@ -311,7 +307,7 @@ class FormatCli implements Format
         $author = $item->get_author();
 
         if ($author) {
-            $output .= 'Author: ' . e($author->get_name());
+            $output .= 'Author: ' . $author->get_name();
         }
 
         $output .= self::grey(e($item->get_date('Y-m-d H:i:s'))) . "\t";
@@ -346,5 +342,20 @@ class FormatCli implements Format
         } else {
             return '';
         }
+    }
+
+    public static function escape(string $input): string
+    {
+        return $input;
+    }
+
+    public static function nl(int $num = 1): string
+    {
+        return str_repeat("\n", $num);
+    }
+
+    public static function nbsp(int $num = 1): string
+    {
+        return str_repeat(' ', $num);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,7 +18,7 @@ class Tabtest extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->write('This is for testing the tabcompletion feature. <br>');
+        $output->write('This is for testing the tabcompletion feature.' . Format::nl());
         $output->write('To try it out yourself, type <code>tabtest c</code> and press tab a few times.');
 
         return 0;

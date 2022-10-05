@@ -4,6 +4,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Str;
 use Mrchimp\Chimpcom\Exceptions\InvalidPathException;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Filesystem\Path;
 use Mrchimp\Chimpcom\Filesystem\RootDirectory;
 use Mrchimp\Chimpcom\Models\Directory;
@@ -61,7 +62,7 @@ class Cd extends Command
         switch ($path_string) {
             case 'c:':
             case 'C:':
-                $output->write(e('What d\'you think this is, Windows?'));
+                $output->write(Format::escape('What d\'you think this is, Windows?'));
                 return 0;
             case '.':
                 $output->write('You remain here.');

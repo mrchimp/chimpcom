@@ -83,7 +83,7 @@ class Reddit extends Command
         $reddit->show_selftext = $show_selftext;
 
         if ($show_selftext) {
-            $output->alert('Showing selftext.<br>');
+            $output->alert('Showing selftext.' . Format::nl());
         }
 
         if ($input->getOption('reddit')) {
@@ -106,7 +106,7 @@ class Reddit extends Command
         return 0;
         // @todo - Make this work
         // if ($this->user->isAdmin()) {
-        //   $output->write('<br>'.($use_cache ? 'Using cache.' : 'Not using cache.'));
+        //   $output->write(Format::nl().($use_cache ? 'Using cache.' : 'Not using cache.'));
         // }
     }
 }

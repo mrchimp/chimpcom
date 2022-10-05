@@ -37,14 +37,14 @@ class Hi extends Command
     {
         if (Auth::check()) {
             $user = Auth::user();
-            $output->write(Format::title('Welcome back, ' . e($user->name) . '.'));
+            $output->write(Format::title('Welcome back, ' . Format::escape($user->name) . '.'));
 
             $messages = Message::where('recipient_id', $user->id)
                 ->where('has_been_read', false)
                 ->get();
 
             if (count($messages) > 0) {
-                $output->write('<br>');
+                $output->write(Format::nl());
                 $output->write('You have ' . count($messages) . ' new message' .
                     (count($messages) > 1 ? 's' : '') .
                     '. Type <code>mail</code> to read. ');

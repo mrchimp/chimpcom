@@ -3,6 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Memory;
 use Mrchimp\Chimpcom\Models\Tag;
 use Symfony\Component\Console\Input\InputArgument;
@@ -22,17 +23,10 @@ class Save extends Command
     protected function configure()
     {
         $this->setName('save');
-        $this->setDescription(<<<DESC
-Save a memory. Each memory consists of a name and some content. The name must be a
-single word and does NOT have to be unique. The description can be a word, a
-sentence, a URL or whatever.<br><br>
-Once the memory has been saved you can search for it using FIND or SHOW and
-delete it with FORGET command.<br><br>
-You may need to encase your description in quotes in order for it to pass as expected.<br><br>
-By default the memory will only be visible by you.
-To make it visible to other users add the --public or -p flag or after saving,
-use the SETPUBLIC command.
-DESC);
+        $this->setDescription('Save a memory. Each memory consists of a name and some content. The name must be a single word and does NOT have to be unique. The description can be a word, a sentence, a URL or whatever.' . Format::nl(2) .
+            'Once the memory has been saved you can search for it using FIND or SHOW and delete it with FORGET command.' . Format::nl(2) .
+            'You may need to encase your description in quotes in order for it to pass as expected.' . Format::nl(2) .
+            'By default the memory will only be visible by you. To make it visible to other users add the --public or -p flag or after saving, use the SETPUBLIC command.');
         $this->addUsage('chimpcom A command line website.');
         $this->addRelated('forget');
         $this->addRelated('show');
@@ -80,8 +74,8 @@ DESC);
         $content   = implode(' ', $input->getArgument('content'));
         $is_public = $input->getOption('public');
 
-        $output->write('Name: ' . e($name) . '<br>');
-        $output->write('Content: ' . e($content) . '<br>');
+        $output->write('Name: ' . Format::escape($name) . Format::nl());
+        $output->write('Content: ' . Format::escape($content) . Format::nl());
 
         $memory = new Memory();
         $memory->name    = $name;

@@ -116,34 +116,34 @@ class FormatHtml implements Format
 
         foreach ($memories as $memory) {
             if ($memory->name != $previous_name) {
-                $output .= Format::listToTable($chunks, 5) . '<br>';
-                $output .= Format::alert(e(ucwords($memory->name))) . '<br>';
+                $output .= static::listToTable($chunks, 5) . '<br>';
+                $output .= static::alert(e(ucwords($memory->name))) . '<br>';
                 $chunks = [];
             }
 
             $hexid = Id::encode($memory['id']);
 
             // Memory ID
-            $chunks[] = Format::grey($hexid, [
+            $chunks[] = static::grey($hexid, [
                 'data-type' => 'autofill',
                 'data-autofill' => e("forget $hexid")
             ]);
 
             if ($memory->isMine()) {
-                $chunks[] = Format::title(e($memory->user->name));
+                $chunks[] = static::title(e($memory->user->name));
             } else {
-                $chunks[] = Format::grey(e($memory->user->name));
+                $chunks[] = static::grey(e($memory->user->name));
             }
 
             // Public
             if ($memory->public) {
-                $chunks[] = Format::alert('P', [
+                $chunks[] = static::alert('P', [
                     'title' => 'Public: anyone can see this.',
                     'data-type' => 'autofill',
                     'data-autofill', e("setpublic $hexid --private")
                 ]);
             } else {
-                $chunks[] = Format::grey('p', [
+                $chunks[] = static::grey('p', [
                     'title' => 'Private: only you can see this',
                     'data-type' => 'autofill',
                     'data-autofill' => e("setpublic $hexid")
@@ -157,7 +157,7 @@ class FormatHtml implements Format
                     'title' => 'Major! This is important! Take notice! Act now!'
                 ]);
             } else {
-                $chunks[] = '<span>&nbsp;</span>';
+                $chunks[] = '<span>' . static::nbsp() . '</span>';
             }
 
             // Minor
@@ -175,15 +175,15 @@ class FormatHtml implements Format
             }
 
             if ($minor) {
-                $chunks[] = Format::grey(Format::autoLink(e($memory->content)), $attrs);
+                $chunks[] = static::grey(static::autoLink(e($memory->content)), $attrs);
             } else {
-                $chunks[] = Format::style(Format::autoLink(e($memory->content)), '', $attrs);
+                $chunks[] = static::style(static::autoLink(e($memory->content)), '', $attrs);
             }
 
             $previous_name = $memory->name;
         }
 
-        $output .= Format::listToTable($chunks, 5) . '<br>';
+        $output .= static::listToTable($chunks, 5) . '<br>';
 
         if (count($memories) > 5) {
             $output .= '<br>' . count($memories) . ' memories found.';
@@ -317,15 +317,15 @@ class FormatHtml implements Format
      */
     public static function feedItem($item): string
     {
-        $output = self::title(e($item->get_title())) . '<br>';
+        $output = self::title(self::escape($item->get_title())) . '<br>';
         $author = $item->get_author();
 
         if ($author) {
-            $output .= 'Author: ' . e($author->get_name());
+            $output .= 'Author: ' . self::escape($author->get_name());
         }
 
-        $output .= self::grey(e($item->get_date('Y-m-d H:i:s'))) . '<br>';
-        $output .= e($item->get_description());
+        $output .= self::grey(self::escape($item->get_date('Y-m-d H:i:s'))) . '<br>';
+        $output .= self::escape($item->get_description());
 
         $url = $item->get_permalink();
 
@@ -356,5 +356,20 @@ class FormatHtml implements Format
         } else {
             return '';
         }
+    }
+
+    public static function escape(string $input): string
+    {
+        return e($input);
+    }
+
+    public static function nl(int $num = 1): string
+    {
+        return str_repeat('<br>', $num);
+    }
+
+    public static function nbsp(int $num = 1): string
+    {
+        return str_repeat('&nbsp;', $num);
     }
 }

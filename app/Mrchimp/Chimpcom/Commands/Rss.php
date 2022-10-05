@@ -109,7 +109,7 @@ class Rss extends Command
 
             foreach ($feeds as $feed) {
                 $output->write(
-                    Format::title(e($feed->name)) . ': ' . e($feed->url) . '<br>'
+                    Format::title(Format::escape($feed->name)) . ': ' . Format::escape($feed->url) . Format::nl()
                 );
             }
 
@@ -128,7 +128,7 @@ class Rss extends Command
                 ->first();
 
             if (!$feed) {
-                $output->error(e('Could not find feed or it isn\'t yours to remove.'));
+                $output->error(Format::escape('Could not find feed or it isn\'t yours to remove.'));
                 $output->setStatusCode(422);
                 return 6;
             }
@@ -142,7 +142,7 @@ class Rss extends Command
 
         // ============= Get feeds ============================
         if (!$user->feeds) {
-            $output->write(e('Couldn\'t get feed list.'));
+            $output->write(Format::escape('Couldn\'t get feed list.'));
             return 7;
         }
 

@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Mrchimp\Chimpcom\Console\Input;
 use Mrchimp\Chimpcom\Console\Output;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Project as ProjectModel;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -133,7 +134,7 @@ class Project extends Command
 
         Auth::user()->setActiveProject($project);
 
-        $output->write('Creating project "' . $project->name . '"...<br>');
+        $output->write('Creating project "' . $project->name . '"...' . Format::nl());
         $output->write('Please add a description:');
 
         Chimpcom::setAction('newproject');
@@ -159,7 +160,7 @@ class Project extends Command
         }
 
         Auth::user()->setActiveProject($project);
-        $output->alert(e($project->name) . ' is now the current project.');
+        $output->alert(Format::escape($project->name) . ' is now the current project.');
 
         return 0;
     }
@@ -180,7 +181,7 @@ class Project extends Command
             return 5;
         }
 
-        $output->title('Are you sure you want to delete the project `' . e($project->name) . '`?');
+        $output->title('Are you sure you want to delete the project `' . Format::escape($project->name) . '`?');
         Session::put('projectrm', $project->id);
         Chimpcom::setAction('project_rm');
 

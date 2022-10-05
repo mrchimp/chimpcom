@@ -3,6 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use App\User;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Feed;
 use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,7 +42,7 @@ class Stats extends Command
 
         if ($username) {
             // Individual user's stats
-            $output->write("Finding stats for user: $username<br>");
+            $output->write("Finding stats for user: $username" . Format::nl());
 
             $user = User::where('name', $username)->first();
 
@@ -58,11 +59,11 @@ class Stats extends Command
             $user_count = User::count();
             $memory_count = Memory::count();
             $feed_count = Feed::count();
-            $output->write("Users: $user_count<br>");
+            $output->write("Users: $user_count" . Format::nl());
         }
 
-        $output->write("Memories: $memory_count<br>");
-        $output->write("Feeds: $feed_count<br>");
+        $output->write("Memories: $memory_count" . Format::nl());
+        $output->write("Feeds: $feed_count" . Format::nl());
 
         return 0;
     }

@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -41,7 +42,7 @@ class Base64decode extends Command
         $encoded = $input->getArgument('input');
         $decoded = base64_decode(utf8_encode($encoded));
 
-        $output->write(e($decoded));
+        $output->write(Format::escape($decoded));
 
         return 0;
     }

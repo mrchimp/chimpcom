@@ -59,7 +59,7 @@ class Who extends Command
                 $tbl .= '<tr><td width="150">' .
                     Format::title('USERNAME') .
                     '</td>
-                       <td>' . e($user->name) . '</td></tr>
+                       <td>' . Format::escape($user->name) . '</td></tr>
                        <tr><td>' .
                     Format::title('USER ID') .
                     '</td>
@@ -68,8 +68,8 @@ class Who extends Command
                      </tr>';
             }
 
-            $remote_addr = isset($_SERVER['REMOTE_ADDR']) ? e($_SERVER['REMOTE_ADDR']) : 'ERR_NO_REMOTE_ADDR';
-            $http_user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? e($_SERVER['HTTP_USER_AGENT']) : 'ERR_NO_HTTP_USER_AGENT';
+            $remote_addr = isset($_SERVER['REMOTE_ADDR']) ? Format::escape($_SERVER['REMOTE_ADDR']) : 'ERR_NO_REMOTE_ADDR';
+            $http_user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? Format::escape($_SERVER['HTTP_USER_AGENT']) : 'ERR_NO_HTTP_USER_AGENT';
 
             $tbl .= '<tr><td width="150">' .
                 Format::title('IP ADDRESS') .

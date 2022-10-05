@@ -3,6 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Shortcut;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,7 +40,7 @@ class Shortcuts extends Command
         }
 
         foreach ($shortcuts as $shortcut) {
-            $output->write(e($shortcut->name) . ' - ' . e($shortcut->url) . '<br>');
+            $output->write(Format::escape($shortcut->name) . ' - ' . Format::escape($shortcut->url) . Format::nl());
         }
 
         return 0;

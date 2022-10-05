@@ -101,7 +101,7 @@ class Show extends Command
             $words = [];
 
             foreach ($memories as $word) {
-                $words[] = '<span data-type="autofill" data-autofill="show ' . e($word->name) . '">' . e($word->name) . '</span>';
+                $words[] = '<span data-type="autofill" data-autofill="show ' . Format::escape($word->name) . '">' . Format::escape($word->name) . '</span>';
             }
 
             $output->write(Format::listToTable($words, 6, false));

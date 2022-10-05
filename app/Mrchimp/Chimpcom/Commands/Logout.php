@@ -3,6 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;
+use Mrchimp\Chimpcom\Facades\Format;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -32,7 +33,7 @@ class Logout extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!Auth::check()) {
-            $output->error(e('You\'re not logged in.'));
+            $output->error(Format::escape('You\'re not logged in.'));
             return 1;
         }
 

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Task;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -73,7 +74,7 @@ class Done extends Command
             ->first();
 
         if (!$task) {
-            $output->error(e('Couldn\'t find that task.'));
+            $output->error(Format::escape('Couldn\'t find that task.'));
             return 3;
         }
 
@@ -87,7 +88,7 @@ class Done extends Command
         } else {
             Session::put('task_to_complete', $task->id);
 
-            $output->alert('Are you sure you want to mark this as complete?<br>');
+            $output->alert('Are you sure you want to mark this as complete?' . Format::nl());
             $output->say($task->description);
 
             Chimpcom::setAction('done');
