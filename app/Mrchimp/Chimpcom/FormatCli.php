@@ -22,7 +22,7 @@ class FormatCli implements Format
      */
     public static function error($str, array $attr = []): string
     {
-        return "\033[0;31m" . $str . "\033[0;30m";
+        return "\033[0;31m" . $str . "\033[0;0m";
     }
 
     /**
@@ -30,7 +30,7 @@ class FormatCli implements Format
      */
     public static function grey($str, array $attr = []): string
     {
-        return "\033[0;37m" . $str . "\033[0;30m";
+        return "\033[1;30m" . $str . "\033[0;0m";
     }
 
     /**
@@ -38,7 +38,7 @@ class FormatCli implements Format
      */
     public static function alert($str, array $attr = []): string
     {
-        return "\033[0;32m" . $str . "\033[0;30m";
+        return "\033[0;32m" . $str . "\033[0;0m";
     }
 
     /**
@@ -46,7 +46,7 @@ class FormatCli implements Format
      */
     public static function title($str, array $attr = []): string
     {
-        return "\033[0;34m" . $str . "\033[0;30m";
+        return "\033[0;34m" . $str . "\033[0;0m";
     }
 
     /**
@@ -219,22 +219,22 @@ class FormatCli implements Format
         foreach ($tasks as $task) {
             $hex_id = Id::encode($task->id);
 
-            $output .= static::style(($task->completed ? '&#10004;' : '') . " $hex_id ", '', [
+            $output .= static::style(($task->completed ? '&#10004;' : '') . " $hex_id\t", '', [
                 'data-type' => 'autofill',
                 'data-autofill' => "done $hex_id"
             ]);
 
             if ($task->priority > 10) {
-                $color = '#f00';
+                $color = "\033[0;31m";
             } elseif ($task->priority > 5) {
-                $color = '#ff0';
+                $color = "\033[0;33m";
             } elseif ($task->priority < 0) {
-                $color = '#666';
+                $color = "\033[0;37m";
             } else {
-                $color = '#ccc';
+                $color = "\033[0;37m";
             }
 
-            $priority = ' <span style="color:' . $color . '">' . $task->priority . '</span> ';
+            $priority = ' ' . $color . $task->priority . "\033[0;0m\t";
 
             $output .= static::style($priority, '', [
                 'data-type' => 'autofill',
