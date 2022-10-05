@@ -113,34 +113,34 @@ class FormatCli implements Format
 
         foreach ($memories as $memory) {
             if ($memory->name != $previous_name) {
-                $output .= Format::listToTable($chunks, 5) . "\n";
-                $output .= Format::alert(e(ucwords($memory->name))) . "\n";
+                $output .= static::listToTable($chunks, 5) . "\n";
+                $output .= static::alert(e(ucwords($memory->name))) . "\n";
                 $chunks = [];
             }
 
             $hexid = Id::encode($memory['id']);
 
             // Memory ID
-            $chunks[] = Format::grey($hexid, [
+            $chunks[] = static::grey($hexid, [
                 'data-type' => 'autofill',
                 'data-autofill' => e("forget $hexid")
             ]);
 
             if ($memory->isMine()) {
-                $chunks[] = Format::title(e($memory->user->name));
+                $chunks[] = static::title(e($memory->user->name));
             } else {
-                $chunks[] = Format::grey(e($memory->user->name));
+                $chunks[] = static::grey(e($memory->user->name));
             }
 
             // Public
             if ($memory->public) {
-                $chunks[] = Format::alert('P', [
+                $chunks[] = static::alert('P', [
                     'title' => 'Public: anyone can see this.',
                     'data-type' => 'autofill',
                     'data-autofill', e("setpublic $hexid --private")
                 ]);
             } else {
-                $chunks[] = Format::grey('p', [
+                $chunks[] = static::grey('p', [
                     'title' => 'Private: only you can see this',
                     'data-type' => 'autofill',
                     'data-autofill' => e("setpublic $hexid")
@@ -172,15 +172,15 @@ class FormatCli implements Format
             }
 
             if ($minor) {
-                $chunks[] = Format::grey(Format::autoLink(e($memory->content)), $attrs);
+                $chunks[] = static::grey(static::autoLink(e($memory->content)), $attrs);
             } else {
-                $chunks[] = Format::style(Format::autoLink(e($memory->content)), '', $attrs);
+                $chunks[] = static::style(static::autoLink(e($memory->content)), '', $attrs);
             }
 
             $previous_name = $memory->name;
         }
 
-        $output .= Format::listToTable($chunks, 5) . "\n";
+        $output .= static::listToTable($chunks, 5) . "\n";
 
         if (count($memories) > 5) {
             $output .= "\n" . count($memories) . ' memories found.';
@@ -215,7 +215,7 @@ class FormatCli implements Format
     {
         $output = 'ID Priority Description';
 
-        $output .= Format::grey(
+        $output .= static::grey(
             ($show_dates ? ' Created' : '') . ' Completed' .
             ($show_project ? ', Project' : '') . '<br><br>'
         );
@@ -223,7 +223,7 @@ class FormatCli implements Format
         foreach ($tasks as $task) {
             $hex_id = Id::encode($task->id);
 
-            $output .= Format::style(($task->completed ? '&#10004;' : '') . " $hex_id ", '', [
+            $output .= static::style(($task->completed ? '&#10004;' : '') . " $hex_id ", '', [
                 'data-type' => 'autofill',
                 'data-autofill' => "done $hex_id"
             ]);
@@ -240,24 +240,24 @@ class FormatCli implements Format
 
             $priority = ' <span style="color:' . $color . '">' . $task->priority . '</span> ';
 
-            $output .= Format::style($priority, '', [
+            $output .= static::style($priority, '', [
                 'data-type' => 'autofill',
                 'data-autofill' => 'priority ' . $hex_id
             ]);
 
             if ($task->completed) {
-                $output .= Format::grey(' ' . e($task->description));
-                $output .= Format::grey(' (' . $task->time_completed . ')');
+                $output .= static::grey(' ' . e($task->description));
+                $output .= static::grey(' (' . $task->time_completed . ')');
             } else {
                 $output .= ' ' . e($task->description);
             }
 
             if ($show_dates) {
-                $output .= Format::grey(' (' . $task->created_at . ')');
+                $output .= static::grey(' (' . $task->created_at . ')');
             }
 
             if ($show_project) {
-                $output .= Format::grey(' (' . $task->project->name . ')');
+                $output .= static::grey(' (' . $task->project->name . ')');
             }
 
             $output .= '<br>';
@@ -271,15 +271,15 @@ class FormatCli implements Format
      */
     public static function messages(Collection $messages): string
     {
-        $output = Format::title('id') .
-            "\t" . Format::title('From') .
-            "\t" . Format::title('Message');
+        $output = static::title('id') .
+            "\t" . static::title('From') .
+            "\t" . static::title('Message');
 
         foreach ($messages as $msg) {
             $output .= $msg->id . "\t" .
                 e($msg->author ? $msg->author->name : 'Unknown user') . "\t" .
                 e($msg->message) . "\t" .
-                ($msg->has_been_read ? '&nbsp;' : Format::alert('New'));
+                ($msg->has_been_read ? '&nbsp;' : static::alert('New'));
         }
 
         return $output;

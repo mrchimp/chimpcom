@@ -218,7 +218,7 @@ class FormatHtml implements Format
     {
         $output = 'ID Priority Description';
 
-        $output .= Format::grey(
+        $output .= static::grey(
             ($show_dates ? ' Created' : '') . ' Completed' .
             ($show_project ? ', Project' : '') . '<br><br>'
         );
@@ -226,7 +226,7 @@ class FormatHtml implements Format
         foreach ($tasks as $task) {
             $hex_id = Id::encode($task->id);
 
-            $output .= Format::style(($task->completed ? '&#10004;' : '') . " $hex_id ", '', [
+            $output .= static::style(($task->completed ? '&#10004;' : '') . " $hex_id ", '', [
                 'data-type' => 'autofill',
                 'data-autofill' => "done $hex_id"
             ]);
@@ -243,24 +243,24 @@ class FormatHtml implements Format
 
             $priority = ' <span style="color:' . $color . '">' . $task->priority . '</span> ';
 
-            $output .= Format::style($priority, '', [
+            $output .= static::style($priority, '', [
                 'data-type' => 'autofill',
                 'data-autofill' => 'priority ' . $hex_id
             ]);
 
             if ($task->completed) {
-                $output .= Format::grey(' ' . e($task->description));
-                $output .= Format::grey(' (' . $task->time_completed . ')');
+                $output .= static::grey(' ' . e($task->description));
+                $output .= static::grey(' (' . $task->time_completed . ')');
             } else {
                 $output .= ' ' . e($task->description);
             }
 
             if ($show_dates) {
-                $output .= Format::grey(' (' . $task->created_at . ')');
+                $output .= static::grey(' (' . $task->created_at . ')');
             }
 
             if ($show_project) {
-                $output .= Format::grey(' (' . $task->project->name . ')');
+                $output .= static::grey(' (' . $task->project->name . ')');
             }
 
             $output .= '<br>';
@@ -276,9 +276,9 @@ class FormatHtml implements Format
     {
         $output = '<table>
                 <tr>
-                    <td>' . Format::title('id') . '</td>
-                    <td>' . Format::title('From') . '</td>
-                    <td colspan="2">' . Format::title('Message') . '</td>
+                    <td>' . static::title('id') . '</td>
+                    <td>' . static::title('From') . '</td>
+                    <td colspan="2">' . static::title('Message') . '</td>
                 </tr>';
 
         foreach ($messages as $msg) {
@@ -286,7 +286,7 @@ class FormatHtml implements Format
                 '<td>' . $msg->id . '</td>' .
                 '<td>' . e($msg->author ? $msg->author->name : 'Unknown user') . '</td>' .
                 '<td>' . e($msg->message) . '</td>' .
-                '<td>' . ($msg->has_been_read ? '&nbsp;' : Format::alert('New')) . '</td>' .
+                '<td>' . ($msg->has_been_read ? '&nbsp;' : static::alert('New')) . '</td>' .
                 '</tr>';
         }
 
