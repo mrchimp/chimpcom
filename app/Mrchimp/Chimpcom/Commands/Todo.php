@@ -102,26 +102,26 @@ class Todo extends Command
         }
 
         $show_all_projects = $input->getOption('allprojects');
+        $total_task_count = 0;
 
         $tasks = Task::query()
             ->where('user_id', $user->id)
             ->search(implode(' ', $input->getArgument('search')))
-            ->forProject($show_all_projects ? null : $user->activeProject->id)
+            ->when($show_all_projects, function ($query) use ($user) {
+                $query->forProject($user->activeProject->id);
+            })
             ->completed($completion)
             ->orderBy('completed', 'ASC')
             ->orderBy('priority', 'DESC')
             ->orderBy('created_at', 'DESC')
+            ->tap(function ($query) use (&$total_task_count) {
+                $total_task_count = $query->count();
+            })
             ->take($input->getOption('number'))
             ->get();
 
-        $total_task_count = Task::query()
-            ->where('user_id', $user->id)
-            ->forProject($show_all_projects ? null : $user->activeProject->id)
-            ->completed($completion)
-            ->count();
-
         if ($show_all_projects) {
-            $output->write('Showing task from all projects.' . Format::nl());
+            $output->write('Showing tasks from all projects.' . Format::nl());
         } else {
             $output->write('Current project: ' . Format::escape($project->name) . Format::nl());
 
@@ -132,7 +132,6 @@ class Todo extends Command
             $output->write(Format::nl() . $completed_str . Format::nl());
             $output->write(ProgressBar::make($completed_count, $all_count)->toString(20) . Format::nl() . Format::nl());
         }
-
 
         if ($tasks->isEmpty()) {
             if ($completed_count > 0) {
@@ -145,7 +144,12 @@ class Todo extends Command
         }
 
         $output->write(Format::tasks($tasks, $input->getOption('dates'), $show_all_projects));
-        $output->write(Format::nl() . $total_task_count . ' tasks.');
+
+        if ($total_task_count > $tasks->count()) {
+            $output->write(
+                Format::nl(2) . 'Showing ' . $tasks->count() . ' tasks of ' . $total_task_count . ' total.'
+            );
+        }
 
         return 0;
     }

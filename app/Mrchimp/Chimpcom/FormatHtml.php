@@ -216,20 +216,26 @@ class FormatHtml implements Format
      */
     public static function tasks(Collection $tasks, $show_dates = false, $show_project = false): string
     {
-        $output = 'ID Priority Description';
+        $cols = 4;
+        $list = [];
+        $titles = ['ID', 'Priority', 'Description', 'Completed'];
 
-        $output .= static::grey(
-            ($show_dates ? ' Created' : '') . ' Completed' .
-            ($show_project ? ', Project' : '') . '<br><br>'
-        );
+        $output = '';
+
+        if ($show_dates) {
+            $cols++;
+            $titles[] = 'Created';
+        }
+
+        if ($show_project) {
+            $cols++;
+            $titles[] = 'Project';
+        }
 
         foreach ($tasks as $task) {
             $hex_id = Id::encode($task->id);
 
-            $output .= static::style(($task->completed ? '&#10004;' : '') . " $hex_id ", '', [
-                'data-type' => 'autofill',
-                'data-autofill' => "done $hex_id"
-            ]);
+            $list[] = $task->completed ? '&#10004;' : $hex_id;
 
             if ($task->priority > 10) {
                 $color = '#f00';
@@ -241,30 +247,31 @@ class FormatHtml implements Format
                 $color = '#ccc';
             }
 
-            $priority = ' <span style="color:' . $color . '">' . $task->priority . '</span> ';
+            $list[] = '<span style="color:' . $color . '">' . $task->priority . '</span> ';
 
-            $output .= static::style($priority, '', [
-                'data-type' => 'autofill',
-                'data-autofill' => 'priority ' . $hex_id
-            ]);
+            $list[] = e($task->description);
 
             if ($task->completed) {
-                $output .= static::grey(' ' . e($task->description));
-                $output .= static::grey(' (' . $task->time_completed . ')');
+                $list[] = static::grey($task->time_completed);
             } else {
-                $output .= ' ' . e($task->description);
+                $list[] = '';
             }
 
             if ($show_dates) {
-                $output .= static::grey(' (' . $task->created_at . ')');
+                $list[] = static::grey($task->created_at);
             }
 
             if ($show_project) {
-                $output .= static::grey(' (' . $task->project->name . ')');
+                $list[] = static::grey($task->project->name);
             }
-
-            $output .= '<br>';
         }
+
+        $output .= static::listToTable(
+            $list,
+            $cols,
+            false,
+            $titles
+        );
 
         return $output;
     }
