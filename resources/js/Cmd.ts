@@ -118,7 +118,7 @@ export default class Cmd {
       'theme',
       'volume',
     ];
-    this.themes = ['default', 'solarized'];
+    this.themes = ['default', 'solarized', 'darkside'];
     this.theme = 'default';
     this.autocomplete_attempted = false;
     this.tab_mode = false;
