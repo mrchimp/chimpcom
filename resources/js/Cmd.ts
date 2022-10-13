@@ -34,7 +34,9 @@ interface CmdResponse {
   log?: string,
   openWindow?: string,
   openWindowSpecs?: string,
+  prompt?: string;
   redirect?: string,
+  show_question_input?: boolean,
   show_pass?: boolean,
   user?: CmdResonseUser,
 };
@@ -71,6 +73,7 @@ export default class Cmd {
   output_el: HTMLElement;
   prompt_el: HTMLElement;
   remote_cmds: string[];
+  show_prompt_input: boolean;
   tts_supported: boolean;
   tab_completions: string[];
   tab_index: number;
@@ -124,6 +127,7 @@ export default class Cmd {
     this.username = 'guest';
     this.edit_mode = false;
     this.edit_content = null;
+    this.show_prompt_input = false;
 
     if (this.options.remote_cmd_list_url) {
       this.loadRemoteCmdList();
@@ -328,6 +332,7 @@ export default class Cmd {
   displayInput(cmd_in: string) {
     const prompt = document.createElement('span');
     prompt.classList.add('prompt');
+
     prompt.appendChild(document.createTextNode(this.makePromptStr()));
 
     const input = document.createElement('span');
@@ -344,7 +349,11 @@ export default class Cmd {
    * Make the prompt string
    */
   makePromptStr() {
-    return this.prompt_str.replace('%USERNAME%', this.username);
+    if (this.show_prompt_input) {
+      return ' > ';
+    } else {
+      return this.prompt_str.replace('%USERNAME%', this.username);
+    }
   }
 
   /**
@@ -375,6 +384,8 @@ export default class Cmd {
     }
 
     this.displayInput(shown_input);
+
+    this.show_prompt_input = false;
 
     switch (cmd_array[0]) {
       case '':
@@ -505,7 +516,10 @@ export default class Cmd {
       console.log(response.log);
     }
 
-    if (!!response.show_pass) {
+    if (response.show_question_input) {
+      this.showInputType('prompt');
+      this.show_prompt_input = true;
+    } else if (!!response.show_pass) {
       this.showInputType('password');
     } else {
       this.showInputType();
@@ -557,7 +571,7 @@ export default class Cmd {
           this.disableInput();
 
           // push command to stack if using text input, i.e. no passwords
-          if (this.input_el.type === 'text') {
+          if (this.input_el.type === 'text' && !this.show_prompt_input) {
             this.history.push(input_str);
           }
 

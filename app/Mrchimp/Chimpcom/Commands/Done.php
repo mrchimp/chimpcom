@@ -88,8 +88,10 @@ class Done extends Command
         } else {
             Session::put('task_to_complete', $task->id);
 
+            $output->useQuestionInput();
             $output->alert('Are you sure you want to mark this as complete?' . Format::nl());
-            $output->say($task->description);
+            $output->write($task->description . Format::nl(2));
+            $output->write('yes/no?');
 
             Chimpcom::setAction('done');
         }

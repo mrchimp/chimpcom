@@ -141,8 +141,14 @@ class Output extends SymfonyOutput
      */
     public function usePasswordInput(bool $on = true): void
     {
-        $this->out['show_pass'] = !!$on;
+        $this->out['show_pass'] = $on;
     }
+
+    public function useQuestionInput(bool $on = true): void
+    {
+        $this->out['show_question_input'] = $on;
+    }
+
 
     /**
      * Output a string to the client's console
