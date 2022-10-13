@@ -205,7 +205,7 @@ export default class Cmd {
 
       const editor_actions_el = document.createElement('div');
       editor_actions_el.classList.add('cmd-editor-actions');
-      editor_actions_el.innerText = 'escape=cancel shift+enter=save ctrl+shift+enter=save';
+      editor_actions_el.innerText = 'escape=cancel shift+enter=save ctrl+shift+enter=save+exit';
       this.editor_wrapper_el.appendChild(editor_actions_el);
       this.editor_wrapper_el.addEventListener('click', (e) => {
         e.stopImmediatePropagation();
