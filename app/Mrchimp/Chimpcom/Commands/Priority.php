@@ -4,7 +4,6 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use App\Mrchimp\Chimpcom\Id;
 use Illuminate\Support\Facades\Auth;
-use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Task;
 use Symfony\Component\Console\Input\InputArgument;
@@ -59,7 +58,7 @@ class Priority extends Command
 
         $user = Auth::user();
         $task_id = Id::decode($input->getArgument('task_id'));
-        $priority = $input->getArgument('priority');
+        $priority = (int) $input->getArgument('priority');
 
         if (!is_numeric($priority)) {
             $output->error('Priority should be an integer.');
@@ -80,7 +79,8 @@ class Priority extends Command
         $task->priority = (int) $priority;
 
         $task->save();
-        $output->alert('Ok.');
+        $output->alert('Priority set to ' . $priority . ' for task:', true);
+        $output->grey($task->description);
 
         return 0;
     }
