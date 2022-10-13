@@ -69,7 +69,7 @@ class Register3 extends Action
             Session::forget('register_username');
             Session::forget('register_password');
             Session::forget('register_password2');
-            Chimpcom::setAction('normal');
+            Chimpcom::setAction();
             return 1;
         }
 
@@ -81,7 +81,7 @@ class Register3 extends Action
 
         $output->write('Hello, ' . Format::escape($data['name']) . '! Welcome to Chimpcom.');
         $output->populateUserDetails();
-        Chimpcom::setAction('normal');
+        Chimpcom::setAction();
         $output->usePasswordInput(false);
 
         return 0;

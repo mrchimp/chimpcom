@@ -41,7 +41,8 @@ class Chpass extends Command
 
         Chimpcom::setAction('chpass_1');
 
-        $output->usePasswordInput(true);
+        $output->usePasswordInput();
+        $output->useQuestionInput();
         $output->alert('Enter your new password. Type cancel to cancel.');
 
         return 0;

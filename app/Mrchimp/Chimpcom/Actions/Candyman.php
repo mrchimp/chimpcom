@@ -42,7 +42,7 @@ class Candyman extends Action
             $output->write('Pussy.');
         }
 
-        Chimpcom::setAction('normal');
+        Chimpcom::setAction();
 
         return 0;
     }

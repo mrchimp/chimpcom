@@ -58,7 +58,7 @@ class Newproject extends Action
         if (!Session::has('current_project_id')) {
             $output->error('Oops. There was a problem. [Current project not set.]');
 
-            Chimpcom::setAction('normal');
+            Chimpcom::setAction();
 
             return 2;
         }
@@ -69,7 +69,7 @@ class Newproject extends Action
             $output->error('Current project doesn\'t exist.');
 
             Session::forget('current_project_id');
-            Chimpcom::setAction('normal');
+            Chimpcom::setAction();
 
             return 3;
         }
@@ -82,7 +82,7 @@ class Newproject extends Action
 
         $output->alert('Project saved and set as current project.');
 
-        Chimpcom::setAction('normal');
+        Chimpcom::setAction();
 
         return 0;
     }

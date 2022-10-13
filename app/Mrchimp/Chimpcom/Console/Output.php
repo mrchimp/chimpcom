@@ -198,7 +198,7 @@ class Output extends SymfonyOutput
      */
     public function resetTerminal(): void
     {
-        Chimpcom::setAction('normal');
+        Chimpcom::setAction();
         $this->usePasswordInput(false);
     }
 

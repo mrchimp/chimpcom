@@ -82,6 +82,7 @@ class Forget extends Command
 
         $output->write(implode(Format::nl(), $outs));
 
+        $output->useQuestionInput();
         Session::put('forget_id', $ids);
         Chimpcom::setAction('forget');
 

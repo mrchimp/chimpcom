@@ -44,7 +44,7 @@ class Chpass_1 extends Action
         if (!$password || $password === 'cancel') {
             $output->error('Abandoning.');
             $output->usePasswordInput(false);
-            Chimpcom::setAction('normal');
+            Chimpcom::setAction();
             return 0;
         }
 
@@ -52,7 +52,8 @@ class Chpass_1 extends Action
 
         Chimpcom::setAction('chpass_2');
 
-        $output->usePasswordInput(true);
+        $output->usePasswordInput();
+        $output->useQuestionInput();
         $output->alert('Enter password again. Type cancel to cancel.');
 
         return 0;

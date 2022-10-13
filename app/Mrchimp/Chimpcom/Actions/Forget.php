@@ -74,7 +74,7 @@ class Forget extends Action
             $output->write('Whatever.');
         }
 
-        Chimpcom::setAction('normal');
+        Chimpcom::setAction();
         Session::forget('forget_id');
 
         return 0;

@@ -136,6 +136,7 @@ class Project extends Command
 
         $output->write('Creating project "' . $project->name . '"...' . Format::nl());
         $output->write('Please add a description:');
+        $output->useQuestionInput();
 
         Chimpcom::setAction('newproject');
 
@@ -182,6 +183,7 @@ class Project extends Command
         }
 
         $output->title('Are you sure you want to delete the project `' . Format::escape($project->name) . '`?');
+        $output->useQuestionInput();
         Session::put('projectrm', $project->id);
         Chimpcom::setAction('project_rm');
 

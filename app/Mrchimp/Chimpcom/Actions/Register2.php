@@ -52,7 +52,7 @@ class Register2 extends Action
 
         if (!$username || !$password) {
             $output->error('This should not happen.');
-            Chimpcom::setAction('normal');
+            Chimpcom::setAction();
             $output->usePasswordInput(false);
             Session::forget('register_username');
             Session::forget('register_password');
@@ -61,8 +61,9 @@ class Register2 extends Action
 
         Session::put('register_password2', $password2);
         $output->alert('Your email address:');
-        Chimpcom::setAction('register3');
         $output->usePasswordInput(false);
+        $output->useQuestionInput();
+        Chimpcom::setAction('register3');
 
         return 0;
     }

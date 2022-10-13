@@ -31,7 +31,7 @@ class Edit extends Action
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$input->getOption('continue')) {
-            Chimpcom::setAction('normal');
+            Chimpcom::setAction();
         }
 
         $file = File::find(Session::get('edit_id'));

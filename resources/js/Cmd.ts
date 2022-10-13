@@ -516,10 +516,9 @@ export default class Cmd {
       console.log(response.log);
     }
 
-    if (response.show_question_input) {
-      this.showInputType('prompt');
-      this.show_prompt_input = true;
-    } else if (!!response.show_pass) {
+    this.show_prompt_input = !!response.show_question_input;
+
+    if (!!response.show_pass) {
       this.showInputType('password');
     } else {
       this.showInputType();

@@ -54,7 +54,7 @@ class Project_rm extends Action
             return 1;
         }
 
-        Chimpcom::setAction('normal');
+        Chimpcom::setAction();
         $user = Auth::user();
 
         $argument = $input->getArgument('confirmation');

@@ -46,7 +46,7 @@ class Chpass_2 extends Action
         if (!$password || $password === 'cancel') {
             $output->error('Abandoning.');
             $output->usePasswordInput(false);
-            Chimpcom::setAction('normal');
+            Chimpcom::setAction();
             Session::forget('chpass_1');
             return 0;
         }
@@ -61,7 +61,7 @@ class Chpass_2 extends Action
         if ($validator->fails()) {
             $output->error('Passwords did not match. Aborting.');
             $output->usePasswordInput(false);
-            Chimpcom::setAction('normal');
+            Chimpcom::setAction();
             Session::forget('chpass_1');
             return 1;
         }
@@ -73,7 +73,7 @@ class Chpass_2 extends Action
         Session::forget('chpass_1');
 
         $output->alert('Ok then. All done.');
-        Chimpcom::setAction('normal');
+        Chimpcom::setAction();
         $output->usePasswordInput(false);
 
         return 0;
