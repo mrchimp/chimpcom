@@ -14,7 +14,7 @@ class PriorityTest extends TestCase
     /** @test */
     public function priority_is_not_for_guests()
     {
-        $this->getGuestResponse('priority a a')
+        $this->getGuestResponse('priority task_id priority_value')
             ->assertSee(__('chimpcom.must_log_in'))
             ->assertStatus(200);
     }
@@ -35,7 +35,7 @@ class PriorityTest extends TestCase
 
         $this->getUserResponse('priority ' . $task->id . ' 10', $user)
             ->assertStatus(200)
-            ->assertSee('Ok.');
+            ->assertSee('Priority set to 10 for task:');
     }
 
     /** @test */

@@ -56,15 +56,16 @@ class Priority extends Command
             return 1;
         }
 
-        $user = Auth::user();
-        $task_id = Id::decode($input->getArgument('task_id'));
-        $priority = (int) $input->getArgument('priority');
+        $priority = $input->getArgument('priority');
 
         if (!is_numeric($priority)) {
             $output->error('Priority should be an integer.');
 
             return 2;
         }
+
+        $user = Auth::user();
+        $task_id = Id::decode($input->getArgument('task_id'));
 
         $task = Task::where('id', $task_id)
             ->where('user_id', $user->id)
