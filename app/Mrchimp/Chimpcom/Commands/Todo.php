@@ -107,7 +107,7 @@ class Todo extends Command
         $tasks = Task::query()
             ->where('user_id', $user->id)
             ->search(implode(' ', $input->getArgument('search')))
-            ->when($show_all_projects, function ($query) use ($user) {
+            ->when(!$show_all_projects, function ($query) use ($user) {
                 $query->forProject($user->activeProject->id);
             })
             ->completed($completion)
