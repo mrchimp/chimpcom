@@ -133,7 +133,7 @@ class FormatCli implements Format
                 $chunks[] = static::alert('P', [
                     'title' => 'Public: anyone can see this.',
                     'data-type' => 'autofill',
-                    'data-autofill', e("setpublic $hexid --private")
+                    'data-autofill' => e("setpublic $hexid --private")
                 ]);
             } else {
                 $chunks[] = static::grey('p', [
@@ -173,10 +173,16 @@ class FormatCli implements Format
                 $chunks[] = static::style(static::autoLink(e($memory->content)), '', $attrs);
             }
 
+            if (!empty($memory->tags)) {
+                $chunks[] = static::grey('[@' . implode(', @', $memory->tags->pluck('tag')->toArray()) . ']');
+            } else {
+                $chunks[] = '';
+            }
+
             $previous_name = $memory->name;
         }
 
-        $output .= static::listToTable($chunks, 5) . "\n";
+        $output .= static::listToTable($chunks, 6) . "\n";
 
         if (count($memories) > 5) {
             $output .= "\n" . count($memories) . ' memories found.';
@@ -213,7 +219,7 @@ class FormatCli implements Format
 
         $output .= static::grey(
             ($show_dates ? ' Created' : '') . ' Completed' .
-            ($show_project ? ', Project' : '') . "\n\n"
+                ($show_project ? ', Project' : '') . "\n\n"
         );
 
         foreach ($tasks as $task) {

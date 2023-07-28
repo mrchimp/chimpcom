@@ -13,7 +13,7 @@ class TagTest extends TestCase
     /** @test */
     public function can_get_tags_from_string()
     {
-        $input = 'This #string has #some #tags in #it this#isnt#a#tag';
+        $input = 'This @string has @some @tags in @it this#isnt#a#tag';
 
         $tags = Tag::fromString($input);
 

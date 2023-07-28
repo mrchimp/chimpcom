@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Auth;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Mrchimp\Chimpcom\Facades\Format;
@@ -36,16 +37,23 @@ class Show extends Command
 
         $this->addOption(
             'public',
-            'p',
+            null,
             null,
             'Shows only public memories.'
         );
 
         $this->addOption(
             'private',
-            'P',
+            null,
             null,
             'Shows only private memories.'
+        );
+
+        $this->addOption(
+            'project',
+            'p',
+            InputOption::VALUE_REQUIRED,
+            'Show only memories associated with a given project.',
         );
 
         $this->addOption(
@@ -84,13 +92,29 @@ class Show extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $names = $input->getArgument('names');
+        $words = $input->getArgument('names');
         $show_public = $input->getOption('public');
         $show_private = $input->getOption('private');
         $show_mine = $input->getOption('mine');
         $show_words = $input->getOption('words');
         $count = $input->getOption('count');
         $last = $input->getOption('last');
+        $project_name = $input->getOption('project');
+        $project = null;
+
+        $tags = [];
+        $names = [];
+
+        foreach ($words as $word) {
+            if (substr($word, 0, 1) === '@') {
+                $tags[] = substr($word, 1);
+            } else {
+                $names[] = $word;
+            }
+        }
+
+        \Log::debug('tags', $tags);
+        \Log::debug('names', $names);
 
         if (!$count || !is_numeric($count) || $count < 0) {
             $count = 20;
@@ -119,6 +143,13 @@ class Show extends Command
             $item_type = 'both';
         }
 
+        if ($project_name) {
+            $project = Auth::user()
+                ->projects()
+                ->nameOrId($project_name)
+                ->first();
+        }
+
         $query = Memory::query()
             ->visibility($item_type)
             ->when(!$last, function ($query) {
@@ -126,16 +157,25 @@ class Show extends Command
                     ->orderBy('name')
                     ->orderBy('id');
             })
-            ->with('user')
+            ->when($project, function ($query) use ($project) {
+                $query->where('project_id', $project->id);
+            })
+            ->with('user', 'tags')
             ->limit($count);
 
         if ($last) {
             $query->orderBy('created_at', 'DESC');
-        } elseif (is_numeric(Arr::first($names))) {
+        } elseif (is_numeric(Arr::first($names))) { // TODO: Does this use hexids?
             $memory_id = $names;
             $query->whereIn('id', $memory_id);
-        } else {
+        } elseif (!empty($names)) {
             $query->whereIn('name', $names);
+        }
+
+        if (!empty($tags)) {
+            $query->whereHas('tags', function ($query) use ($tags) {
+                $query->whereIn('tag', $tags);
+            });
         }
 
         $memories = $query->get();

@@ -34,7 +34,7 @@ class SaveTest extends TestCase
     /** @test */
     public function memories_can_be_tagged()
     {
-        $this->getUserResponse('save name Here is #some content #hashtag')
+        $this->getUserResponse('save name Here is @some content @hashtag')
             ->assertStatus(200);
 
         $memory = Memory::first();

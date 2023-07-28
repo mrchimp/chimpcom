@@ -3,12 +3,15 @@
 namespace Mrchimp\Chimpcom\Models;
 
 use Database\Factories\TagFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Mrchimp\Chimpcom\Models\Memory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Tag extends Model
 {
     use HasFactory;
+
+    protected static $tag_regex = '/@([\w\-_]+)\b/m';
 
     protected $fillable = [
         'tag',
@@ -19,7 +22,7 @@ class Tag extends Model
      */
     public function memories()
     {
-        return $this->morphedByMany('Mrchimp\Chimpcom\Models\Memory', 'taggable');
+        return $this->morphedByMany(Memory::class, 'taggable');
     }
 
     /**
@@ -29,9 +32,17 @@ class Tag extends Model
     {
         $output = [];
 
-        preg_match_all('/[$ ]\#([^ ]+)/m', $input, $output);
+        preg_match_all(static::$tag_regex, $input, $output);
 
         return $output[1];
+    }
+
+    /**
+     * Take an input string and remove tags from it
+     */
+    public static function stripTagsFromString(string $input): string
+    {
+        return preg_replace(static::$tag_regex, '', $input);
     }
 
     protected static function newFactory()

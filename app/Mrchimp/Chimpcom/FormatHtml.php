@@ -116,7 +116,7 @@ class FormatHtml implements Format
 
         foreach ($memories as $memory) {
             if ($memory->name != $previous_name) {
-                $output .= static::listToTable($chunks, 5) . '<br>';
+                $output .= static::listToTable($chunks, 6) . '<br>';
                 $output .= static::alert(e(ucwords($memory->name))) . '<br>';
                 $chunks = [];
             }
@@ -140,7 +140,7 @@ class FormatHtml implements Format
                 $chunks[] = static::alert('P', [
                     'title' => 'Public: anyone can see this.',
                     'data-type' => 'autofill',
-                    'data-autofill', e("setpublic $hexid --private")
+                    'data-autofill' => e("setpublic $hexid --private")
                 ]);
             } else {
                 $chunks[] = static::grey('p', [
@@ -180,10 +180,16 @@ class FormatHtml implements Format
                 $chunks[] = static::style(static::autoLink(e($memory->content)), '', $attrs);
             }
 
+            if ($memory->tags->isNotEmpty()) {
+                $chunks[] = static::grey('[@' . implode(', @', $memory->tags->pluck('tag')->toArray()) . ']');
+            } else {
+                $chunks[] = '';
+            }
+
             $previous_name = $memory->name;
         }
 
-        $output .= static::listToTable($chunks, 5) . '<br>';
+        $output .= static::listToTable($chunks, 6) . '<br>';
 
         if (count($memories) > 5) {
             $output .= '<br>' . count($memories) . ' memories found.';

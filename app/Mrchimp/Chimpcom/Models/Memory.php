@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Memory model
  */
@@ -33,7 +34,8 @@ class Memory extends Model
      */
     public function tags(): MorphToMany
     {
-        return $this->morphToMany('Mrchimp\Chimpcom\Models\Tag', 'taggable');
+        return $this->morphToMany(Tag::class, 'taggable');
+        // return $this->morphToMany('Mrchimp\Chimpcom\Models\Tag', 'taggable');
     }
 
     /**
@@ -42,6 +44,14 @@ class Memory extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * That project that this relates to
+     */
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 
     /**
