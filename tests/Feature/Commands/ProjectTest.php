@@ -177,4 +177,25 @@ class ProjectTest extends TestCase
 
         $this->assertCount(0, $json);
     }
+
+    /** @test */
+    public function projects_lists_your_projects()
+    {
+        $user = User::factory()->create();
+        Project::factory()->create([
+            'name' => 'Project Name'
+        ]);
+
+        $this->getUserResponse('project list', $user)
+            ->assertSee('Project Name')
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    public function projects_cant_list_projects_if_you_dont_have_any_projects()
+    {
+        $this->getUserResponse('project list')
+            ->assertSee('No projects.')
+            ->assertStatus(200);
+    }
 }

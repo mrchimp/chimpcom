@@ -42,7 +42,6 @@ return [
         'parser' => \Mrchimp\Chimpcom\Commands\Parser::class,
         'priority' => \Mrchimp\Chimpcom\Commands\Priority::class,
         'project' => \Mrchimp\Chimpcom\Commands\Project::class,
-        'projects' => \Mrchimp\Chimpcom\Commands\Projects::class,
         'pwd' => \Mrchimp\Chimpcom\Commands\Pwd::class,
         'register' => \Mrchimp\Chimpcom\Commands\Register::class,
         'rm' => \Mrchimp\Chimpcom\Commands\Rm::class,

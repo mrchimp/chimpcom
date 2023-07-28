@@ -53,7 +53,7 @@ class Done extends Action
         $project = $user->activeProject;
 
         if (!$project) {
-            $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
+            $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
 
             return 2;
         }

@@ -24,7 +24,6 @@ class Newtask extends Command
         $this->setDescription('Add a new task to the current project.');
         $this->addRelated('priority');
         $this->addRelated('project');
-        $this->addRelated('projects');
         $this->addRelated('todo');
         $this->addRelated('done');
         $this->addArgument(
@@ -61,7 +60,7 @@ class Newtask extends Command
         $project = $user->activeProject;
 
         if (!$project) {
-            $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
+            $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
 
             return 1;
         }

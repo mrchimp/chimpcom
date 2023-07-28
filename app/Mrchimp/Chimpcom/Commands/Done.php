@@ -28,7 +28,6 @@ class Done extends Command
         $this->setName('done');
         $this->setDescription('Mark a task as complete.');
         $this->addRelated('project');
-        $this->addRelated('projects');
         $this->addRelated('newtask');
         $this->addRelated('todo');
         $this->addRelated('priority');
@@ -63,7 +62,7 @@ class Done extends Command
         $project = $user->activeProject;
 
         if (!$project) {
-            $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
+            $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
             return 2;
         }
 

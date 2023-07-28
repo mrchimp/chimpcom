@@ -27,7 +27,6 @@ class Todo extends Command
         $this->setDescription('Lists tasks on the current project.');
         $this->setHelp('By default only incomplete tasks from the current project are shown.');
         $this->addRelated('project');
-        $this->addRelated('projects');
         $this->addRelated('newtask');
         $this->addRelated('done');
         $this->addRelated('priority');

@@ -25,7 +25,6 @@ class Priority extends Command
         $this->setName('priority');
         $this->setDescription('Set the priority of todo tasks.');
         $this->addRelated('project');
-        $this->addRelated('projects');
         $this->addRelated('newtask');
         $this->addRelated('todo');
         $this->addRelated('done');

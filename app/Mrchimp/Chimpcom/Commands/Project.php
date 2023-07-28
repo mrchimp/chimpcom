@@ -29,10 +29,10 @@ class Project extends Command
         $this->setName('project');
         $this->setDescription('Sets the active project or shows details of the active project.');
         $this->addUsage('');
+        $this->addUsage('list');
         $this->addUsage('set &lt;project_id&gt');
         $this->addUsage('set &lt;project_name&gt');
         $this->addUsage('new &lt;project_name&gt;');
-        $this->addRelated('projects');
         $this->addRelated('newtask');
         $this->addRelated('todo');
         $this->addRelated('done');
@@ -45,8 +45,8 @@ class Project extends Command
         $this->addArgument(
             'project',
             null,
-            "For the NEW subcommand this should be the project name. " .
-                "For the SET or RM subcommands and ID or name can be used."
+            "For the NEW subcommand this should be the project name.<br>" .
+                "For the SET or RM subcommands an ID or name can be used."
         );
     }
 
@@ -72,6 +72,8 @@ class Project extends Command
                 return $this->setProject($input, $output);
             case 'rm':
                 return $this->removeProject($input, $output);
+            case 'list':
+                return $this->listProjects($input, $output);
             default:
                 return $this->showCurrentProject($input, $output);
         }
@@ -198,11 +200,36 @@ class Project extends Command
         $project = Auth::user()->activeProject;
 
         if (!$project) {
-            $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
+            $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
             return 4;
         }
 
         $output->say('Current project: ' . $project->name);
+        return 0;
+    }
+
+    /**
+     * List all user's projects
+     */
+    protected function listProjects(InputInterface $intput, OutputInterface $output)
+    {
+        $user = Auth::user();
+
+        // Report result
+        if (count($user->projects) === 0) {
+            $output->error('No projects.');
+
+            return 0;
+        }
+
+        $output_chunks = [];
+
+        foreach ($user->projects as $project) {
+            $output_chunks[] = '#' . $project->id . ' <span data-type="autofill" data-autofill="project ' . $project->id . '"> ' . Format::escape($project->name) . ' - ' . count($project->tasks) . ' tasks</span>';
+        }
+
+        $output->write(implode(Format::nl(), $output_chunks));
+
         return 0;
     }
 }

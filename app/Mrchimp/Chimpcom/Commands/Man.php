@@ -23,7 +23,7 @@ class Man extends Command
     {
         $this->setName('man');
         $this->setDescription('Gets help on a given command. Use --commands to get a list of available commands.');
-        $this->addUsage('man projects');
+        $this->addUsage('man project');
 
         $this->addOption(
             'commands',
