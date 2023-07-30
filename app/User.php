@@ -33,6 +33,11 @@ class User extends Authenticatable
      */
     protected $hidden = ['password', 'remember_token'];
 
+    public function diaryEntries()
+    {
+        return $this->hasMany('Mrchimp\Chimpcom\Models\DiaryEntry');
+    }
+
     public function memories()
     {
         return $this->hasMany('Mrchimp\Chimpcom\Models\Memory');

@@ -88,8 +88,8 @@ class Save extends Command
         $project_name = $input->getOption('project');
         $project = null;
 
-        $tags = Tag::fromString($content);
-        $content = Tag::stripTagsFromString($content);
+        [$words, $tags] = $input->splitWordsAndTags($content);
+        $content = implode(' ', $words);
 
         if ($project_name) {
             $project = Auth::user()

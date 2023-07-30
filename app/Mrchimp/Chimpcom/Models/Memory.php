@@ -6,21 +6,22 @@
 
 namespace Mrchimp\Chimpcom\Models;
 
+use App\Mrchimp\Chimpcom\Traits\HasProject;
 use App\User;
 use Database\Factories\MemoryFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Auth;
+use Mrchimp\Chimpcom\Traits\HasTags;
 
 /**
  * Memory model
  */
 class Memory extends Model
 {
-    use HasFactory;
+    use HasFactory, HasProject, HasTags;
 
     protected $fillable = [
         'name',
@@ -30,28 +31,11 @@ class Memory extends Model
     ];
 
     /**
-     * Memories can have multiple tags
-     */
-    public function tags(): MorphToMany
-    {
-        return $this->morphToMany(Tag::class, 'taggable');
-        // return $this->morphToMany('Mrchimp\Chimpcom\Models\Tag', 'taggable');
-    }
-
-    /**
      * The owner/creator of this memory
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * That project that this relates to
-     */
-    public function project(): BelongsTo
-    {
-        return $this->belongsTo(Project::class);
     }
 
     /**

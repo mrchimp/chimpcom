@@ -102,16 +102,7 @@ class Show extends Command
         $project_name = $input->getOption('project');
         $project = null;
 
-        $tags = [];
-        $names = [];
-
-        foreach ($words as $word) {
-            if (substr($word, 0, 1) === '@') {
-                $tags[] = substr($word, 1);
-            } else {
-                $names[] = $word;
-            }
-        }
+        [$names, $tags] = $input->splitWordsAndTags($words);
 
         \Log::debug('tags', $tags);
         \Log::debug('names', $names);

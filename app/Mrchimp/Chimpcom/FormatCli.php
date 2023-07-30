@@ -2,10 +2,12 @@
 
 namespace Mrchimp\Chimpcom;
 
+use Illuminate\Support\Str;
 use App\Mrchimp\Chimpcom\Id;
+use Mrchimp\Chimpcom\Models\Feed;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Mrchimp\Chimpcom\Models\Feed;
+use Mrchimp\Chimpcom\Models\DiaryEntry;
 
 class FormatCli implements Format
 {
@@ -363,5 +365,29 @@ class FormatCli implements Format
     public static function nbsp(int $num = 1): string
     {
         return str_repeat(' ', $num);
+    }
+
+    public static function diaryEntry(DiaryEntry $entry): string
+    {
+        $output = self::title('Diary entry for ' . $entry->date->toDateTimeString()) . "\n";
+        $output .= e($entry->content);
+        return $output;
+    }
+
+    public static function diaryEntryList(Collection $entries): string
+    {
+        $chunks = [];
+
+        $entries->each(function ($entry) use (&$chunks) {
+            $chunks[] = self::title($entry->date->toDateTimeString());
+            $chunks[] = e(Str::substr($entry->content, 0, 100));
+        });
+
+        return static::listToTable(
+            $chunks,
+            2,
+            false,
+            ['Date', 'Content']
+        );
     }
 }

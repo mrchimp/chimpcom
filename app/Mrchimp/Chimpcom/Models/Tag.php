@@ -37,14 +37,6 @@ class Tag extends Model
         return $output[1];
     }
 
-    /**
-     * Take an input string and remove tags from it
-     */
-    public static function stripTagsFromString(string $input): string
-    {
-        return preg_replace(static::$tag_regex, '', $input);
-    }
-
     protected static function newFactory()
     {
         return TagFactory::new();
