@@ -18,6 +18,7 @@
 <meta name="twitter:title" content="Chimpcom">
 <meta name="twitter:description" content="A command line website.">
 <title>Chimpcom</title>
+<link rel="me" href="https://mastodon.social/@mr_chimp" />
 <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
 <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
