@@ -33,7 +33,8 @@ class Diary extends Command
         $this->addArgument(
             'subcommand',
             null,
-            'The subcommand to run. Available subcommands are: new, read, list, edit.'
+            'The subcommand to run. Available subcommands are: new, read, list, edit.',
+            'list'
         );
         $this->addArgument(
             'content',

@@ -7,6 +7,10 @@ diary edit [--date=today]
 
 See also [Shared Features](Shared Features).
 
+# Todo
+- [ ] Allow editing diary entries
+- [ ] Allow editing diary entries using editor
+
 ## Date Formats
 - 2023-07-29
 - 29-07-2023
