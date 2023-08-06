@@ -14,6 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Diary extends Command
 {
+    const DEFAULT_NUM = 10;
+
     /**
      * Configure the command
      *
@@ -54,7 +56,8 @@ class Diary extends Command
             'num',
             'n',
             InputOption::VALUE_REQUIRED,
-            'For the READ and LIST subcommands, the number of entries to show.'
+            'For the READ and LIST subcommands, the number of entries to show.',
+            self::DEFAULT_NUM
         );
     }
 
@@ -163,12 +166,16 @@ class Diary extends Command
      */
     protected function listEntries(InputInterface $input, OutputInterface $output): int
     {
+        $date_str = $input->getOption('date');
+        $num = $input->getOption('num');
+
         try {
-            $date = $this->dateFromString($input->getOption('date'));
+            $date = $this->dateFromString($date_str);
         } catch (InvalidFormatException $e) {
             $output->error('Invalid date.');
             return 3;
         }
+
         $project_name = $input->getOption('project');
         $project = $this->projectFromName($project_name);
 
@@ -177,9 +184,21 @@ class Diary extends Command
             return 3;
         }
 
-        $entries = Auth::user()->diaryEntries()
-            ->whereDay('date', $date)
-            ->get();
+        $query = Auth::user()->diaryEntries();
+
+        if ($date_str) {
+            $entries = $query
+                ->whereDay('date', $date)
+                ->orderBy('date', 'asc')
+                ->take($num)
+                ->get()
+                ->reverse();
+        } else {
+            $entries = $query
+                ->orderBy('date', 'desc')
+                ->take($num)
+                ->get();
+        }
 
         if ($entries->isEmpty()) {
             $output->error('No entry found for that date.');

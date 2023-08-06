@@ -2,7 +2,7 @@
 - [Notes](Notes.md)
 - [Diary](Diary)
 - [Calendar Events](Cal.md)
-- [Todos](Todos)
+- [Tasks](Tasks.md)
 - [Links](Links)
 
 - [Shared Features](Shared Features)

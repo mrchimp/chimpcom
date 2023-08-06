@@ -8,7 +8,7 @@ use Mrchimp\Chimpcom\Models\Project;
 use Mrchimp\Chimpcom\Models\DiaryEntry;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class DairyTest extends TestCase
+class DiaryTest extends TestCase
 {
     use DatabaseMigrations;
 
