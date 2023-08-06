@@ -34,7 +34,6 @@ class Project extends Command
         $this->addUsage('set &lt;project_name&gt');
         $this->addUsage('new &lt;project_name&gt;');
         $this->addRelated('task');
-        $this->addRelated('done');
         $this->addRelated('priority');
         $this->addArgument(
             'subcommand',

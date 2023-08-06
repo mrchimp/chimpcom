@@ -19,7 +19,6 @@ return [
         'dechex' => \Mrchimp\Chimpcom\Commands\Dechex::class,
         'diary' => \Mrchimp\Chimpcom\Commands\Diary::class,
         'does' => \Mrchimp\Chimpcom\Commands\Does::class,
-        'done' => \Mrchimp\Chimpcom\Commands\Done::class,
         'doecho' => \Mrchimp\Chimpcom\Commands\Doecho::class,
         'edit' => \Mrchimp\Chimpcom\Commands\Edit::class,
         'find' => \Mrchimp\Chimpcom\Commands\Find::class,

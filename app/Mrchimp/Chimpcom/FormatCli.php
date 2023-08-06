@@ -229,7 +229,7 @@ class FormatCli implements Format
 
             $output .= static::style(($task->completed ? '&#10004;' : '') . " $hex_id\t", '', [
                 'data-type' => 'autofill',
-                'data-autofill' => "done $hex_id"
+                'data-autofill' => "task done $hex_id"
             ]);
 
             if ($task->priority > 10) {

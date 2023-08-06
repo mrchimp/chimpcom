@@ -2,13 +2,17 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use App\Mrchimp\Chimpcom\ProgressBar;
+use App\Mrchimp\Chimpcom\Id;
 use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Facades\Format;
+use App\Mrchimp\Chimpcom\ProgressBar;
+use Mrchimp\Chimpcom\Commands\Command;
+use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Models\Task as TaskModel;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -27,18 +31,17 @@ class Task extends Command
         $this->setDescription('Lists tasks on the current project.');
         $this->setHelp('By default only incomplete tasks from the current project are shown.');
         $this->addRelated('project');
-        $this->addRelated('done');
         $this->addRelated('priority');
         $this->addArgument(
             'subcommand',
             null,
-            'The subcommand to run. Available subcommands are: new, list, done.',
+            'The subcommand to run. Available subcommands are: NEW, LIST, DONE.',
             'list'
         );
         $this->addArgument(
             'content',
             InputArgument::IS_ARRAY,
-            'For NEW, this should be a description of the task. For LIST, only tasks that contain this.'
+            'For NEW, this should be a description of the task. For LIST, only tasks that contain this. For DONE, this is the ID of the task to mark as completed.'
         );
         $this->addOption(
             'all',
@@ -77,6 +80,12 @@ class Task extends Command
             InputArgument::OPTIONAL,
             'Priority of the task. Higher is more important. Default is 1.',
             1
+        );
+        $this->addOption(
+            'force',
+            'f',
+            null,
+            'Bypass confirmation when marking as DONE.'
         );
     }
 
@@ -221,6 +230,43 @@ class Task extends Command
 
     protected function doneTask(InputInterface $input, OutputInterface $output)
     {
-        //
+        $user = Auth::user();
+        $project = $user->activeProject;
+
+        if (!$project) {
+            $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
+            return 2;
+        }
+
+        $task_id = Id::decode(implode(' ', $input->getArgument('content')));
+
+        $task = TaskModel::where('id', $task_id)
+            ->where('project_id', $project->id)
+            ->first();
+
+        if (!$task) {
+            $output->error(Format::escape('Couldn\'t find that task.'));
+            return 3;
+        }
+
+        if ($input->getOption('force')) {
+            $task->completed = true;
+            $task->time_completed = now();
+            $task->save();
+            $output->alert('Ok.');
+
+            return 0;
+        } else {
+            Session::put('task_to_complete', $task->id);
+
+            $output->useQuestionInput();
+            $output->alert('Are you sure you want to mark this as complete?' . Format::nl());
+            $output->write($task->description . Format::nl(2));
+            $output->write('yes/no?');
+
+            Chimpcom::setAction('done');
+        }
+
+        return 0;
     }
 }

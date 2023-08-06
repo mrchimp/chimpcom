@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Diary.md",
+                "file": "Index.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Diary.md",
+                "file": "Index.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Diary.md",
+                "file": "Index.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Diary.md"
+                "file": "Index.md"
               }
             }
           }
@@ -147,9 +147,9 @@
   },
   "active": "a58decc62be4123c",
   "lastOpenFiles": [
+    "Diary.md",
     "Index.md",
     "Tasks.md",
-    "Diary.md",
     "Cal.md",
     "Notes.md",
     "Shared Features.md"

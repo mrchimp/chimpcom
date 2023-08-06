@@ -26,7 +26,6 @@ class Priority extends Command
         $this->setDescription('Set the priority of tasks.');
         $this->addRelated('project');
         $this->addRelated('task');
-        $this->addRelated('done');
         $this->addArgument(
             'task_id',
             InputArgument::REQUIRED,

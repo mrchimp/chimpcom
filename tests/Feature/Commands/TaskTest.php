@@ -253,4 +253,72 @@ class TaskTest extends TestCase
 
         $this->assertEquals(10, Task::first()->priority);
     }
+
+    /** @test */
+    public function done_command_fails_if_user_has_no_active_project()
+    {
+        $this->getUserResponse('task done 1')
+            ->assertStatus(200)
+            ->assertSee('No active project');
+    }
+
+    /** @test */
+    public function done_command_fails_if_task_cannot_be_found()
+    {
+        $user = User::factory()->create();
+        $project = Project::factory()->create([
+            'user_id' => $user->id,
+        ]);
+        $user->active_project_id = $project->id;
+        $user->save();
+
+        $this->getUserResponse('task done 1', $user)
+            ->assertStatus(200)
+            ->assertSee('Couldn\'t find that task.');
+    }
+
+    /** @test */
+    public function done_command_cues_up_the_done_action_if_all_is_well()
+    {
+        $user = User::factory()->create();
+        $project = Project::factory()->create([
+            'user_id' => $user->id,
+        ]);
+        $user->active_project_id = $project->id;
+        $user->save();
+        Task::factory()->create([
+            'project_id' => $project->id,
+        ]);
+
+        $this->getUserResponse('task done 1', $user)
+            ->assertStatus(200)
+            ->assertSee('Are you sure you want to mark this as complete?')
+            ->assertSessionHas('action', 'done');
+    }
+
+    /** @test */
+    public function done_command_force_option_skips_confirmation()
+    {
+        $user = User::factory()->create();
+        $project = Project::factory()->create([
+            'user_id' => $user->id,
+        ]);
+        $user->active_project_id = $project->id;
+        $user->save();
+        Task::factory()->count(2)->create([
+            'project_id' => $project->id,
+        ]);
+
+        $this->getUserResponse('task done 1 --force', $user)
+            ->assertStatus(200)
+            ->assertSee('Ok')
+            ->assertSessionMissing('action');
+
+        $this->getUserResponse('task done 2 -f', $user)
+            ->assertStatus(200)
+            ->assertSee('Ok')
+            ->assertSessionMissing('action');
+
+        $this->assertEquals(0, Task::where('completed', 0)->count());
+    }
 }

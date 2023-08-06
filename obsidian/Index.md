@@ -11,3 +11,7 @@
 
 - [Tags](Tags)
 - [Projects](Projects)
+
+# Todo
+
+- [ ] Try to improve per-subcommand options/arguments. I.e. re-using "content" in TASK as search and description.
