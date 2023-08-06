@@ -33,8 +33,7 @@ class Project extends Command
         $this->addUsage('set &lt;project_id&gt');
         $this->addUsage('set &lt;project_name&gt');
         $this->addUsage('new &lt;project_name&gt;');
-        $this->addRelated('newtask');
-        $this->addRelated('todo');
+        $this->addRelated('task');
         $this->addRelated('done');
         $this->addRelated('priority');
         $this->addArgument(

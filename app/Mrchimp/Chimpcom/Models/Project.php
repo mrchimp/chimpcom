@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Chimpcom Todo list Project model
+ * Chimpcom Project model
  */
 
 namespace Mrchimp\Chimpcom\Models;
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mrchimp\Chimpcom\Models\Task;
 
 /**
- * Chimpcom Todo list Project model
+ * Chimpcom Project model
  */
 class Project extends Model
 {

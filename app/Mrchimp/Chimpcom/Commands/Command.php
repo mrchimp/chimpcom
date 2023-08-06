@@ -69,7 +69,7 @@ class Command extends SymfonyCommand
         $out = '';
 
         $out .= Format::title(strtoupper('NAME')) . Format::nl(2);
-        $out .= Format::nbsp(2) . $this->getName() . ' - '. $this->getDescription() . Format::nl(2);
+        $out .= Format::nbsp(2) . $this->getName() . ' - ' . $this->getDescription() . Format::nl(2);
 
         if ($this->getHelp()) {
             $out .= Format::nbsp(2) . Format::escape($this->getHelp()) . Format::nl(2);
@@ -134,8 +134,8 @@ class Command extends SymfonyCommand
     public function getAliases(): array
     {
         return ChimpcomAlias::where('alias', $this->getName())
-                            ->pluck('name')
-                            ->toArray();
+            ->pluck('name')
+            ->toArray();
     }
 
     /**

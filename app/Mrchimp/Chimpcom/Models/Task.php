@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Todo list task
+ * Task
  */
 
 namespace Mrchimp\Chimpcom\Models;
@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Todo list task
+ * Task
  */
 class Task extends Model
 {
@@ -49,7 +49,7 @@ class Task extends Model
     public function scopeSearch(Builder $query, string $search_term = null): void
     {
         if ($search_term) {
-            $query->where('description', 'LIKE', '%'.$search_term.'%');
+            $query->where('description', 'LIKE', '%' . $search_term . '%');
         }
     }
 

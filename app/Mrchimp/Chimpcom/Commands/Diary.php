@@ -78,13 +78,11 @@ class Diary extends Command
                 return $this->newEntry($input, $output);
             case 'read':
                 return $this->readEntries($input, $output);
-            case 'list':
-                return $this->listEntries($input, $output);
             case 'edit':
                 return $this->editEntry($input, $output);
+            case 'list':
             default:
-                $output->error('Invalid subcommand.');
-                return 2;
+                return $this->listEntries($input, $output);
         }
     }
 

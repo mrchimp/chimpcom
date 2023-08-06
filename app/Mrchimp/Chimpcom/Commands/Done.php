@@ -28,8 +28,7 @@ class Done extends Command
         $this->setName('done');
         $this->setDescription('Mark a task as complete.');
         $this->addRelated('project');
-        $this->addRelated('newtask');
-        $this->addRelated('todo');
+        $this->addRelated('task');
         $this->addRelated('priority');
         $this->addArgument(
             'task_id',

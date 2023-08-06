@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Set the priority of todo items
+ * Set the priority of tasks
  */
 class Priority extends Command
 {
@@ -23,10 +23,9 @@ class Priority extends Command
     protected function configure()
     {
         $this->setName('priority');
-        $this->setDescription('Set the priority of todo tasks.');
+        $this->setDescription('Set the priority of tasks.');
         $this->addRelated('project');
-        $this->addRelated('newtask');
-        $this->addRelated('todo');
+        $this->addRelated('task');
         $this->addRelated('done');
         $this->addArgument(
             'task_id',

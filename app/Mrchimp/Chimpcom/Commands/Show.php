@@ -156,7 +156,7 @@ class Show extends Command
 
         if ($last) {
             $query->orderBy('created_at', 'DESC');
-        } elseif (is_numeric(Arr::first($names))) { // TODO: Does this use hexids?
+        } elseif (is_numeric(Arr::first($names))) { // @todo Does this use hexids?
             $memory_id = $names;
             $query->whereIn('id', $memory_id);
         } elseif (!empty($names)) {

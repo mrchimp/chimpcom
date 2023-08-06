@@ -220,7 +220,7 @@ class FormatHtml implements Format
     }
 
     /**
-     * Format todo list tasks
+     * Format task lists
      */
     public static function tasks(Collection $tasks, $show_dates = false, $show_project = false): string
     {

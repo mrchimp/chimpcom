@@ -5,16 +5,16 @@ namespace Mrchimp\Chimpcom\Commands;
 use App\Mrchimp\Chimpcom\ProgressBar;
 use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Facades\Format;
-use Mrchimp\Chimpcom\Models\Task;
+use Mrchimp\Chimpcom\Models\Task as TaskModel;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Current user's todo list
+ * Manage tasks
  */
-class Todo extends Command
+class Task extends Command
 {
     /**
      * Configure the command
@@ -23,17 +23,22 @@ class Todo extends Command
      */
     protected function configure()
     {
-        $this->setName('todo');
+        $this->setName('task');
         $this->setDescription('Lists tasks on the current project.');
         $this->setHelp('By default only incomplete tasks from the current project are shown.');
         $this->addRelated('project');
-        $this->addRelated('newtask');
         $this->addRelated('done');
         $this->addRelated('priority');
         $this->addArgument(
-            'search',
+            'subcommand',
+            null,
+            'The subcommand to run. Available subcommands are: new, list, done.',
+            'list'
+        );
+        $this->addArgument(
+            'content',
             InputArgument::IS_ARRAY,
-            'Show only tasks that contain this.'
+            'For NEW, this should be a description of the task. For LIST, only tasks that contain this.'
         );
         $this->addOption(
             'all',
@@ -43,7 +48,7 @@ class Todo extends Command
         );
         $this->addOption(
             'allprojects',
-            'p',
+            null,
             null,
             'List tasks from all of your projects.'
         );
@@ -66,6 +71,13 @@ class Todo extends Command
             'Number of tasks to show.',
             10
         );
+        $this->addOption(
+            'priority',
+            'p',
+            InputArgument::OPTIONAL,
+            'Priority of the task. Higher is more important. Default is 1.',
+            1
+        );
     }
 
     /**
@@ -82,6 +94,19 @@ class Todo extends Command
             return 1;
         }
 
+        switch ($input->getArgument('subcommand')) {
+            case 'new':
+                return $this->newTask($input, $output);
+            case 'done':
+                return $this->doneTask($input, $output);
+            case 'list':
+            default:
+                return $this->listTasks($input, $output);
+        }
+    }
+
+    protected function listTasks(InputInterface $input, OutputInterface $output)
+    {
         $user = Auth::user();
         $project = $user->activeProject;
 
@@ -103,9 +128,9 @@ class Todo extends Command
         $show_all_projects = $input->getOption('allprojects');
         $total_task_count = 0;
 
-        $tasks = Task::query()
+        $tasks = TaskModel::query()
             ->where('user_id', $user->id)
-            ->search(implode(' ', $input->getArgument('search')))
+            ->search(implode(' ', $input->getArgument('content')))
             ->when(!$show_all_projects, function ($query) use ($user) {
                 $query->forProject($user->activeProject->id);
             })
@@ -124,8 +149,8 @@ class Todo extends Command
         } else {
             $output->write('Current project: ' . Format::escape($project->name) . Format::nl());
 
-            $all_count = Task::forProject($user->activeProject->id)->count();
-            $completed_count = Task::forProject($user->activeProject->id)->completed(true)->count();
+            $all_count = TaskModel::forProject($user->activeProject->id)->count();
+            $completed_count = TaskModel::forProject($user->activeProject->id)->completed(true)->count();
             $completed_str = $completed_count . ' / ' . $all_count . ' tasks complete.';
 
             $output->write(Format::nl() . $completed_str . Format::nl());
@@ -136,7 +161,7 @@ class Todo extends Command
             if ($completed_count > 0) {
                 $output->alert('All done!');
             } else {
-                $output->alert('Nothing to do! Use NEWTASK to create a task.');
+                $output->alert('Nothing to do! Use TASK NEW to create a task.');
             }
 
             return 3;
@@ -151,5 +176,51 @@ class Todo extends Command
         }
 
         return 0;
+    }
+
+    protected function newTask(InputInterface $input, OutputInterface $output)
+    {
+        $user = Auth::user();
+        $description = implode(' ', $input->getArgument('content'));
+        $project = $user->activeProject;
+
+        if (!$project) {
+            $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
+
+            return 1;
+        }
+
+        $task = TaskModel::create([
+            'description' => $description,
+            'project_id' => $project->id,
+            'user_id' => $user->id,
+            'priority' => $input->getOption('priority'),
+            'completed' => 0,
+        ]);
+
+        // @todo - cross-user tasks
+        // $user_ids = array($user->id);
+        // foreach ($this->name_array as $name) {
+        //     $id = $this->user->getId($name);
+        //     if ($id > 0) {
+        //         array_push($user_ids, $id);
+        //     }
+        // }
+
+        // foreach ($user_ids as $user_id) {
+        //     $user = \R::load('users', $user_id);
+        //     $task->sharedUser[] = $user;
+        // }
+
+        // $project_id = \R::store($task);
+
+        $output->alert('Ok.');
+
+        return 0;
+    }
+
+    protected function doneTask(InputInterface $input, OutputInterface $output)
+    {
+        //
     }
 }

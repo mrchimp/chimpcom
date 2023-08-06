@@ -67,7 +67,7 @@ class Token extends Command
      */
     protected function createToken(InputInterface $input, OutputInterface $output): int
     {
-        // TODO: prevent creating too manny tokens
+        // @todo prevent creating too manny tokens
 
         $name = $input->getArgument('name');
 

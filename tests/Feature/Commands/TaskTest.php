@@ -7,7 +7,7 @@ use Mrchimp\Chimpcom\Models\Project;
 use Mrchimp\Chimpcom\Models\Task;
 use Tests\TestCase;
 
-class TodoTest extends TestCase
+class TaskTest extends TestCase
 {
     protected $other_user;
 
@@ -68,31 +68,31 @@ class TodoTest extends TestCase
     }
 
     /** @test */
-    public function todo_fails_for_guests()
+    public function task_fails_for_guests()
     {
-        $this->getGuestResponse('todo')
+        $this->getGuestResponse('task')
             ->assertStatus(404)
             ->assertSee(__('chimpcom.must_log_in'));
     }
 
     /** @test */
-    public function todo_returns_error_if_no_active_project()
+    public function task_returns_error_if_no_active_project()
     {
         $this->user = User::factory()->create();
         $this->user->active_project_id = 0;
         $this->user->save();
 
-        $this->getUserResponse('todo')
+        $this->getUserResponse('task')
             ->assertStatus(200)
             ->assertSee('No active project.');
     }
 
     /** @test */
-    public function by_default_todo_shows_incomplete_tasks_on_current_project()
+    public function by_default_task_shows_incomplete_tasks_on_current_project()
     {
         $this->makeTestTasks();
 
-        $this->getUserResponse('todo')
+        $this->getUserResponse('task')
             ->assertStatus(200)
             ->assertSee('Low priority task')
             ->assertSee('High priority task')
@@ -102,11 +102,11 @@ class TodoTest extends TestCase
     }
 
     /** @test */
-    public function todo_command_with_all_option_shows_completed_and_uncompleted_tasks()
+    public function task_command_with_all_option_shows_completed_and_uncompleted_tasks()
     {
         $this->makeTestTasks();
 
-        $this->getUserResponse('todo --all')
+        $this->getUserResponse('task --all')
             ->assertStatus(200)
             ->assertSee('Low priority task')
             ->assertSee('High priority task')
@@ -116,11 +116,11 @@ class TodoTest extends TestCase
     }
 
     /** @test */
-    public function todo_command_with_allprojects_option_shows_tasks_from_all_users_projects()
+    public function task_command_with_allprojects_option_shows_tasks_from_all_users_projects()
     {
         $this->makeTestTasks();
 
-        $this->getUserResponse('todo --allprojects')
+        $this->getUserResponse('task --allprojects')
             ->assertStatus(200)
             ->assertSee('Low priority task')
             ->assertSee('High priority task')
@@ -130,11 +130,11 @@ class TodoTest extends TestCase
     }
 
     /** @test */
-    public function todo_command_with_completed_option_shows_tasks_from_all_users_projects()
+    public function task_command_with_completed_option_shows_tasks_from_all_users_projects()
     {
         $this->makeTestTasks();
 
-        $this->getUserResponse('todo --complete')
+        $this->getUserResponse('task --complete')
             ->assertStatus(200)
             ->assertDontSee('Low priority task')
             ->assertDontSee('High priority task')
@@ -144,11 +144,11 @@ class TodoTest extends TestCase
     }
 
     /** @test */
-    public function todo_command_num_tasks_option_allows_limiting_output()
+    public function task_command_num_tasks_option_allows_limiting_output()
     {
         $this->makeTestTasks();
 
-        $this->getUserResponse('todo --number 1')
+        $this->getUserResponse('task --number 1')
             ->assertStatus(200)
             ->assertDontSee('Low priority task')
             ->assertSee('High priority task')
@@ -158,11 +158,11 @@ class TodoTest extends TestCase
     }
 
     /** @test */
-    public function todo_command_searchterm_allows_searching_results()
+    public function task_command_searchterm_allows_searching_results()
     {
         $this->makeTestTasks();
 
-        $this->getUserResponse('todo High')
+        $this->getUserResponse('task list High')
             ->assertStatus(200)
             ->assertDontSee('Low priority task')
             ->assertSee('High priority task')
@@ -183,7 +183,7 @@ class TodoTest extends TestCase
         $this->user->active_project_id = $this->active_project->id;
         $this->user->save();
 
-        $this->getUserResponse('todo')
+        $this->getUserResponse('task')
             ->assertStatus(200)
             ->assertSee('Nothing to do!');
     }
@@ -206,8 +206,51 @@ class TodoTest extends TestCase
             'project_id' => $this->active_project->id,
         ]);
 
-        $this->getUserResponse('todo')
+        $this->getUserResponse('task')
             ->assertStatus(200)
             ->assertSee('All done!');
+    }
+
+    /** @test */
+    public function task_new_fails_if_user_has_no_active_project()
+    {
+        $this->getUserResponse('task new Do a thing')
+            ->assertSee('No active project')
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    public function task_new_can_create_a_new_task()
+    {
+        $user = User::factory()->create();
+        $project = Project::factory()->create();
+        $user->setActiveProject($project);
+
+        $this->getUserResponse('task new Do a thing', $user)
+            ->assertSee('Ok.')
+            ->assertStatus(200);
+
+        $task = Task::first();
+
+        $this->assertEquals(1, Task::count());
+
+        $this->assertEquals('Do a thing', $task->description);
+        $this->assertEquals($user->id, $task->user_id);
+        $this->assertEquals(0, $task->completed);
+        $this->assertEquals(1, $task->priority);
+    }
+
+    /** @test */
+    public function task_new_can_set_a_high_priority_on_tasks()
+    {
+        $user = User::factory()->create();
+        $project = Project::factory()->create();
+        $user->setActiveProject($project);
+
+        $this->getUserResponse('task new Do an important thing --priority 10', $user)
+            ->assertSee('Ok.')
+            ->assertStatus(200);
+
+        $this->assertEquals(10, Task::first()->priority);
     }
 }
