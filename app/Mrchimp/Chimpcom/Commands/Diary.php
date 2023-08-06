@@ -148,16 +148,23 @@ class Diary extends Command
             return 3;
         }
 
-        $entry = Auth::user()->diaryEntries()
+        $entries = Auth::user()->diaryEntries()
             ->whereDay('date', $date)
-            ->first();
+            ->get();
 
-        if (!$entry) {
+        if ($entries->isEmpty()) {
             $output->error('No entry found for that date.');
             return 6;
         }
 
-        $output->write(Format::diaryEntry($entry));
+        $entries->each(function ($entry, $key) use ($output, $entries) {
+            $output->write(Format::diaryEntry($entry));
+
+
+            if ($key !== $entries->count() - 1) {
+                $output->write(Format::nl());
+            }
+        });
 
         return 0;
     }
