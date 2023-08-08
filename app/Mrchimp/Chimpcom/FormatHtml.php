@@ -224,9 +224,9 @@ class FormatHtml implements Format
      */
     public static function tasks(Collection $tasks, $show_dates = false, $show_project = false): string
     {
-        $cols = 4;
+        $cols = 5;
         $list = [];
-        $titles = ['ID', 'Priority', 'Description', 'Completed'];
+        $titles = ['ID', 'Priority', 'Description', 'Tags', 'Completed'];
 
         $output = '';
 
@@ -258,6 +258,10 @@ class FormatHtml implements Format
             $list[] = '<span style="color:' . $color . '">' . $task->priority . '</span> ';
 
             $list[] = e($task->description);
+
+            $list[] = static::grey($task->tags->map(function ($tag) {
+                return e($tag->tag);
+            })->implode(", "));
 
             if ($task->completed) {
                 $list[] = static::grey($task->time_completed);

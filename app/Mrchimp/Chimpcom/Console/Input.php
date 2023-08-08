@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Console;
 
+use Mrchimp\Chimpcom\Str;
 use Symfony\Component\Console\Input\StringInput;
 
 class Input extends StringInput
@@ -24,24 +25,6 @@ class Input extends StringInput
      */
     public function splitWordsAndTags($input = []): array
     {
-        if (is_string($input)) {
-            $input = explode(' ', $input);
-        }
-
-        $tags = [];
-        $words = [];
-
-        foreach ($input as $word) {
-            if (substr($word, 0, 1) === '@') {
-                $tags[] = substr($word, 1);
-            } else {
-                $words[] = $word;
-            }
-        }
-
-        return [
-            $words,
-            $tags,
-        ];
+        return Str::splitWordsAndTags($input);
     }
 }

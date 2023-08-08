@@ -6,18 +6,20 @@
 
 namespace Mrchimp\Chimpcom\Models;
 
+use App\Mrchimp\Chimpcom\Traits\HasProject;
 use Database\Factories\TaskFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Mrchimp\Chimpcom\Traits\HasTags;
 
 /**
  * Task
  */
 class Task extends Model
 {
-    use HasFactory;
+    use HasFactory, HasProject, HasTags;
 
     protected $fillable = [
         'description',
@@ -33,14 +35,6 @@ class Task extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo('App\User');
-    }
-
-    /**
-     * The project that this task is for
-     */
-    public function project(): BelongsTo
-    {
-        return $this->belongsTo('Mrchimp\Chimpcom\Models\Project');
     }
 
     /**

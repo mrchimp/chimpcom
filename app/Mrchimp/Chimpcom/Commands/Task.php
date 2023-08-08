@@ -9,7 +9,9 @@ use App\Mrchimp\Chimpcom\ProgressBar;
 use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Illuminate\Support\Facades\Session;
+use Mrchimp\Chimpcom\Models\Tag;
 use Mrchimp\Chimpcom\Models\Task as TaskModel;
+use Mrchimp\Chimpcom\Str;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -118,6 +120,14 @@ class Task extends Command
     {
         $user = Auth::user();
         $project = $user->activeProject;
+        $subcommand = $input->getArgument('subcommand');
+        $content = implode(' ', $input->getArgument('content'));
+
+        // List is the default subcommand so let's prepend the subcommand
+        // to the search terms.
+        if ($subcommand !== 'list') {
+            $content = $subcommand . ' ' . $content;
+        }
 
         if (!$project) {
             $output->error('No active project. Use `PROJECTS` and `SET PROJECT x`.');
@@ -136,10 +146,20 @@ class Task extends Command
 
         $show_all_projects = $input->getOption('allprojects');
         $total_task_count = 0;
+        [$words, $tags] = Str::splitWordsAndTags($content);
+
+        if (!empty($words)) {
+            $output->write('Searching for: "' . Format::escape(implode(' ', $words)) . '"' . Format::nl());
+        }
+
+        if (!empty($tags)) {
+            $output->write('Searching for tags: ' . Format::escape(implode(' ', $tags)) . Format::nl());
+        }
 
         $tasks = TaskModel::query()
             ->where('user_id', $user->id)
-            ->search(implode(' ', $input->getArgument('content')))
+            ->when(!empty($tags), fn ($query) => $query->withTags($tags))
+            ->when(!empty($words), fn ($query) => $query->search(implode(' ', $words)))
             ->when(!$show_all_projects, function ($query) use ($user) {
                 $query->forProject($user->activeProject->id);
             })
@@ -190,13 +210,21 @@ class Task extends Command
     protected function newTask(InputInterface $input, OutputInterface $output)
     {
         $user = Auth::user();
-        $description = implode(' ', $input->getArgument('content'));
+        $content = implode(' ', $input->getArgument('content'));
+        [$words, $tags] = $input->splitWordsAndTags($content);
+        $description = implode(' ', $words);
         $project = $user->activeProject;
 
         if (!$project) {
             $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
 
             return 1;
+        }
+
+        $output->write('Description: ' . Format::escape($description) . Format::nl());
+
+        if (!empty($tags)) {
+            $output->write('Tags: ' . implode(', ', $tags) . Format::nl());
         }
 
         $task = TaskModel::create([
@@ -207,23 +235,14 @@ class Task extends Command
             'completed' => 0,
         ]);
 
-        // @todo - cross-user tasks
-        // $user_ids = array($user->id);
-        // foreach ($this->name_array as $name) {
-        //     $id = $this->user->getId($name);
-        //     if ($id > 0) {
-        //         array_push($user_ids, $id);
-        //     }
-        // }
+        foreach ($tags as $tag_name) {
+            $tag = Tag::firstOrCreate([
+                'tag' => $tag_name,
+            ]);
+            $task->tags()->save($tag);
+        }
 
-        // foreach ($user_ids as $user_id) {
-        //     $user = \R::load('users', $user_id);
-        //     $task->sharedUser[] = $user;
-        // }
-
-        // $project_id = \R::store($task);
-
-        $output->alert('Ok.');
+        $output->alert('Task created. Id: ' . Id::encode($task->id));
 
         return 0;
     }

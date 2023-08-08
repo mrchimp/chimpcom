@@ -217,7 +217,7 @@ class FormatCli implements Format
      */
     public static function tasks(Collection $tasks, $show_dates = false, $show_project = false): string
     {
-        $output = 'ID Priority Description';
+        $output = 'ID Priority Description Tags';
 
         $output .= static::grey(
             ($show_dates ? ' Created' : '') . ' Completed' .
@@ -255,6 +255,10 @@ class FormatCli implements Format
             } else {
                 $output .= ' ' . e($task->description);
             }
+
+            $list[] = static::grey($task->tags->map(function ($tag) {
+                return e($tag->tag);
+            })->implode(", "));
 
             if ($show_dates) {
                 $output .= static::grey(' (' . $task->created_at . ')');
