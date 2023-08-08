@@ -164,9 +164,7 @@ class Show extends Command
         }
 
         if (!empty($tags)) {
-            $query->whereHas('tags', function ($query) use ($tags) {
-                $query->whereIn('tag', $tags);
-            });
+            $query->withTags($tags);
         }
 
         $memories = $query->get();
