@@ -46,7 +46,7 @@ class Users extends Command
             ->leftJoin('memories', 'users.id', '=', 'memories.user_id')
             ->leftJoin('projects', 'users.id', '=', 'projects.user_id')
             ->leftJoin('tasks', 'users.id', '=', 'tasks.user_id')
-            ->select(DB::raw('users.id, users.name, users.last_seen, count(memories.id) as memory_count, count(projects.id) as project_count, count(tasks.id) as task_count'))
+            ->select(DB::raw('users.id, users.name, users.last_seen, count(DISTINCT memories.id) as memory_count, count(DISTINCT projects.id) as project_count, count(DISTINCT tasks.id) as task_count'))
             ->groupBy('users.id')
             ->get();
 
