@@ -1,49 +1,49 @@
 import CmdStack from './CmdStack';
 
 interface ExternalProcessor {
-  (input_str: string, context: Cmd): CmdResponse
-};
+  (input_str: string, context: Cmd): CmdResponse;
+}
 
 interface CancelEditHandler {
-  (): Promise<string>
-};
+  (): Promise<string>;
+}
 
 interface SaveEditHandler {
   (content: string, continue_editing: boolean): Promise<string>;
-};
+}
 
 interface Options {
   busy_text?: string;
-  cancel_edit_handler?: CancelEditHandler | null,
-  endpoint?: string,
+  cancel_edit_handler?: CancelEditHandler | null;
+  endpoint?: string;
   external_processor?: ExternalProcessor | null;
-  history_id?: string,
-  remote_cmd_list_url?: string,
-  save_edit_handler?: SaveEditHandler | null,
-  selector?: string,
-  tabcomplete_url?: string,
-  talk?: boolean,
-  unknown_cmd?: string,
-  volume?: number,
-};
+  history_id?: string;
+  remote_cmd_list_url?: string;
+  save_edit_handler?: SaveEditHandler | null;
+  selector?: string;
+  tabcomplete_url?: string;
+  talk?: boolean;
+  unknown_cmd?: string;
+  volume?: number;
+}
 
 interface CmdResponse {
-  cmd_fill?: string,
-  cmd_out: string,
-  edit_content?: string,
-  log?: string,
-  openWindow?: string,
-  openWindowSpecs?: string,
+  cmd_fill?: string;
+  cmd_out: string;
+  edit_content?: string;
+  log?: string;
+  openWindow?: string;
+  openWindowSpecs?: string;
   prompt?: string;
-  redirect?: string,
-  show_question_input?: boolean,
-  show_pass?: boolean,
-  user?: CmdResonseUser,
-};
+  redirect?: string;
+  show_question_input?: boolean;
+  show_pass?: boolean;
+  user?: CmdResonseUser;
+}
 
 interface CmdResonseUser {
-  name: string,
-};
+  name: string;
+}
 
 /**
  * HTML5 Command Line Terminal
@@ -701,7 +701,7 @@ export default class Cmd {
       return;
     }
 
-    const autocompletions = this.all_commands.filter(function(value) {
+    const autocompletions = this.all_commands.filter(function (value) {
       return value.startsWith(str);
     });
 
@@ -893,7 +893,7 @@ export default class Cmd {
 
     return fetch(request)
       .then((response) => {
-        if (!([200, 404].includes(response.status))) {
+        if (![200, 404].includes(response.status)) {
           throw 'Invalid response';
         }
         return response;
@@ -903,7 +903,7 @@ export default class Cmd {
         this.handleExternalResponse(data);
       })
       .catch((e) => {
-        console.error(e)
+        console.error(e);
         this.handleExternalResponse({
           cmd_out: 'Server error. Try again.',
         });
