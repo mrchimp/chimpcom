@@ -122,6 +122,7 @@ class Task extends Command
         $project = $user->activeProject;
         $subcommand = $input->getArgument('subcommand');
         $content = implode(' ', $input->getArgument('content'));
+        $priority = $input->getOption('priority');
 
         // List is the default subcommand so let's prepend the subcommand
         // to the search terms.
@@ -130,7 +131,7 @@ class Task extends Command
         }
 
         if (!$project) {
-            $output->error('No active project. Use `PROJECTS` and `SET PROJECT x`.');
+            $output->error('No active project. Use `PROJECTS` and `PROJECT SET x`.');
             $output->setStatusCode(200);
 
             return 2;
