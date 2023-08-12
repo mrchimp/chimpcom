@@ -40,12 +40,14 @@ class TaskTest extends TestCase
             'description' => 'Low priority task',
             'user_id' => $this->user->id,
             'project_id' => $this->active_project->id,
+            'priority' => 1,
         ]);
 
         Task::factory()->highpriority()->create([
             'description' => 'High priority task',
             'user_id' => $this->user->id,
             'project_id' => $this->active_project->id,
+            'priority' => 10,
         ]);
 
         Task::factory()->completed()->create([
@@ -320,5 +322,15 @@ class TaskTest extends TestCase
             ->assertSessionMissing('action');
 
         $this->assertEquals(0, Task::where('completed', 0)->count());
+    }
+
+    /** @test */
+    public function can_filter_tasks_by_priority()
+    {
+        $this->makeTestTasks();
+        $this->getUserResponse('task list --priority 10')
+            ->assertOk()
+            ->assertSee('High priority task')
+            ->assertDontSee('Low priority task');
     }
 }
