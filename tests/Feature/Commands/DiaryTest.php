@@ -7,6 +7,7 @@ use Tests\TestCase;
 use Mrchimp\Chimpcom\Models\Project;
 use Mrchimp\Chimpcom\Models\DiaryEntry;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Arr;
 
 class DiaryTest extends TestCase
 {
@@ -96,5 +97,28 @@ class DiaryTest extends TestCase
             ->assertSee('Here is the content')
             ->assertDontSee('this bit shouldnt be visible')
             ->assertOk();
+    }
+
+    /** @test */
+    public function diary_entries_can_have_metadata()
+    {
+        $this->getUserResponse('diary new Here is the content --meta=foo:bar --meta floopy:bloopy')
+            ->assertSee('Diary entry saved.')
+            ->assertOk();
+
+        $entry = DiaryEntry::first();
+
+        $this->assertEquals('bar', Arr::get($entry->meta, 'foo'));
+        $this->assertEquals('bloopy', Arr::get($entry->meta, 'floopy'));
+    }
+
+    /** @test */
+    public function can_view_diary_entry_metadata()
+    {
+        $this->getUserResponse('diary new Here is the content --meta=foo:bar --meta floopy:bloopy');
+        $this->getUserResponse('diary read')
+            ->assertOk()
+            ->assertSee('foo: bar')
+            ->assertSee('floopy: bloopy');
     }
 }

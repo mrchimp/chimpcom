@@ -373,8 +373,17 @@ class FormatCli implements Format
 
     public static function diaryEntry(DiaryEntry $entry): string
     {
-        $output = self::title('Diary entry for ' . $entry->date->toDateTimeString()) . "\n";
+        $output = self::title($entry->date->format('l jS \\of F Y h:i A')) . static::nl();
         $output .= e($entry->content);
+
+        if (!empty($entry->meta)) {
+            $output .= static::nl(2) . 'Metadata:' . static::nl();
+
+            foreach ($entry->meta as $key => $value) {
+                $output .= $key . ': ' . $value . static::nl();
+            }
+        }
+
         return $output;
     }
 

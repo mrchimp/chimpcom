@@ -20,10 +20,15 @@ class DiaryEntry extends Model
         'date',
         'content',
         'project_id',
+        'meta',
     ];
 
     protected $dates = [
         'date',
+    ];
+
+    protected $casts = [
+        'meta' => 'array',
     ];
 
     /**

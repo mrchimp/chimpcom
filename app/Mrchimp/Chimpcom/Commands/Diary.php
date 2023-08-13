@@ -60,6 +60,12 @@ class Diary extends Command
             'For the READ and LIST subcommands, the number of entries to show.',
             self::DEFAULT_NUM
         );
+        $this->addOption(
+            'meta',
+            'm',
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            'Add meta data to the entry. E.g. --meta=foo:bar'
+        );
     }
 
     /**
@@ -101,6 +107,7 @@ class Diary extends Command
         $words = $input->getArgument('content');
         $project_name = $input->getOption('project');
         $project = $this->projectFromName($project_name);
+        $meta = $this->parseMeta($input->getOption('meta'));
 
         if ($project_name && !$project) {
             $output->error('Project not found.');
@@ -118,6 +125,7 @@ class Diary extends Command
             'content' => implode(' ', $words),
             'project_id' => $project ? $project->id : null,
             'date' => $date,
+            'meta' => $meta,
         ]);
 
         $entry->attachTags($tags);
@@ -243,5 +251,20 @@ class Diary extends Command
         } else {
             return null;
         }
+    }
+
+    protected function parseMeta($meta = [])
+    {
+        return array_reduce($meta, function ($carry, $item) {
+            $parts = explode(':', $item, 2);
+
+            if (count($parts) < 2) {
+                return $carry;
+            }
+
+            $carry[$parts[0]] = $parts[1];
+
+            return $carry;
+        }, []);
     }
 }
