@@ -11,12 +11,15 @@ class DiaryEntryFactory extends Factory
 
     public function definition()
     {
+        $has_migraine = $this->faker->numberBetween(0, 10) > 9;
+
         return [
             'content' => $this->faker->paragraph,
             'user_id' => 1,
             'date' => now(),
             'meta' => [
-                'migraine' => $this->faker->numberBetween(0, 10),
+                'migraine' => $has_migraine ? $this->faker->numberBetween(0, 10) : null,
+                'energy' => $this->faker->numberBetween(0, 10),
                 'word' => $this->faker->word,
             ],
         ];

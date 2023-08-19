@@ -13,7 +13,9 @@ const mix = require('laravel-mix');
 
 mix
   .ts(['resources/js/main.ts'], 'public/js')
+  .ts(['resources/js/graphs.ts'], 'public/js')
   .less('resources/less/cmd/main.less', 'public/css')
   .less('resources/less/blog/main.less', 'public/css/blog.css')
+  .sourceMaps()
   .copy('resources/images', 'public/img')
   .version(['public/js/main.js', 'public/css/main.css']);

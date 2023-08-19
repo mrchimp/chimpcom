@@ -1,6 +1,6 @@
 interface Result {
-  [key: string]: string,
-};
+  [key: string]: string | string[];
+}
 
 export default (function () {
   var results: Result = {};
@@ -12,7 +12,19 @@ export default (function () {
 
     for (var i = 0; i < hashes.length; i++) {
       hash = hashes[i].split('=');
-      results[hash[0]] = hash[1];
+
+      if (hash[0].slice(-2) === '[]') {
+        const key = hash[0].slice(0, -2);
+
+        if (!Array.isArray(results[key])) {
+          results[key] = [];
+        }
+
+        // @ts-ignore
+        results[key].push(hash[1]);
+      } else {
+        results[hash[0]] = hash[1];
+      }
     }
   }
 

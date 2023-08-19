@@ -33,7 +33,7 @@ class Diary extends Command
         $this->addArgument(
             'subcommand',
             null,
-            'The subcommand to run. Available subcommands are: new, read, list, edit.',
+            'The subcommand to run. Available subcommands are: new, read, list, edit, graph.',
             'list'
         );
         $this->addArgument(
@@ -86,6 +86,8 @@ class Diary extends Command
                 return $this->readEntries($input, $output);
             case 'edit':
                 return $this->editEntry($input, $output);
+            case 'graph':
+                return $this->showGraph($input, $output);
             case 'list':
             default:
                 return $this->listEntries($input, $output);
@@ -266,5 +268,22 @@ class Diary extends Command
 
             return $carry;
         }, []);
+    }
+
+    protected function showGraph(InputInterface $input, OutputInterface $output): int
+    {
+        $meta = $input->getOption('meta');
+
+        if (empty($meta)) {
+            $output->error('You must provide at least one meta field to graph.');
+            return 1;
+        }
+
+        $query = implode('&', array_map(fn ($item) => 'meta[]=' . $item, $meta));
+
+        $url = route('graphs.diary') . '?' . $query;
+        $output->openWindow($url);
+        $output->write(Format::alert('Opening graph in new tab.'));
+        return 0;
     }
 }

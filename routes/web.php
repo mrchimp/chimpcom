@@ -1,8 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChimpcomController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DiaryController;
+use App\Http\Controllers\DiaryGraphController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +23,9 @@ Route::post('ajax/respond/json', [ChimpcomController::class, 'respond']);
 Route::get('ajax/commands', [ChimpcomController::class, 'commandList']);
 Route::post('ajax/commands', [ChimpcomController::class, 'commandList']);
 Route::get('ajax/tabcomplete', [ChimpcomController::class, 'tabComplete']);
+Route::get('ajax/diary', [DiaryController::class, 'index']);
+
+Route::get('graphs/diary', [DiaryGraphController::class, 'show'])->name('graphs.diary');
 
 // Password reset routes...
 // Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
