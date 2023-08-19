@@ -80,8 +80,7 @@ class Task extends Command
             'priority',
             'p',
             InputArgument::OPTIONAL,
-            'Priority of the task. Higher is more important. Default is 1.',
-            1
+            'Priority of the task. Higher is more important. Default is 1.'
         );
         $this->addOption(
             'force',
@@ -233,7 +232,7 @@ class Task extends Command
             'description' => $description,
             'project_id' => $project->id,
             'user_id' => $user->id,
-            'priority' => $input->getOption('priority'),
+            'priority' => $input->getOption('priority') ?? 1,
             'completed' => 0,
         ]);
 
