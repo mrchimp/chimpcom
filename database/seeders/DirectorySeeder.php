@@ -15,17 +15,17 @@ class DirectorySeeder extends Seeder
      */
     public function run()
     {
-        $root = factory(Directory::class)->create([
+        $root = Directory::factory()->create([
             'name' => '/'
         ]);
-        $home = factory(Directory::class)->create([
+        $home = Directory::factory()->create([
             'name' => 'home',
         ]);
 
         $root->appendNode($home);
 
         foreach (User::all() as $user) {
-            $user_home = factory(Directory::class)->create([
+            $user_home = Directory::factory()->create([
                 'name' => e($user->name),
                 'owner_id' => $user->id,
             ]);
