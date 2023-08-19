@@ -81,6 +81,8 @@ class FormatCli implements Format
             }
         }
 
+        $s .= "\n";
+
         while (isset($list[$output_count])) {
             $s .= $list[$output_count] . "\t";
 
