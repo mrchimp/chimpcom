@@ -260,7 +260,7 @@ class FormatHtml implements Format
             $list[] = e($task->description);
 
             $list[] = static::grey($task->tags->map(function ($tag) {
-                return e($tag->tag);
+                return '@' . e($tag->tag);
             })->implode(", "));
 
             if ($task->completed) {
