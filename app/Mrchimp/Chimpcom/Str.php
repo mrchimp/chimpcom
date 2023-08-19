@@ -14,10 +14,14 @@ class Str
         $words = [];
 
         foreach ($input as $word) {
-            if (substr($word, 0, 1) === '@') {
-                $tags[] = substr($word, 1);
-            } else {
-                $words[] = $word;
+            $word = trim($word);
+
+            if (!empty($word)) {
+                if (substr($word, 0, 1) === '@') {
+                    $tags[] = substr($word, 1);
+                } else {
+                    $words[] = $word;
+                }
             }
         }
 
