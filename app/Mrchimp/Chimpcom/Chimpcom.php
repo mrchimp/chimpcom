@@ -56,7 +56,7 @@ class Chimpcom
      */
     public function setAction(string $action_name = 'normal', array $data = []): string
     {
-        $action_id = Str::random();
+        $action_id = Str::random(256);
 
         Redis::set($action_id, json_encode([
             'action_name' => $action_name,
