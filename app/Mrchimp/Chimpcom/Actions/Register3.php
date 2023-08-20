@@ -2,10 +2,9 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
+use Mrchimp\Chimpcom\Actions\Action;
 use App\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Facades\Format;
@@ -46,10 +45,12 @@ class Register3 extends Action
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $username  = Session::get('register_username');
-        $password  = Session::get('register_password');
-        $password2 = Session::get('register_password2');
+        $username  = $input->getActionData('username');
+        $password  = $input->getActionData('password');
+        $password2 = $input->getActionData('password2');
         $email     = $input->getArgument('email');
+
+        Chimpcom::delAction($input->getActionId());
 
         $data = [
             'name'                  => $username,
@@ -66,22 +67,13 @@ class Register3 extends Action
 
         if ($validator->fails()) {
             $output->writeErrors($validator, 'Something went wrong. Please try again.');
-            Session::forget('register_username');
-            Session::forget('register_password');
-            Session::forget('register_password2');
-            Chimpcom::setAction();
             return 1;
         }
 
         Auth::login($this->create($data));
 
-        Session::forget('register_username');
-        Session::forget('register_password');
-        Session::forget('register_password2');
-
         $output->write('Hello, ' . Format::escape($data['name']) . '! Welcome to Chimpcom.');
         $output->populateUserDetails();
-        Chimpcom::setAction();
         $output->usePasswordInput(false);
 
         return 0;

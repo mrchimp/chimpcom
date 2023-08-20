@@ -2,10 +2,9 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
+use Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Traits\LogCommandNameOnly;
@@ -46,13 +45,12 @@ class Chpass_2 extends Action
         if (!$password || $password === 'cancel') {
             $output->error('Abandoning.');
             $output->usePasswordInput(false);
-            Chimpcom::setAction();
-            Session::forget('chpass_1');
+            Chimpcom::delAction($input->getActionId());
             return 0;
         }
 
         $validator = Validator::make([
-            'password' => Session::get('chpass_1'),
+            'password' => $input->getActionData('chpass_1'),
             'password_confirmation' => $password
         ], [
             'password' => 'required|confirmed|min:6'
@@ -61,8 +59,7 @@ class Chpass_2 extends Action
         if ($validator->fails()) {
             $output->error('Passwords did not match. Aborting.');
             $output->usePasswordInput(false);
-            Chimpcom::setAction();
-            Session::forget('chpass_1');
+            Chimpcom::delAction($input->getActionId());
             return 1;
         }
 
@@ -70,10 +67,8 @@ class Chpass_2 extends Action
         $user->password = Hash::make($password);
         $user->save();
 
-        Session::forget('chpass_1');
-
         $output->alert('Ok then. All done.');
-        Chimpcom::setAction();
+        Chimpcom::delAction($input->getActionId());
         $output->usePasswordInput(false);
 
         return 0;

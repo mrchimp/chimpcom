@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ASCII ART GENERATOR
  *
@@ -25,9 +26,11 @@
  * @website  http://www.techhappens.com
  * @created  24/01/2007
  * @modified 03/10/2020
-*/
+ */
 
 namespace Mrchimp;
+
+use Mrchimp\Chimpcom\Facades\Format;
 
 /**
  * Makes ASCII art from images.
@@ -78,7 +81,7 @@ class Ascii
                         case image_type_to_mime_type(IMAGETYPE_PNG):
                             $this->image = imagecreatefrompng($this->url);
                             break;
-                        /*case image_type_to_mime_type(IMAGETYPE_BMP):
+                            /*case image_type_to_mime_type(IMAGETYPE_BMP):
                             $this->image = $this->imagecreatefrombmp($this->url);
                             break;*/
                         case image_type_to_mime_type(IMAGETYPE_WBMP):
@@ -94,13 +97,13 @@ class Ascii
                 } else {
                     $this->error(
                         'Could not determine image type (' . $this->headers['Content-Type'] .
-                        '), please use a format compatible with the GD library.'
+                            '), please use a format compatible with the GD library.'
                     );
                 }
             } else {
                 $this->error(
                     'Sorry, you image is too large. Please limit filesize to ' .
-                    round(self::MAX_FILESIZE / 1024) . 'KB.'
+                        round(self::MAX_FILESIZE / 1024) . 'KB.'
                 );
             }
         } else {
@@ -113,7 +116,7 @@ class Ascii
      */
     public function error(string $message): void
     {
-        echo '<div class="error">' . $message . '</div>';
+        echo Format::error($message);
     }
 
     /**
@@ -125,7 +128,7 @@ class Ascii
             case image_type_to_mime_type(IMAGETYPE_GIF):
             case image_type_to_mime_type(IMAGETYPE_JPEG):
             case image_type_to_mime_type(IMAGETYPE_PNG):
-            //case image_type_to_mime_type(IMAGETYPE_BMP): BMP doesn't work (yet?) :-(
+                //case image_type_to_mime_type(IMAGETYPE_BMP): BMP doesn't work (yet?) :-(
             case image_type_to_mime_type(IMAGETYPE_WBMP):
             case image_type_to_mime_type(IMAGETYPE_XBM):
                 return true;
@@ -205,7 +208,7 @@ class Ascii
         $hex .= str_pad(dechex($green), 2, '0', STR_PAD_LEFT);
         $hex .= str_pad(dechex($blue), 2, '0', STR_PAD_LEFT);
 
-        return($hex);
+        return ($hex);
     }
 
     /**

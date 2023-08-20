@@ -6,9 +6,8 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
+use Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Booleanate;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Facades\Format;
@@ -54,28 +53,28 @@ class Project_rm extends Action
             return 1;
         }
 
-        Chimpcom::setAction();
         $user = Auth::user();
 
         $argument = $input->getArgument('confirmation');
 
         if (!Booleanate::isAffirmative($argument)) {
             $output->error('Fair enough.');
+            Chimpcom::delAction($input->getActionId());
 
             return 0;
         }
 
-        $project = Project::where('id', Session::get('projectrm'))->first();
-
-        Session::forget('projectrm');
+        $project = Project::where('id', $input->getActionData('projectrm'))->first();
 
         if (!$project) {
             $output->error('No active project.');
+            Chimpcom::delAction($input->getActionId());
             return 0;
         }
 
         if ((int) $project->user_id !== (int) $user->id) {
             $output->error('That isn\'t yours to delete.');
+            Chimpcom::delAction($input->getActionId());
 
             return 2;
         }

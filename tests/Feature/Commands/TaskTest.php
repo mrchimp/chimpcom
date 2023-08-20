@@ -229,7 +229,7 @@ class TaskTest extends TestCase
         $user->setActiveProject($project);
 
         $this->getUserResponse('task new Do a thing', $user)
-            ->assertSee('Ok.')
+            ->assertSee('Task created.')
             ->assertStatus(200);
 
         $task = Task::first();
@@ -250,7 +250,7 @@ class TaskTest extends TestCase
         $user->setActiveProject($project);
 
         $this->getUserResponse('task new Do an important thing --priority 10', $user)
-            ->assertSee('Ok.')
+            ->assertSee('Task created.')
             ->assertStatus(200);
 
         $this->assertEquals(10, Task::first()->priority);
@@ -294,8 +294,9 @@ class TaskTest extends TestCase
 
         $this->getUserResponse('task done 1', $user)
             ->assertStatus(200)
-            ->assertSee('Are you sure you want to mark this as complete?')
-            ->assertSessionHas('action', 'done');
+            ->assertSee('Are you sure you want to mark this as complete?');
+
+        $this->assertAction('done');
     }
 
     /** @test */

@@ -17,8 +17,8 @@ class Register3Test extends TestCase
         parent::setUp();
 
         $this->getGuestResponse('register fred');
-        $this->getGuestResponse('hunter22');
-        $this->getGuestResponse('hunter22');
+        $this->getGuestResponse('hunter22', $this->last_action_id);
+        $this->getGuestResponse('hunter22', $this->last_action_id);
     }
 
     /** @test */
@@ -26,13 +26,10 @@ class Register3Test extends TestCase
     {
         Directory::factory()->create(['name' => 'home']);
 
-        $this->getGuestResponse('fred@example.com')
-            ->assertStatus(200)
-            ->assertSee('Hello, fred! Welcome to Chimpcom.')
-            ->assertSessionMissing('register_username')
-            ->assertSessionMissing('register_password')
-            ->assertSessionMissing('register_password2')
-            ->assertSessionHas('action', 'normal');
+        $this->getGuestResponse('fred@example.com', $this->last_action_id)
+            ->assertOk()
+            ->assertSee('Hello, fred! Welcome to Chimpcom.');
+        $this->assertNoAction();
 
         $this->assertTrue(Auth::check());
         $this->assertTrue(Path::make('/home/fred')->exists());
@@ -41,12 +38,9 @@ class Register3Test extends TestCase
     /** @test */
     public function register3_email_must_be_valid()
     {
-        $this->getGuestResponse('asdffdasfdsaafds')
+        $this->getGuestResponse('asdffdasfdsaafds', $this->last_action_id)
             ->assertSee('Something went wrong. Please try again.')
-            ->assertStatus(200)
-            ->assertSessionHas('action', 'normal')
-            ->assertSessionMissing('register_username')
-            ->assertSessionMissing('register_password')
-            ->assertSessionMissing('register_password2');
+            ->assertOk();
+        $this->assertNoAction();
     }
 }

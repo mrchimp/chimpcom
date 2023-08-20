@@ -277,14 +277,13 @@ class Task extends Command
 
             return 0;
         } else {
-            Session::put('task_to_complete', $task->id);
-
+            $output->setAction('done', [
+                'task_to_complete' => $task->id,
+            ]);
             $output->useQuestionInput();
             $output->alert('Are you sure you want to mark this as complete?' . Format::nl());
             $output->write($task->description . Format::nl(2));
             $output->write('yes/no?');
-
-            Chimpcom::setAction('done');
         }
 
         return 0;

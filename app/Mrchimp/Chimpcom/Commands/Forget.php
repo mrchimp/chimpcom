@@ -3,9 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use App\Mrchimp\Chimpcom\Id;
-use Chimpcom;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
@@ -65,8 +63,8 @@ class Forget extends Command
         $ids = Id::decodeMany($mem_ids);
 
         $memories = Memory::where('user_id', $user->id)
-                        ->whereIn('id', $ids)
-                        ->get();
+            ->whereIn('id', $ids)
+            ->get();
 
         if ($memories->isEmpty()) {
             $output->error(Format::escape('Couldn\'t find that memory or it\'s not yours to forget.'));
@@ -82,9 +80,10 @@ class Forget extends Command
 
         $output->write(implode(Format::nl(), $outs));
 
+        $output->setAction('forget', [
+            'forget_id' => $ids,
+        ]);
         $output->useQuestionInput();
-        Session::put('forget_id', $ids);
-        Chimpcom::setAction('forget');
 
         return 0;
     }

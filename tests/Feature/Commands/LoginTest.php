@@ -23,8 +23,8 @@ class LoginTest extends TestCase
     {
         $this->getGuestResponse('login mysteryman')
             ->assertSee('Account not found.')
-            ->assertStatus(200)
-            ->assertSessionHas('action', 'normal');
+            ->assertStatus(200);
+        $this->assertNoAction();
     }
 
     /** @test */
@@ -36,7 +36,7 @@ class LoginTest extends TestCase
 
         $this->getGuestResponse('login testuser')
             ->assertSee('Password')
-            ->assertStatus(200)
-            ->assertSessionHas('action', 'password');
+            ->assertStatus(200);
+        $this->assertAction('password');
     }
 }

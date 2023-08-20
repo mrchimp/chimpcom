@@ -2,8 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
-use Illuminate\Support\Facades\Session;
+use Mrchimp\Chimpcom\Actions\Action;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\File;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,13 +30,19 @@ class Edit extends Action
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$input->getOption('continue')) {
-            Chimpcom::setAction();
+            Chimpcom::delAction($input->getActionId());
+        } else {
+            $action = $input->getAction();
+            $output->setAction(
+                $action['action_name'],
+                $action['data'],
+            );
         }
 
-        $file = File::find(Session::get('edit_id'));
+        $file = File::find($input->getActionData('edit_id'));
 
         if (!$file) {
-            $output->write('File got lost along the way. Try again.');
+            $output->error('File got lost along the way. Try again.');
             return 1;
         }
 

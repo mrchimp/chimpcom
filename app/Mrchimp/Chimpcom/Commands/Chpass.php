@@ -2,7 +2,6 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Chimpcom;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,8 +38,7 @@ class Chpass extends Command
             return 1;
         }
 
-        Chimpcom::setAction('chpass_1');
-
+        $output->setAction('chpass_1');
         $output->usePasswordInput();
         $output->useQuestionInput();
         $output->alert('Enter your new password. Type cancel to cancel.');

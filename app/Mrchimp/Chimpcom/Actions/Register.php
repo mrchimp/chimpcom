@@ -6,8 +6,7 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
-use Illuminate\Support\Facades\Session;
+use Mrchimp\Chimpcom\Actions\Action;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Traits\LogCommandNameOnly;
 use Symfony\Component\Console\Input\InputArgument;
@@ -46,9 +45,11 @@ class Register extends Action
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!Session::get('register_username')) {
+        $username = $input->getActionData('username');
+
+        if (!$username) {
             $output->error('This should not happen.');
-            Chimpcom::setAction();
+            Chimpcom::delAction($input->getActionId());
             return 1;
         }
 
@@ -56,14 +57,15 @@ class Register extends Action
 
         if (!$password) {
             $output->error('No password given. Giving up.');
-            Chimpcom::setAction();
-            Session::forget('register_username');
+            Chimpcom::delAction($input->getActionId());
             return 2;
         }
 
-        Session::put('register_password', $password);
+        $output->setAction('register2', [
+            'password' => $password,
+            'username' => $username,
+        ]);
         $output->alert('Enter the same password again:');
-        Chimpcom::setAction('register2');
         $output->useQuestionInput();
         $output->usePasswordInput(true);
 

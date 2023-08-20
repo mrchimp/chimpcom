@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mrchimp\Chimpcom\Actions;
+namespace Mrchimp\Chimpcom\Actions;
 
 use Mrchimp\Chimpcom\Commands\Command;
 use Mrchimp\Chimpcom\Facades\Chimpcom;

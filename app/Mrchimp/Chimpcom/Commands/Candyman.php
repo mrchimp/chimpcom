@@ -33,8 +33,7 @@ class Candyman extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Chimpcom::setAction('candyman');
-
+        $output->setAction('candyman');
         $output->write('candyman');
 
         return 0;

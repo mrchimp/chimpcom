@@ -6,10 +6,9 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
+use Mrchimp\Chimpcom\Actions\Action;
 use App\Mrchimp\Chimpcom\Id;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Booleanate;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Memory;
@@ -49,8 +48,7 @@ class Forget extends Action
     {
         if (!Auth::check()) {
             $output->error('You must log in to use this command.');
-
-            Chimpcom::resetTerminal();
+            $output->resetTerminal();
 
             return 1;
         }
@@ -59,7 +57,7 @@ class Forget extends Action
         $answer = $input->getArgument('answer');
 
         if (Booleanate::isAffirmative($answer)) {
-            $ids = Session::get('forget_id');
+            $ids = $input->getActionData('forget_id');
 
             Memory::where('user_id', $user->id)
                 ->whereIn('id', $ids)
@@ -74,8 +72,7 @@ class Forget extends Action
             $output->write('Whatever.');
         }
 
-        Chimpcom::setAction();
-        Session::forget('forget_id');
+        Chimpcom::delAction($input->getActionId());
 
         return 0;
     }

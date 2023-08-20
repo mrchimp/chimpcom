@@ -34,7 +34,8 @@ class ChimpcomController extends Controller
 
         $input = $request->input('cmd_in');
         $content = $request->input('content');
-        $response = (new Responder($input, $content))->run();
+        $action_id = $request->input('action_id');
+        $response = (new Responder($input, $content, $action_id))->run();
 
         if ($request->ajax()) {
             return $response->getJsonResponse();

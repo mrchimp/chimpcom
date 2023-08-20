@@ -2,7 +2,9 @@
 
 namespace Mrchimp\Chimpcom;
 
-use Illuminate\Support\Facades\Session;
+use Exception;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Redis;
 
 class Chimpcom
 {
@@ -42,27 +44,58 @@ class Chimpcom
     protected $content;
 
     /**
-     * Reset the action
-     */
-    public function clearAction()
-    {
-        $this->setAction('normal');
-    }
-
-    /**
      * Returns the action to perform.
      */
     public function currentActionName(): string
     {
-        return Session::get('action', 'normal');
+        throw new Exception('Chimpcom::currentActionName no longer works.');
     }
 
     /**
      * Sets the action
      */
-    public function setAction($str = 'normal')
+    public function setAction(string $action_name = 'normal', array $data = []): string
     {
-        Session::put('action', $str);
+        $action_id = Str::random();
+
+        Redis::set($action_id, json_encode([
+            'action_name' => $action_name,
+            'data' => $data,
+        ]));
+
+        return $action_id;
+    }
+
+    public function setActionData(string $action_id, $key, $value): void
+    {
+        $action = Redis::get($action_id);
+
+        if (!$action) {
+            return;
+        }
+    }
+
+    public function actionExists(string $action_id): bool
+    {
+        return Redis::exists($action_id);
+    }
+
+    public function getAction(string $action_id): ?array
+    {
+        $action = Redis::get($action_id);
+
+        if (!$action) {
+            return null;
+        }
+
+        return json_decode($action, true);
+    }
+
+    public function delAction(string $action_id = null): void
+    {
+        if ($action_id) {
+            Redis::del($action_id);
+        }
     }
 
     /**

@@ -3,9 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
-use Chimpcom;
 use Mrchimp\Chimpcom\Facades\Format;
-use Session;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -56,8 +54,9 @@ class Register extends Command
             return 2;
         }
 
-        Session::put('register_username', $username);
-        Chimpcom::setAction('register');
+        $output->setAction('register', [
+            'username' => $username,
+        ]);
         $output->usePasswordInput();
         $output->useQuestionInput();
         $output->alert('Enter a password:');

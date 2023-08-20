@@ -20,15 +20,16 @@ class Output extends SymfonyOutput
      * @var array
      */
     private $out = [
+        'action_id' => null,
         'cmd_out'   => '',
-        'show_pass' => false,
         'cmd_fill'  => null,
+        'edit_content' => null,
         'log'       => null,
+        'show_pass' => false,
         'user'      => [
             'id'   => -1,
             'name' => 'Guest',
         ],
-        'edit_content' => null,
     ];
 
     public function __construct($verbosity = self::VERBOSITY_NORMAL, $decorated = false, OutputFormatterInterface $formatter = null)
@@ -198,7 +199,7 @@ class Output extends SymfonyOutput
      */
     public function resetTerminal(): void
     {
-        Chimpcom::setAction();
+        $this->out['action_id'] = null;
         $this->usePasswordInput(false);
     }
 
@@ -238,6 +239,18 @@ class Output extends SymfonyOutput
     public function editContent(string $content): void
     {
         $this->out['edit_content'] = $content;
+    }
+
+    /**
+     * Set the action for the next request
+     */
+    public function setAction(string $action_name, array $data = []): string
+    {
+        $action_id = Chimpcom::setAction($action_name, $data);
+
+        $this->out['action_id'] = $action_id;
+
+        return $action_id;
     }
 
     /**

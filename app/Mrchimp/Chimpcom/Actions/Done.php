@@ -2,10 +2,9 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
+use Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Booleanate;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Task;
@@ -51,6 +50,9 @@ class Done extends Action
         $confirmation = $input->getArgument('confirmation');
         $confirmed = Booleanate::isAffirmative($confirmation);
         $project = $user->activeProject;
+        $task_id = $input->getActionData('task_to_complete');
+
+        Chimpcom::delAction($input->getActionId());
 
         if (!$project) {
             $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
@@ -60,13 +62,11 @@ class Done extends Action
 
         if (!$confirmed) {
             $output->write('Fair enough.');
-            Chimpcom::setAction();
-            Session::forget('task_to_complete');
 
             return 0;
         }
 
-        $task = Task::where('id', Session::get('task_to_complete'))
+        $task = Task::where('id', $task_id)
             ->where('project_id', $project->id)
             ->first();
 
@@ -79,8 +79,6 @@ class Done extends Action
         $task->completed = true;
         $task->time_completed = DB::raw('now()');
         $task->save();
-
-        Chimpcom::setAction();
 
         $output->alert('Ok.');
 

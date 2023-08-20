@@ -3,12 +3,8 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Mrchimp\Chimpcom\Console\Input;
-use Mrchimp\Chimpcom\Console\Output;
-use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Project as ProjectModel;
 use Symfony\Component\Console\Input\InputInterface;
@@ -80,7 +76,7 @@ class Project extends Command
     /**
      * Return tab completion options for the current command input
      *
-     * @param  Input  $input
+     * @param  InputInterface  $input
      * @return string
      */
     public function tab(InputInterface $input)
@@ -134,11 +130,10 @@ class Project extends Command
 
         Auth::user()->setActiveProject($project);
 
+        $output->setAction('newproject');
         $output->write('Creating project "' . $project->name . '"...' . Format::nl());
         $output->write('Please add a description:');
         $output->useQuestionInput();
-
-        Chimpcom::setAction('newproject');
 
         return 0;
     }
@@ -184,8 +179,9 @@ class Project extends Command
 
         $output->title('Are you sure you want to delete the project `' . Format::escape($project->name) . '`?');
         $output->useQuestionInput();
-        Session::put('projectrm', $project->id);
-        Chimpcom::setAction('project_rm');
+        $output->setAction('project_rm', [
+            'projectrm' => $project->id,
+        ]);
 
         return 0;
     }

@@ -28,6 +28,7 @@ interface Options {
 }
 
 interface CmdResponse {
+  action_id?: string;
   cmd_fill?: string;
   cmd_out: string;
   edit_content?: string;
@@ -38,10 +39,10 @@ interface CmdResponse {
   redirect?: string;
   show_question_input?: boolean;
   show_pass?: boolean;
-  user?: CmdResonseUser;
+  user?: CmdResponseUser;
 }
 
-interface CmdResonseUser {
+interface CmdResponseUser {
   name: string;
 }
 
@@ -52,6 +53,7 @@ interface CmdResonseUser {
  * @license  MIT License
  */
 export default class Cmd {
+  action_id?: string;
   all_commands: string[];
   autocomplete_attempted: boolean;
   autocomplete_controller: AbortController;
@@ -84,6 +86,8 @@ export default class Cmd {
   wrapper_el: HTMLElement;
 
   constructor(user_config: Options = {}) {
+    console.log('hi!');
+    this.action_id = null;
     this.prompt_str = '%USERNAME% $';
     this.tts_supported =
       'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
@@ -528,6 +532,12 @@ export default class Cmd {
       this.startEdit(response.edit_content);
     }
 
+    if (!!response.action_id) {
+      this.action_id = response.action_id;
+    } else {
+      this.action_id = null;
+    }
+
     this.output(response.cmd_out);
 
     if (response.user && response.user.name) {
@@ -547,6 +557,7 @@ export default class Cmd {
     var input_str = this.input_el.value;
 
     switch (e.key) {
+      // TODO: Handle ctrl+C and if no selection then clear action
       case 'Tab':
         // For accessability reasons, don't tabcomplete when input is empty
         if (this.input_el.value === '') {
@@ -872,7 +883,7 @@ export default class Cmd {
    *
    * @todo make async
    */
-  ajaxCmd(cmd_in: string, options?: object) {
+  async ajaxCmd(cmd_in: string, options?: object) {
     const request = new Request(this.options.endpoint, {
       method: 'POST',
       body: JSON.stringify(
@@ -880,6 +891,7 @@ export default class Cmd {
           {
             _token: (<HTMLInputElement>document.querySelector('input[name="_token"]')).value,
             cmd_in: cmd_in,
+            action_id: this.action_id,
           },
           options
         )

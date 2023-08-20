@@ -6,11 +6,10 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
+use Chimpcom;
+use Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Facades\Format;
-use Mrchimp\Chimpcom\Models\Message;
 use Mrchimp\Chimpcom\Traits\LogCommandNameOnly;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -50,23 +49,23 @@ class Password extends Action
         if (Auth::check()) {
             $user = Auth::user();
             $output->error('You are already logged in as ' . htmlspecialchars($user->name) . '. How did you do that?');
+            Chimpcom::delAction($input->getActionId());
             return 1;
         }
 
-        $username = Session::get('login_username');
+        $username = $input->getActionData('username');
         $password = implode(' ', $input->getArgument('password'));
 
-        Session::forget('login_username');
-        Session::put('action', 'normal');
+        Chimpcom::delAction($input->getActionId());
 
         if (!$password) {
-            $this->error('No password given. Start again.');
+            $output->error('No password given. Start again.');
 
             return 1;
         }
 
         if (!$username) {
-            $this->error('I forgot your name, sorry. Start again.');
+            $output->error('I forgot your name, sorry. Start again.');
 
             return 2;
         }
@@ -88,7 +87,7 @@ class Password extends Action
         if ($unread_count > 0) {
             $output->write(
                 Format::nl() . 'You have ' . $unread_count . ' unread message' . ($unread_count > 1 ? 's' : '') . '. ' .
-                'Use the command <code>mail</code> to read ' . ($unread_count > 1 ? 'them' : 'it') .  '.'
+                    'Use the command <code>mail</code> to read ' . ($unread_count > 1 ? 'them' : 'it') .  '.'
             );
         }
 

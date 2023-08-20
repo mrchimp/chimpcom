@@ -50,20 +50,17 @@ class Login extends Command
         // User doesn't exist
         if (count($user) === 0) {
             $output->error('Account not found. If you need to create an account, use the register command.');
-
             $output->usePasswordInput(false);
-
-            Session::put('action', 'normal');
 
             return 3;
         }
 
-        Session::put('login_username', trim($username));
 
+        $output->setAction('password', [
+            'username' => trim($username),
+        ]);
         $output->alert('Password:');
         $output->usePasswordInput();
-
-        Session::put('action', 'password');
 
         return 0;
     }

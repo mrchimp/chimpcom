@@ -50,9 +50,10 @@ class ForgetTest extends TestCase
 
         $this->getUserResponse('forget ' . $encoded_id, $user)
             ->assertStatus(200)
-            ->assertSee('Are you sure')
-            ->assertSessionHas('action', 'forget')
-            ->assertSessionHas('forget_id');
+            ->assertSee('Are you sure');
+
+        $this->assertAction('forget');
+        $this->assertActionData(['forget_id' => $encoded_id]);
     }
 
     /** @test */
@@ -67,9 +68,10 @@ class ForgetTest extends TestCase
 
         $this->getUserResponse('forget ' . $encoded_id, $user);
 
-        $this->getUserResponse('no', $user)
+        $this->getUserResponse('no', $user, $this->last_action_id)
             ->assertStatus(200)
             ->assertSee('Action aborted.');
+        $this->assertNoAction();
     }
 
     /** @test */
@@ -84,9 +86,10 @@ class ForgetTest extends TestCase
 
         $this->getUserResponse('forget ' . $encoded_id, $user);
 
-        $this->getUserResponse('blblblblblblblblbl', $user)
+        $this->getUserResponse('blblblblblblblblbl', $user, $this->last_action_id)
             ->assertStatus(200)
             ->assertSee('Whatever.');
+        $this->assertNoAction();
     }
 
     /** @test */
@@ -101,8 +104,9 @@ class ForgetTest extends TestCase
 
         $this->getUserResponse('forget ' . $encoded_id, $user);
 
-        $this->getUserResponse('yes', $user)
+        $this->getUserResponse('yes', $user, $this->last_action_id)
             ->assertStatus(200)
             ->assertSee('Memory forgotten');
+        $this->assertNoAction();
     }
 }

@@ -119,12 +119,13 @@ return [
 
     'redis' => [
 
-        'cluster' => false,
+        'client' => env('REDIS_CLIENT', 'phpredis'),
 
         'default' => [
             'host'     => env('REDIS_HOST', '127.0.0.1'),
-            'port'     => 6379,
-            'database' => 0,
+            'password' => env('REDIS_PASSWORD'),
+            'port'     => env('REDIS_PORT', 6379),
+            'database' => env('REDIS_DB', 0),
         ],
 
     ],

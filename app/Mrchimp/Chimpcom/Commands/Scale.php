@@ -72,7 +72,7 @@ class Scale extends Command
         $root = strtoupper($input->getArgument('root'));
 
         if (!in_array($root, $notes)) {
-            $this->error('That is not a valid root note.');
+            $output->error('That is not a valid root note.');
             return 1;
         }
 

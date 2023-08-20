@@ -2,9 +2,8 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
+use Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Traits\LogCommandNameOnly;
 use Symfony\Component\Console\Input\InputArgument;
@@ -42,16 +41,15 @@ class Chpass_1 extends Action
         $password = implode(' ', $input->getArgument('password'));
 
         if (!$password || $password === 'cancel') {
+            Chimpcom::delAction($input->getActionId());
             $output->error('Abandoning.');
             $output->usePasswordInput(false);
-            Chimpcom::setAction();
             return 0;
         }
 
-        Session::put('chpass_1', $password);
-
-        Chimpcom::setAction('chpass_2');
-
+        $output->setAction('chpass_2', [
+            'chpass_1' => $password
+        ]);
         $output->usePasswordInput();
         $output->useQuestionInput();
         $output->alert('Enter password again. Type cancel to cancel.');

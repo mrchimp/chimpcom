@@ -3,8 +3,6 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Directory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -55,10 +53,9 @@ class Edit extends Command
             $output->error('You do not own that file.');
             return 4;
         }
-
-        Chimpcom::setAction('edit');
-        Session::put('edit_id', $file->id);
-
+        $output->setAction('edit', [
+            'edit_id' => $file->id,
+        ]);
         $output->write('Editing...');
         $output->editContent($file->content);
 

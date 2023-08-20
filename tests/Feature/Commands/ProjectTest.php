@@ -23,13 +23,13 @@ class ProjectTest extends TestCase
     {
         $this->getUserResponse('project new testproject')
             ->assertSee('Creating project')
-            ->assertSessionHas('action', 'newproject')
-            ->assertStatus(200);
+            ->assertOk();
+        $this->assertAction('newproject');
 
-        $this->getUserResponse('Description of my project')
+        $this->getUserResponse('Description of my project', null, $this->last_action_id)
             ->assertSee('Project saved and set as current project.')
-            ->assertStatus(200)
-            ->assertSessionHas('action', 'normal');
+            ->assertOk();
+        $this->assertNoAction();
 
         $project = Project::first();
 
@@ -53,7 +53,7 @@ class ProjectTest extends TestCase
 
         $this->getUserResponse('project set myproject')
             ->assertSee('myproject is now the current project')
-            ->assertStatus(200);
+            ->assertOk();
 
         $this->assertEquals($this->user->active_project_id, $project->id);
     }
@@ -69,18 +69,21 @@ class ProjectTest extends TestCase
 
         $this->getUserResponse('project rm myproject')
             ->assertSee('Are you sure you want to delete the project')
-            ->assertStatus(200)
-            ->assertSessionHas('action', 'project_rm')
-            ->assertSessionHas('projectrm', $project->id);
+            ->assertOk();
 
-        $this->getUserResponse('no')
+        $this->assertAction('project_rm');
+        $this->assertActionData([
+            'projectrm' => $project->id,
+        ]);
+
+        $this->getUserResponse('no', null, $this->last_action_id)
             ->assertSee('Fair enough.');
 
-        $this->getUserResponse('project rm myproject');
+        $this->getUserResponse('project rm myproject', null, $this->last_action_id);
 
-        $this->getUserResponse('yes')
+        $this->getUserResponse('yes', null, $this->last_action_id)
             ->assertSee('Ok. It\'s gone.')
-            ->assertStatus(200);
+            ->assertOk();
     }
 
     /** @test */
@@ -95,8 +98,8 @@ class ProjectTest extends TestCase
         ]);
 
         $this->getUserResponse('project rm myproject')
-            ->assertSee('Cannot remove that.')
-            ->assertSessionMissing('action');
+            ->assertSee('Cannot remove that.');
+        $this->assertNoAction();
     }
 
     /** @test */
@@ -106,7 +109,7 @@ class ProjectTest extends TestCase
 
         $this->getUserResponse('project')
             ->assertSee('No active project')
-            ->assertStatus(200);
+            ->assertOk();
     }
 
     /** @test */
@@ -114,7 +117,7 @@ class ProjectTest extends TestCase
     {
         $this->getUserResponse('project new £&^&^&*')
             ->assertSee('There was a problem')
-            ->assertStatus(200);
+            ->assertOk();
     }
 
     /** @test */
@@ -122,7 +125,7 @@ class ProjectTest extends TestCase
     {
         $this->getUserResponse('project set lkdsajflasfdhjkfds')
             ->assertSee('That project ID is invalid')
-            ->assertStatus(200);
+            ->assertOk();
     }
 
     /** @test */
@@ -138,7 +141,7 @@ class ProjectTest extends TestCase
 
         $this->getUserResponse('project')
             ->assertSee('Current project: myproject')
-            ->assertStatus(200);
+            ->assertOk();
     }
 
     /** @test */
@@ -153,7 +156,7 @@ class ProjectTest extends TestCase
 
         $json = $this->actingAs($this->user)
             ->get('/ajax/tabcomplete?cmd_in=project+set+c')
-            ->assertStatus(200)
+            ->assertOk()
             ->json();
 
         $this->assertCount(1, $json);
@@ -172,7 +175,7 @@ class ProjectTest extends TestCase
 
         $json = $this->actingAs($this->user)
             ->get('/ajax/tabcomplete?cmd_in=project+set+xxxx')
-            ->assertStatus(200)
+            ->assertOk()
             ->json();
 
         $this->assertCount(0, $json);
@@ -188,7 +191,7 @@ class ProjectTest extends TestCase
 
         $this->getUserResponse('project list', $user)
             ->assertSee('Project Name')
-            ->assertStatus(200);
+            ->assertOk();
     }
 
     /** @test */
@@ -196,6 +199,6 @@ class ProjectTest extends TestCase
     {
         $this->getUserResponse('project list')
             ->assertSee('No projects.')
-            ->assertStatus(200);
+            ->assertOk();
     }
 }

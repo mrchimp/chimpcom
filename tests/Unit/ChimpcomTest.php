@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
+use Mrchimp\Chimpcom\Actions\Action;
 use App\User;
 use Illuminate\Support\Facades\Config;
 use Mrchimp\Chimpcom\Actions\Candyman;
@@ -58,10 +58,8 @@ class ChimpcomTest extends TestCase
     /** @test */
     public function clearaction_clears_the_action()
     {
-        $this->withSession(['action' => 'specialaction']);
-
-        $this->getGuestResponse('clearaction')
-            ->assertSessionHas('action', 'normal');
+        $this->getGuestResponse('clearaction', 'someactionid');
+        $this->assertNoAction();
     }
 
     /** @test */

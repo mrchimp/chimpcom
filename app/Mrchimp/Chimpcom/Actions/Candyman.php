@@ -6,8 +6,8 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
-use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Chimpcom;
+use Mrchimp\Chimpcom\Actions\Action;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -42,7 +42,7 @@ class Candyman extends Action
             $output->write('Pussy.');
         }
 
-        Chimpcom::setAction();
+        Chimpcom::delAction($input->getActionId());
 
         return 0;
     }

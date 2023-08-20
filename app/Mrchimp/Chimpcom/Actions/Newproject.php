@@ -6,7 +6,7 @@
 
 namespace Mrchimp\Chimpcom\Actions;
 
-use App\Mrchimp\Chimpcom\Actions\Action;
+use Mrchimp\Chimpcom\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
@@ -47,7 +47,7 @@ class Newproject extends Action
         if (!Auth::check()) {
             $output->error('You must be logged in to perform this action.');
 
-            Chimpcom::resetTerminal();
+            $output->resetTerminal();
 
             return 1;
         }
@@ -57,8 +57,7 @@ class Newproject extends Action
 
         if (!Session::has('current_project_id')) {
             $output->error('Oops. There was a problem. [Current project not set.]');
-
-            Chimpcom::setAction();
+            Chimpcom::delAction($input->getActionId());
 
             return 2;
         }
@@ -67,9 +66,7 @@ class Newproject extends Action
 
         if (!$project->id) {
             $output->error('Current project doesn\'t exist.');
-
-            Session::forget('current_project_id');
-            Chimpcom::setAction();
+            Chimpcom::delAction($input->getActionId());
 
             return 3;
         }
@@ -82,7 +79,7 @@ class Newproject extends Action
 
         $output->alert('Project saved and set as current project.');
 
-        Chimpcom::setAction();
+        Chimpcom::delAction($input->getActionId());
 
         return 0;
     }

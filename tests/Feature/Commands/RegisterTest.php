@@ -15,7 +15,7 @@ class RegisterTest extends TestCase
     {
         $this->getUserResponse('register blah')
             ->assertSee('You\'re already logged in.')
-            ->assertStatus(200);
+            ->assertOk();
     }
 
     /** @test */
@@ -27,7 +27,7 @@ class RegisterTest extends TestCase
 
         $this->getGuestResponse('register fred')
             ->assertSee('There was a problem')
-            ->assertStatus(200);
+            ->assertOk();
     }
 
     /** @test */
@@ -35,8 +35,10 @@ class RegisterTest extends TestCase
     {
         $this->getGuestResponse('register fred')
             ->assertSee('Enter a password:')
-            ->assertStatus(200)
-            ->assertSessionHas('action', 'register')
-            ->assertSessionHas('register_username', 'fred');
+            ->assertOk();
+        $this->assertAction('register');
+        $this->assertActionData([
+            'register_username' => 'fred',
+        ]);
     }
 }

@@ -21,14 +21,14 @@ class PasswordActionTest extends TestCase
         ]);
 
         $this->getGuestResponse('login testuser')
-            ->assertSee('Password')
-            ->assertStatus(200)
-            ->assertSessionHas('action', 'password');
+            ->assertOk()
+            ->assertSee('Password');
+        $this->assertAction('password');
 
-        $this->getGuestResponse('hunter2')
-            ->assertStatus(200)
-            ->assertSee('Welcome back.')
-            ->assertSessionHas('action', 'normal');
+        $this->getGuestResponse('hunter2', $this->last_action_id)
+            ->assertOk()
+            ->assertSee('Welcome back.');
+        $this->assertNoAction('normal');
 
         $this->assertTrue(Auth::check());
     }
@@ -42,14 +42,14 @@ class PasswordActionTest extends TestCase
         ]);
 
         $this->getGuestResponse('login testuser')
-            ->assertSee('Password')
-            ->assertStatus(200)
-            ->assertSessionHas('action', 'password');
+            ->assertOk()
+            ->assertSee('Password');
+        $this->assertAction('password');
 
-        $this->getGuestResponse('wrongpassword')
-            ->assertStatus(200)
-            ->assertSee('Hmmmm... No.')
-            ->assertSessionHas('action', 'normal');
+        $this->getGuestResponse('wrongpassword', $this->last_action_id)
+            ->assertOk()
+            ->assertSee('Hmmmm... No.');
+        $this->assertNoAction('normal');
     }
 
     /** @test */
@@ -65,14 +65,14 @@ class PasswordActionTest extends TestCase
         ]);
 
         $this->getGuestResponse('login testuser')
-            ->assertSee('Password')
-            ->assertStatus(200)
-            ->assertSessionHas('action', 'password');
+            ->assertOk()
+            ->assertSee('Password');
+        $this->assertAction('password');
 
-        $this->getGuestResponse('hunter2')
-            ->assertStatus(200)
-            ->assertSee('You have 1 unread message.')
-            ->assertSessionHas('action', 'normal');
+        $this->getGuestResponse('hunter2', $this->last_action_id)
+            ->assertOk()
+            ->assertSee('You have 1 unread message.');
+        $this->assertNoAction();
     }
 
     /** @test */
@@ -88,13 +88,13 @@ class PasswordActionTest extends TestCase
         ]);
 
         $this->getGuestResponse('login testuser')
-            ->assertSee('Password')
-            ->assertStatus(200)
-            ->assertSessionHas('action', 'password');
+            ->assertOk()
+            ->assertSee('Password');
+        $this->assertAction('password');
 
-        $this->getGuestResponse('hunter2')
-            ->assertStatus(200)
-            ->assertSee('You have 2 unread messages.')
-            ->assertSessionHas('action', 'normal');
+        $this->getGuestResponse('hunter2', $this->last_action_id)
+            ->assertOk()
+            ->assertSee('You have 2 unread messages.');
+        $this->assertNoAction();
     }
 }

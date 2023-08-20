@@ -59,8 +59,9 @@ class EditTest extends TestCase
         $json = $this->getUserResponse('edit file', $user)
             ->assertStatus(200)
             ->assertSee('Editing...')
-            ->assertSessionHas('action', 'edit')
             ->json();
+
+        $this->assertAction('edit');
 
         $this->assertEquals(
             'This is the file contents',
@@ -69,7 +70,7 @@ class EditTest extends TestCase
     }
 
     /** @test */
-    public function if_edit_file_goes_away_while_its_bein_edited_then_that_would_suck_wouldnt_it()
+    public function if_edit_file_goes_away_while_its_being_edited_then_that_would_suck_wouldnt_it()
     {
         $user = User::factory()->create();
         $directory = Directory::factory()->create();
@@ -81,15 +82,15 @@ class EditTest extends TestCase
         ]);
         $directory->setCurrent($user);
 
-        $this->getUserResponse('edit file', $user)
-            ->assertSessionHas('action', 'edit');
+        $this->getUserResponse('edit file', $user);
+        $this->assertAction('edit');
 
         $file->delete();
 
-        $this->getUserEditSaveResponse('Some content I want to save', $user)
+        $this->getUserEditSaveResponse('Some content I want to save', $user, '', $this->last_action_id)
             ->assertStatus(200)
-            ->assertSee('File got lost along the way. Try again.')
-            ->assertSessionHas('action', 'normal');
+            ->assertSee('File got lost along the way. Try again.');
+        $this->assertNoAction();
     }
 
     /** @test */
@@ -97,7 +98,7 @@ class EditTest extends TestCase
     {
         $user = User::factory()->create();
         $directory = Directory::factory()->create();
-        File::factory()->create([
+        $file = File::factory()->create([
             'name' => 'file',
             'owner_id' => $user->id,
             'directory_id' => $directory->id,
@@ -105,13 +106,14 @@ class EditTest extends TestCase
         ]);
         $directory->setCurrent($user);
 
-        $this->getUserResponse('edit file', $user)
-            ->assertSessionHas('action', 'edit');
+        $this->getUserResponse('edit file', $user);
+        $this->assertAction('edit');
+        $this->assertActionData(['edit_id' => $file->id]);
 
-        $this->getUserEditSaveResponse('', $user)
+        $this->getUserEditSaveResponse('', $user, '', $this->last_action_id)
             ->assertStatus(200)
-            ->assertSee('No content to save. Aborting.')
-            ->assertSessionHas('action','normal');
+            ->assertSee('No content to save. Aborting.');
+        $this->assertNoAction();
     }
 
     /** @test */
@@ -127,12 +129,12 @@ class EditTest extends TestCase
         ]);
         $directory->setCurrent($user);
 
-        $this->getUserResponse('edit file', $user)
-            ->assertSessionHas('action', 'edit');
+        $this->getUserResponse('edit file', $user);
+        $this->assertAction('edit');
 
-        $this->getUserEditSaveResponse('Some content to save', $user, '--continue')
-            ->assertStatus(200)
-            ->assertSessionHas('action','edit');
+        $this->getUserEditSaveResponse('Some content to save', $user, '--continue', $this->last_action_id)
+            ->assertStatus(200);
+        $this->assertAction('edit');
 
         $file->refresh();
 
@@ -152,13 +154,14 @@ class EditTest extends TestCase
         ]);
         $directory->setCurrent($user);
 
-        $this->getUserResponse('edit file', $user)
-            ->assertSessionHas('action', 'edit');
+        $this->getUserResponse('edit file', $user);
+        $this->assertAction('edit');
 
-        $this->getUserEditSaveResponse('Some content to save', $user)
+        $this->getUserEditSaveResponse('Some content to save', $user, '', $this->last_action_id)
             ->assertStatus(200)
-            ->assertSessionHas('action','normal')
             ->assertSee('Ok.');
+
+        $this->assertNoAction();
 
         $file->refresh();
 
