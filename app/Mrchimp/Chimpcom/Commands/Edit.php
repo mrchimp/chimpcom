@@ -53,6 +53,7 @@ class Edit extends Command
             $output->error('You do not own that file.');
             return 4;
         }
+
         $output->setAction('edit', [
             'edit_id' => $file->id,
         ]);

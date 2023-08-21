@@ -6,9 +6,8 @@ use App\Mrchimp\Chimpcom\Id;
 use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Facades\Format;
 use App\Mrchimp\Chimpcom\ProgressBar;
+use Illuminate\Support\Arr;
 use Mrchimp\Chimpcom\Commands\Command;
-use Mrchimp\Chimpcom\Facades\Chimpcom;
-use Illuminate\Support\Facades\Session;
 use Mrchimp\Chimpcom\Models\Tag;
 use Mrchimp\Chimpcom\Models\Task as TaskModel;
 use Mrchimp\Chimpcom\Str;
@@ -37,7 +36,7 @@ class Task extends Command
         $this->addArgument(
             'subcommand',
             null,
-            'The subcommand to run. Available subcommands are: NEW, LIST, DONE.',
+            'The subcommand to run. Available subcommands are: NEW, LIST, EDIT, DONE.',
             'list'
         );
         $this->addArgument(
@@ -109,6 +108,8 @@ class Task extends Command
                 return $this->newTask($input, $output);
             case 'done':
                 return $this->doneTask($input, $output);
+            case 'edit':
+                return $this->editTask($input, $output);
             case 'list':
             default:
                 return $this->listTasks($input, $output);
@@ -285,6 +286,36 @@ class Task extends Command
             $output->write($task->description . Format::nl(2));
             $output->write('yes/no?');
         }
+
+        return 0;
+    }
+
+    protected function editTask(InputInterface $input, OutputInterface $output)
+    {
+        $user = Auth::user();
+        $project = $user->activeProject;
+
+        if (!$project) {
+            $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
+            return 2;
+        }
+
+        $content = $input->getArgument('content');
+        $task_id = Id::decode(Arr::first($content));
+
+        $task = TaskModel::where('id', $task_id)
+            ->where('project_id', $project->id)
+            ->first();
+
+        if (!$task) {
+            $output->error(Format::escape('Couldn\'t find that task.'));
+            return 3;
+        }
+
+        $output->setAction('edit_task', [
+            'task_to_edit' => $task->id,
+        ]);
+        $output->editContent($task->description);
 
         return 0;
     }

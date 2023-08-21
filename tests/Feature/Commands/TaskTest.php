@@ -3,9 +3,10 @@
 namespace Tests\Feature\Commands;
 
 use App\User;
-use Mrchimp\Chimpcom\Models\Project;
-use Mrchimp\Chimpcom\Models\Task;
 use Tests\TestCase;
+use App\Mrchimp\Chimpcom\Id;
+use Mrchimp\Chimpcom\Models\Task;
+use Mrchimp\Chimpcom\Models\Project;
 
 class TaskTest extends TestCase
 {
@@ -333,5 +334,37 @@ class TaskTest extends TestCase
             ->assertOk()
             ->assertSee('High priority task')
             ->assertDontSee('Low priority task');
+    }
+
+    /** @test */
+    public function can_edit_tasks()
+    {
+        $user = User::factory()->create();
+        $project = Project::factory()->create([
+            'user_id' => $user->id,
+        ]);
+        $user->active_project_id = $project->id;
+        $user->save();
+        $task = Task::factory()->create([
+            'project_id' => $project->id,
+        ]);
+
+        $this->getUserResponse('task edit ' . Id::encode($task->id), $user)
+            ->assertOk();
+
+        $this->assertAction('edit_task');
+        $this->assertActionData(['task_to_edit' => $task->id]);
+
+        $this->getUserEditSaveResponse(
+            'updated task content',
+            $user,
+            '',
+            $this->last_action_id
+        )
+            ->assertOk();
+
+        $task->refresh();
+
+        $this->assertEquals('updated task content', $task->description);
     }
 }

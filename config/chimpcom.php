@@ -80,5 +80,6 @@ return [
         'register3' => \Mrchimp\Chimpcom\Actions\Register3::class,
         'chpass_1' => \Mrchimp\Chimpcom\Actions\Chpass_1::class,
         'chpass_2' => \Mrchimp\Chimpcom\Actions\Chpass_2::class,
+        'edit_task' => \Mrchimp\Chimpcom\Actions\EditTask::class,
     ]
 ];
