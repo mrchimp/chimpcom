@@ -208,7 +208,7 @@ class FormatCli implements Format
 
             $text = preg_replace("/^www./", "", $url_parts["host"]) . (isset($url_parts["path"]) ? "/..." : "");
 
-            return sprintf('<a rel="nofollow" href="%s">%s</a>', $url, $text);
+            return sprintf('[%s] - %s', $url, $text);
         };
 
         return preg_replace_callback($pattern, $callback, $text);
