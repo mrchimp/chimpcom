@@ -297,11 +297,17 @@ class Task extends Command
 
         if (!$project) {
             $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
+            return 1;
+        }
+
+        $id = Arr::first($input->getArgument('content'));
+
+        if (empty($id)) {
+            $output->error('No ID provided.');
             return 2;
         }
 
-        $content = $input->getArgument('content');
-        $task_id = Id::decode(Arr::first($content));
+        $task_id = Id::decode($id);
 
         $task = TaskModel::where('id', $task_id)
             ->where('project_id', $project->id)
