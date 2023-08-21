@@ -25,6 +25,10 @@ html,
   --text-hover-color: #bbb;
   --font-size: 1.125rem; // 18px
   --font-default: Menlo, Consolas, Monaco, monospace;
+  --task-urgent: #900;
+  --task-high: #da0;
+  --task-low: #9e9e9e;
+  --task-normal: #ccc;
 
   @media screen and (prefers-color-scheme: light) {
     --bg-color: #fff;
@@ -44,6 +48,10 @@ html,
     --link-color: #bababa;
     --code-color: #bababa;
     --text-hover-color: #bababa;
+    --task-urgent: #e8341c;
+    --task-high: #f2d42c;
+    --task-low: #9e9e9e;
+    --task-normal: #ccc;
   }
 
   &.theme-solarized {
@@ -58,6 +66,10 @@ html,
     --title-color: #268bd2;
     --success-color: #859900;
     --grey-color: #586e75;
+    --task-urgent: #cb4b16;
+    --task-high: #b58900;
+    --task-low: #586e75;
+    --task-normal: #fdf6e3;
 
     @media screen and (prefers-color-scheme: light) {
       --bg-color: #fdf6e3;
@@ -65,7 +77,8 @@ html,
       --link-color: #002b36;
       --code-color: #002b36;
       --text-hover-color: #586e75;
-    }
+      --task-normal: #002b36;
+  }
   }
 
   &.theme-ubuntu {
@@ -80,6 +93,10 @@ html,
     --link-color: #bbbbbb;
     --code-color: #bbbbbb;
     --text-hover-color: #bbbbbb;
+    --task-urgent: #cc0000;
+    --task-high: #ddbb00;
+    --task-low: #555753;
+    --task-normal: #d3d7cf;
   }
 
   background-color: var(--bg-color);
@@ -215,4 +232,20 @@ strong {
 
 .lipsum p {
   margin-bottom: 1rem;
+}
+
+.task-urgent {
+  color: var(--task-urgent);
+}
+
+.task-high {
+  color: var(--task-high);
+}
+
+.task-low {
+  color: var(--task-low);
+}
+
+.task-normal {
+  color: var(--task-normal);
 }

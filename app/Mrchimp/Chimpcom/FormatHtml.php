@@ -246,16 +246,16 @@ class FormatHtml implements Format
             $list[] = $task->completed ? '&#10004;' : $hex_id;
 
             if ($task->priority > 10) {
-                $color = '#f00';
+                $class = 'task-urgent';
             } elseif ($task->priority > 5) {
-                $color = '#ff0';
-            } elseif ($task->priority < 0) {
-                $color = '#666';
+                $class = 'task-high';
+            } elseif ($task->priority < 1) {
+                $class = 'task-low';
             } else {
-                $color = '#ccc';
+                $class = 'task-normal';
             }
 
-            $list[] = '<span style="color:' . $color . '">' . $task->priority . '</span> ';
+            $list[] = '<span class="' . $class . '">' . $task->priority . '</span> ';
 
             $list[] = e($task->description);
 
