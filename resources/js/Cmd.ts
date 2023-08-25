@@ -14,7 +14,6 @@ interface SaveEditHandler {
 
 interface Options {
   busy_text?: string;
-  cancel_edit_handler?: CancelEditHandler | null;
   endpoint?: string;
   external_processor?: ExternalProcessor | null;
   history_id?: string;
@@ -64,6 +63,7 @@ export default class Cmd {
   edit_mode: boolean;
   editor_wrapper_el: HTMLElement;
   editor_el: HTMLTextAreaElement;
+  editor_help_text: string;
   input_caret_el: HTMLElement;
   input_container_el: HTMLElement;
   input_el: HTMLInputElement | HTMLTextAreaElement;
@@ -86,7 +86,6 @@ export default class Cmd {
   wrapper_el: HTMLElement;
 
   constructor(user_config: Options = {}) {
-    console.log('hi!');
     this.action_id = null;
     this.prompt_str = '%USERNAME% $';
     this.tts_supported =
@@ -102,7 +101,6 @@ export default class Cmd {
         talk: false,
         unknown_cmd: 'Unrecognised command',
         volume: 1,
-        cancel_edit_handler: this.clearAction.bind(this),
         save_edit_handler: this.saveContent.bind(this),
         endpoint: 'ajax/respond/json',
       },
@@ -132,6 +130,7 @@ export default class Cmd {
     this.edit_mode = false;
     this.edit_content = null;
     this.show_prompt_input = false;
+    this.editor_help_text = 'Exit ^ESC &nbsp;&nbsp; Save ^S';
 
     if (this.options.remote_cmd_list_url) {
       this.loadRemoteCmdList();
@@ -209,20 +208,20 @@ export default class Cmd {
 
       const editor_actions_el = document.createElement('div');
       editor_actions_el.classList.add('cmd-editor-actions');
-      editor_actions_el.innerText = 'escape=cancel shift+enter=save ctrl+shift+enter=save+exit';
+      editor_actions_el.innerHTML = this.editor_help_text;
       this.editor_wrapper_el.appendChild(editor_actions_el);
       this.editor_wrapper_el.addEventListener('click', (e) => {
         e.stopImmediatePropagation();
       });
       this.editor_el.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+        if (e.key === 'Escape' && e.ctrlKey) {
           e.preventDefault();
           e.stopPropagation();
           this.cancelEdit();
           return;
         }
 
-        if (e.key === 'Enter' && e.shiftKey) {
+        if (e.key === 's' && e.ctrlKey) {
           e.preventDefault();
           e.stopPropagation();
           this.saveEdit(!e.ctrlKey);
@@ -239,37 +238,20 @@ export default class Cmd {
   }
 
   cancelEdit() {
-    this.options
-      .cancel_edit_handler()
-      .then(() => {
-        this.edit_mode = false;
-        this.editor_el.innerHTML = '';
-        this.editor_wrapper_el.classList.remove('is-active');
-        this.focusOnInput();
-      })
-      .catch((e) => {
-        alert(e);
-      });
+    this.clearAction();
+    this.edit_mode = false;
+    this.editor_el.innerHTML = '';
+    this.editor_wrapper_el.classList.remove('is-active');
+    this.focusOnInput();
   }
 
   saveEdit(continue_editing = true) {
-    if (!continue_editing) {
-      this.output('Saving...');
-    }
-
     this.editor_el.disabled = false;
 
     this.options
       .save_edit_handler(this.editor_el.value, continue_editing)
       .then(() => {
         this.editor_el.disabled = false;
-
-        if (!continue_editing) {
-          this.edit_mode = false;
-          this.editor_el.innerHTML = '';
-          this.editor_wrapper_el.classList.remove('is-active');
-          this.focusOnInput();
-        }
       })
       .catch((e) => {
         alert('Save failed.');
@@ -936,7 +918,7 @@ export default class Cmd {
    * Reset server action
    */
   clearAction() {
-    return this.ajaxCmd('clearaction');
+    this.action_id = null;
   }
 
   /**
