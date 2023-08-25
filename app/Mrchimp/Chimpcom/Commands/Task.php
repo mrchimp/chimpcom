@@ -36,13 +36,16 @@ class Task extends Command
         $this->addArgument(
             'subcommand',
             null,
-            'The subcommand to run. Available subcommands are: NEW, LIST, EDIT, DONE.',
+            'The subcommand to run. Available subcommands are: NEW, LIST, EDIT, DONE, ADDTAG, REMOVETAG.',
             'list'
         );
         $this->addArgument(
             'content',
             InputArgument::IS_ARRAY,
-            'For NEW, this should be a description of the task. For LIST, only tasks that contain this. For DONE, this is the ID of the task to mark as completed.'
+            'For NEW, this should be a description of the task. ' . Format::nl() . Format::nbsp() .
+                'For LIST, only show tasks that contain this. ' . Format::nl() . Format::nbsp() .
+                'For DONE, this is the ID of the task to mark as completed.' . Format::nl() . Format::nbsp() .
+                'For ADDTAG/REMOVETAG the first word is the ID of the task and subsequent words are tags to add/remove.'
         );
         $this->addOption(
             'all',
@@ -110,6 +113,10 @@ class Task extends Command
                 return $this->doneTask($input, $output);
             case 'edit':
                 return $this->editTask($input, $output);
+            case 'addtag':
+                return $this->addTags($input, $output);
+            case 'removetag':
+                return $this->removeTags($input, $output);
             case 'list':
             default:
                 return $this->listTasks($input, $output);
@@ -314,7 +321,7 @@ class Task extends Command
             ->first();
 
         if (!$task) {
-            $output->error(Format::escape('Couldn\'t find that task.'));
+            $output->error('Could not find task.');
             return 3;
         }
 
@@ -322,6 +329,96 @@ class Task extends Command
             'task_to_edit' => $task->id,
         ]);
         $output->editContent($task->description);
+
+        return 0;
+    }
+
+    protected function addTags(InputInterface $input, OutputInterface $output)
+    {
+        $user = Auth::user();
+        $project = $user->activeProject;
+
+        if (!$project) {
+            $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
+            return 1;
+        }
+
+        $content = $input->getArgument('content');
+        [$words, $tags] = $input->splitWordsAndTags($content);
+        $id = array_shift($words);
+
+        if (empty($id)) {
+            $output->error('No ID provided.');
+            return 2;
+        }
+
+        $task = TaskModel::where('id', Id::decode($id))
+            ->where('project_id', $project->id)
+            ->first();
+
+        if (!$task) {
+            $output->error('Could not find task.');
+            return 3;
+        }
+
+        if (empty($tags)) {
+            $output->error('No tags provided.');
+            return 4;
+        }
+
+        $output->write('Adding tags: ' . implode(', ', $tags) . Format::nl());
+
+        foreach ($tags as $tag_name) {
+            $tag = Tag::firstOrCreate([
+                'tag' => $tag_name,
+            ]);
+            $task->tags()->syncWithoutDetaching([$tag->id]);
+        }
+
+        return 0;
+    }
+
+    protected function removeTags(InputInterface $input, OutputInterface $output)
+    {
+        $user = Auth::user();
+        $project = $user->activeProject;
+
+        if (!$project) {
+            $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
+            return 1;
+        }
+
+        $content = $input->getArgument('content');
+        [$words, $tags] = $input->splitWordsAndTags($content);
+        $id = array_shift($words);
+
+        if (empty($id)) {
+            $output->error('No ID provided.');
+            return 2;
+        }
+
+        $task = TaskModel::where('id', Id::decode($id))
+            ->where('project_id', $project->id)
+            ->first();
+
+        if (!$task) {
+            $output->error('Could not find task.');
+            return 3;
+        }
+
+        if (empty($tags)) {
+            $output->error('No tags provided.');
+            return 4;
+        }
+
+        $output->write('Removing tags: ' . implode(', ', $tags) . Format::nl());
+
+        foreach ($tags as $tag_name) {
+            $tag = Tag::firstOrCreate([
+                'tag' => $tag_name,
+            ]);
+            $task->tags()->detach([$tag->id]);
+        }
 
         return 0;
     }
