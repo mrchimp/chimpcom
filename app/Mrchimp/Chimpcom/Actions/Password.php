@@ -73,7 +73,7 @@ class Password extends Action
         if (!Auth::attempt([
             'name' => $username,
             'password' => $password
-        ], false, true)) {
+        ], true)) {
             $output->error('Hmmmm... No.');
             $this->log->info('User ' . Format::escape($username) . ' failed to log in.');
             return 3;
