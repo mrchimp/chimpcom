@@ -3,6 +3,7 @@
 namespace Mrchimp\Chimpcom\Console;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Validator;
 use Mrchimp\Chimpcom\Facades\Chimpcom;
@@ -90,6 +91,18 @@ class Output extends SymfonyOutput
     public function error(string $str, bool $newline = false): void
     {
         $this->write(Format::error($str), $newline);
+    }
+
+    /**
+     * Output a bag of errors
+     */
+    public function errors(bool | MessageBag $errors): void
+    {
+        if ($errors instanceof MessageBag) {
+            foreach ($errors->all() as $error) {
+                $this->error($error, true);
+            }
+        }
     }
 
     /**

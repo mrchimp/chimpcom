@@ -2,13 +2,17 @@
 
 namespace Tests\Feature\Commands;
 
-use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
-use Mrchimp\Chimpcom\Models\Task;
+use App\User;
 use Mrchimp\Chimpcom\Models\Project;
+use Mrchimp\Chimpcom\Models\Task;
+use App\Mrchimp\Chimpcom\Id;
 
-class TaskDoneTest extends TestCase
+class TaskEditTest extends TestCase
 {
+    use DatabaseMigrations;
+
     protected $other_user;
     protected $active_project;
     protected $other_project;
@@ -73,21 +77,13 @@ class TaskDoneTest extends TestCase
     /** @test */
     public function task_fails_for_guests()
     {
-        $this->getGuestResponse('task:done')
+        $this->getGuestResponse('task:edit')
             ->assertStatus(404)
             ->assertSee(__('chimpcom.must_log_in'));
     }
 
     /** @test */
-    public function done_command_fails_if_user_has_no_active_project()
-    {
-        $this->getUserResponse('task:done 1')
-            ->assertStatus(200)
-            ->assertSee('No active project');
-    }
-
-    /** @test */
-    public function done_command_fails_if_task_cannot_be_found()
+    public function can_edit_tasks()
     {
         $user = User::factory()->create();
         $project = Project::factory()->create([
@@ -95,55 +91,67 @@ class TaskDoneTest extends TestCase
         ]);
         $user->active_project_id = $project->id;
         $user->save();
-
-        $this->getUserResponse('task:done 1', $user)
-            ->assertStatus(200)
-            ->assertSee('Couldn\'t find that task.');
-    }
-
-    /** @test */
-    public function done_command_cues_up_the_done_action_if_all_is_well()
-    {
-        $user = User::factory()->create();
-        $project = Project::factory()->create([
-            'user_id' => $user->id,
-        ]);
-        $user->active_project_id = $project->id;
-        $user->save();
-        Task::factory()->create([
+        $task = Task::factory()->create([
             'project_id' => $project->id,
         ]);
 
-        $this->getUserResponse('task:done 1', $user)
-            ->assertStatus(200)
-            ->assertSee('Are you sure you want to mark this as complete?');
+        $this->getUserResponse('task:edit ' . Id::encode($task->id), $user)
+            ->assertOk();
 
-        $this->assertAction('done');
+        $this->assertAction('edit_task');
+        $this->assertActionData(['task_to_edit' => $task->id]);
+
+        $this->getUserEditSaveResponse(
+            'updated task content',
+            $user,
+            '',
+            $this->last_action_id
+        )
+            ->assertOk();
+
+        $task->refresh();
+
+        $this->assertEquals('updated task content', $task->description);
     }
 
     /** @test */
-    public function done_command_force_option_skips_confirmation()
+    public function priority_must_be_an_integer()
     {
-        $user = User::factory()->create();
-        $project = Project::factory()->create([
-            'user_id' => $user->id,
-        ]);
-        $user->active_project_id = $project->id;
-        $user->save();
-        Task::factory()->count(2)->create([
-            'project_id' => $project->id,
-        ]);
+        $this->makeTestTasks();
+        $this->task_fails_for_guests();
+        $this->getUserResponse('task:edit 1 --priority not_a_number')
+            ->assertSee('Priority must be an integer.')
+            ->assertStatus(200);
+    }
 
-        $this->getUserResponse('task:done 1 --force', $user)
+    /** @test */
+    public function users_can_set_priority_on_tasks()
+    {
+        $this->makeTestTasks();
+        $this->getUserResponse('task:edit 1 --priority 10')
             ->assertStatus(200)
-            ->assertSee('Ok');
-        $this->assertNoAction();
+            ->assertSee('Priority set to 10 for task:');
+    }
 
-        $this->getUserResponse('task:done 2 -f', $user)
+    /** @test */
+    public function cant_set_priority_on_a_task_that_doesnt_exist()
+    {
+        $this->makeTestTasks();
+        $this->getUserResponse('task:edit 99999 --priority 10')
+            ->assertSee('Could not find task.')
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    public function cant_set_priority_on_a_task_you_dont_own()
+    {
+        $this->makeTestTasks();
+        $task = Task::factory()->create([
+            'user_id' => 9999,
+        ]);
+
+        $this->getUserResponse('task:edit ' . $task->id . ' --priority 10')
             ->assertStatus(200)
-            ->assertSee('Ok');
-        $this->assertNoAction();
-
-        $this->assertEquals(0, Task::where('completed', 0)->count());
+            ->assertSee('Could not find task.');
     }
 }

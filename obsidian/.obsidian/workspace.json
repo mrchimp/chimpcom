@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Index.md",
+                "file": "Tasks.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,7 +69,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "157dedcc6aa272b7",
@@ -85,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Index.md",
+                "file": "Tasks.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +103,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Index.md",
+                "file": "Tasks.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Index.md"
+                "file": "Tasks.md"
               }
             }
           }
@@ -133,7 +134,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 239.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -145,10 +147,10 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "a58decc62be4123c",
+  "active": "4a466621cc692fc2",
   "lastOpenFiles": [
-    "Diary.md",
     "Index.md",
+    "Diary.md",
     "Tasks.md",
     "Cal.md",
     "Notes.md",

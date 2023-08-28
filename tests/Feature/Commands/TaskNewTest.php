@@ -10,8 +10,17 @@ use Mrchimp\Chimpcom\Models\Project;
 class TaskNewTest extends TestCase
 {
     protected $other_user;
-
     protected $active_project;
+    protected $other_project;
+    protected $other_users_project;
+
+    /** @test */
+    public function task_fails_for_guests()
+    {
+        $this->getGuestResponse('task:new')
+            ->assertStatus(404)
+            ->assertSee(__('chimpcom.must_log_in'));
+    }
 
     protected function makeTestTasks()
     {
@@ -72,7 +81,7 @@ class TaskNewTest extends TestCase
     /** @test */
     public function task_new_fails_if_user_has_no_active_project()
     {
-        $this->getUserResponse('task new Do a thing')
+        $this->getUserResponse('task:new Do a thing')
             ->assertSee('No active project')
             ->assertStatus(200);
     }
@@ -84,7 +93,7 @@ class TaskNewTest extends TestCase
         $project = Project::factory()->create();
         $user->setActiveProject($project);
 
-        $this->getUserResponse('task new Do a thing', $user)
+        $this->getUserResponse('task:new Do a thing', $user)
             ->assertSee('Task created.')
             ->assertStatus(200);
 
@@ -105,7 +114,7 @@ class TaskNewTest extends TestCase
         $project = Project::factory()->create();
         $user->setActiveProject($project);
 
-        $this->getUserResponse('task new Do an important thing --priority 10', $user)
+        $this->getUserResponse('task:new Do an important thing --priority 10', $user)
             ->assertSee('Task created.')
             ->assertStatus(200);
 

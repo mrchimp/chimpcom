@@ -2,7 +2,9 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Log as ErrorLog;
+use Illuminate\Support\Facades\Validator;
 use Mrchimp\Chimpcom\Console\Output;
 use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Log;
@@ -222,5 +224,51 @@ class Command extends SymfonyCommand
     protected function doLog(InputInterface $input)
     {
         $this->log->info($this->getName() . ' ' . (string) $input);
+    }
+
+    /**
+     * Get the rules for validating arguments and options
+     */
+    protected function rules(InputInterface $input): array
+    {
+        return [];
+    }
+
+    /**
+     * Get the message for validating arguments and options
+     */
+    protected function messages(InputInterface $input): array
+    {
+        return [];
+    }
+
+    /**
+     * Validate the arguments and options and returns any errors found.
+     *
+     * Most validation can be done simply in the command configure() method
+     * but this allows us to add rules e.g. per-subcommand.
+     *
+     * Return false on success, MessageBag on failure.
+     */
+    protected function validate(InputInterface $input): bool | MessageBag
+    {
+        // dd([
+        //     ...$input->getArguments(),
+        //     ...$input->getOptions(),
+        // ]);
+        $validator = Validator::make(
+            [
+                ...$input->getArguments(),
+                ...$input->getOptions(),
+            ],
+            $this->rules($input),
+            $this->messages($input)
+        );
+
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        return true;
     }
 }
