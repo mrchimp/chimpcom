@@ -126,7 +126,10 @@ class Note extends Command
             $words = [];
 
             foreach ($memories as $word) {
-                $words[] = '<span data-type="autofill" data-autofill="show ' . Format::escape($word->name) . '">' . Format::escape($word->name) . '</span>';
+                $words[] = Format::style(Format::escape($word->name), '', [
+                    'data-type' => 'autofill',
+                    'data-autofill' => 'show ' . Format::escape($word->name),
+                ]);
             }
 
             $output->write(Format::listToTable($words, 6, false));
