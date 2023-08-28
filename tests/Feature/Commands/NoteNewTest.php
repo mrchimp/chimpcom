@@ -6,14 +6,14 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mrchimp\Chimpcom\Models\Memory;
 use Tests\TestCase;
 
-class SaveTest extends TestCase
+class NoteNewTest extends TestCase
 {
     use DatabaseMigrations;
 
     /** @test */
     public function guests_cant_use_save_command()
     {
-        $this->getGuestResponse('save name content')
+        $this->getGuestResponse('note:new name content')
             ->assertSee(__('chimpcom.must_log_in'))
             ->assertStatus(200);
     }
@@ -21,7 +21,7 @@ class SaveTest extends TestCase
     /** @test */
     public function users_can_save_memories()
     {
-        $this->getUserResponse('save name Here is the content')
+        $this->getUserResponse('note:new name Here is the content')
             ->assertSee('Memory saved.')
             ->assertStatus(200);
 
@@ -34,7 +34,7 @@ class SaveTest extends TestCase
     /** @test */
     public function memories_can_be_tagged()
     {
-        $this->getUserResponse('save name Here is @some content @hashtag')
+        $this->getUserResponse('note:new name Here is @some content @hashtag')
             ->assertStatus(200);
 
         $memory = Memory::first();

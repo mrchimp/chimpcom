@@ -4,16 +4,15 @@ namespace Tests\Feature\Commands;
 
 use App\Mrchimp\Chimpcom\Id;
 use App\User;
-use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Memory;
 use Tests\TestCase;
 
-class ForgetTest extends TestCase
+class NoteForgetTest extends TestCase
 {
     /** @test */
     public function the_forget_command_is_not_for_noobs_or_guests_as_they_are_otherwise_known()
     {
-        $this->getGuestResponse('forget thing')
+        $this->getGuestResponse('note:forget thing')
             ->assertStatus(200)
             ->assertSee(__('chimpcom.must_log_in'));
     }
@@ -21,11 +20,11 @@ class ForgetTest extends TestCase
     /** @test */
     public function the_forget_command_has_some_joke_responses()
     {
-        $this->getUserResponse('forget everything')
+        $this->getUserResponse('note:forget everything')
             ->assertStatus(200)
             ->assertSee('Where am I?');
 
-        $this->getUserResponse('forget all')
+        $this->getUserResponse('note:forget all')
             ->assertStatus(200)
             ->assertSee('Where am I?');
     }
@@ -33,7 +32,7 @@ class ForgetTest extends TestCase
     /** @test */
     public function you_cant_forget_a_message_that_doesnt_exist_or_did_you_forget_that_already()
     {
-        $this->getUserResponse('forget memory_that_doesnt_exist')
+        $this->getUserResponse('note:forget memory_that_doesnt_exist')
             ->assertStatus(200)
             ->assertSee('Couldn\'t find that memory or it\'s not yours to forget.');
     }
@@ -48,7 +47,7 @@ class ForgetTest extends TestCase
 
         $encoded_id = Id::encode($memory->id);
 
-        $this->getUserResponse('forget ' . $encoded_id, $user)
+        $this->getUserResponse('note:forget ' . $encoded_id, $user)
             ->assertStatus(200)
             ->assertSee('Are you sure');
 
@@ -66,7 +65,7 @@ class ForgetTest extends TestCase
 
         $encoded_id = Id::encode($memory->id);
 
-        $this->getUserResponse('forget ' . $encoded_id, $user);
+        $this->getUserResponse('note:forget ' . $encoded_id, $user);
 
         $this->getUserResponse('no', $user, $this->last_action_id)
             ->assertStatus(200)
@@ -84,7 +83,7 @@ class ForgetTest extends TestCase
 
         $encoded_id = Id::encode($memory->id);
 
-        $this->getUserResponse('forget ' . $encoded_id, $user);
+        $this->getUserResponse('note:forget ' . $encoded_id, $user);
 
         $this->getUserResponse('blblblblblblblblbl', $user, $this->last_action_id)
             ->assertStatus(200)
@@ -102,7 +101,7 @@ class ForgetTest extends TestCase
 
         $encoded_id = Id::encode($memory->id);
 
-        $this->getUserResponse('forget ' . $encoded_id, $user);
+        $this->getUserResponse('note:forget ' . $encoded_id, $user);
 
         $this->getUserResponse('yes', $user, $this->last_action_id)
             ->assertStatus(200)

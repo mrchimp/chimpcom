@@ -16,7 +16,7 @@ class DiaryTest extends TestCase
     /** @test */
     public function guests_cant_use_diary()
     {
-        $this->getGuestResponse('save name content')
+        $this->getGuestResponse('diary name content')
             ->assertSee(__('chimpcom.must_log_in'))
             ->assertOk();
     }

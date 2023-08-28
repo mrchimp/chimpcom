@@ -3,6 +3,7 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
+use Mrchimp\Chimpcom\ErrorCode;
 use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Memory;
 use Mrchimp\Chimpcom\Models\Tag;
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Create a memory item
  */
-class Save extends Command
+class NoteNew extends Command
 {
     /**
      * Configure the command
@@ -23,7 +24,7 @@ class Save extends Command
      */
     protected function configure()
     {
-        $this->setName('save');
+        $this->setName('note:new');
         $this->setDescription(
             'Save a memory. Each memory consists of a name and some content. The name must be a single word and does NOT have to be unique. The description can be a word, a sentence, a URL or whatever.' . Format::nl(2) .
                 'Once the memory has been saved you can search for it using FIND or SHOW and delete it with FORGET command.' . Format::nl(2) .
@@ -33,10 +34,10 @@ class Save extends Command
                 'You can add tags to your memory by using the @ symbol. For example: save name @tag1 @tag2 content'
         );
         $this->addUsage('chimpcom A command line website.');
-        $this->addRelated('forget');
-        $this->addRelated('show');
-        $this->addRelated('find');
-        $this->addRelated('setpublic');
+        $this->addRelated('note:forget');
+        $this->addRelated('note:show');
+        $this->addRelated('note:find');
+        $this->addRelated('note:setpublic');
 
         $this->addArgument(
             'name',
@@ -77,7 +78,7 @@ class Save extends Command
         if (!Auth::check()) {
             $output->error(__('chimpcom.must_log_in'));
 
-            return 1;
+            return ErrorCode::NOT_AUTHORISED;
         }
 
         $user = Auth::user();
@@ -99,7 +100,7 @@ class Save extends Command
 
             if (!$project) {
                 $output->error('Project not found.');
-                return 3;
+                return ErrorCode::NO_ACTIVE_PROJECT;
             }
         }
 
@@ -131,6 +132,6 @@ class Save extends Command
 
         $output->alert('Memory saved. Id: ' . $memory->id);
 
-        return 0;
+        return ErrorCode::SUCCESS;
     }
 }

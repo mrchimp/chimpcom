@@ -2,6 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Mrchimp\Chimpcom\ErrorCode;
 use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
@@ -11,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Find a memory by its name or description
  */
-class Find extends Command
+class NoteFind extends Command
 {
     /**
      * Configure the command
@@ -20,13 +21,13 @@ class Find extends Command
      */
     protected function configure()
     {
-        $this->setName('find');
+        $this->setName('note:find');
         $this->setDescription('Find a memory by its name or description.');
         $this->addUsage('chimpcom');
-        $this->addRelated('save');
-        $this->addRelated('show');
-        $this->addRelated('forget');
-        $this->addRelated('setpublic');
+        $this->addRelated('note:new');
+        $this->addRelated('note:show');
+        $this->addRelated('note:forget');
+        $this->addRelated('note:setpublic');
 
         $this->addArgument(
             'search_string',
@@ -63,7 +64,7 @@ class Find extends Command
      * @param  OutputInterface $output
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $show_public  = $input->getOption('public');
         $show_private = $input->getOption('private');
@@ -87,11 +88,11 @@ class Find extends Command
 
         if (count($memories) === 0) {
             $output->error('I have no recollection of that.');
-            return 1;
+            return ErrorCode::MODEL_NOT_FOUND;
         }
 
         $output->write(Format::memories($memories));
 
-        return 0;
+        return ErrorCode::SUCCESS;
     }
 }

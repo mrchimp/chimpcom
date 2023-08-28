@@ -4,6 +4,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use App\Mrchimp\Chimpcom\Id;
 use Illuminate\Support\Facades\Auth;
+use Mrchimp\Chimpcom\ErrorCode;
 use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Triggers action_forget
  * @action forget
  */
-class Forget extends Command
+class NoteForget extends Command
 {
     /**
      * Configure the command
@@ -23,13 +24,13 @@ class Forget extends Command
      */
     protected function configure()
     {
-        $this->setName('Forget');
+        $this->setName('note:forget');
         $this->setDescription('Deletes a memory.');
         $this->addUsage('forget 12');
-        $this->addRelated('save');
-        $this->addRelated('show');
-        $this->addRelated('find');
-        $this->addRelated('setpublic');
+        $this->addRelated('note:new');
+        $this->addRelated('note:show');
+        $this->addRelated('note:find');
+        $this->addRelated('note:setpublic');
 
         $this->addArgument(
             'id',
@@ -40,16 +41,12 @@ class Forget extends Command
 
     /**
      * Run the command
-     *
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
-     * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!Auth::check()) {
             $output->error(__('chimpcom.must_log_in'));
-            return 1;
+            return ErrorCode::NOT_AUTHORISED;
         }
 
         $user = Auth::user();
@@ -57,7 +54,7 @@ class Forget extends Command
 
         if ($mem_ids[0] == 'everything' || $mem_ids[0] == 'all') {
             $output->write(Format::escape('Where am I? Who are you? WHAT THE HELL\'S GOING ON?!'));
-            return 2;
+            return ErrorCode::SUCCESS;
         }
 
         $ids = Id::decodeMany($mem_ids);
@@ -68,7 +65,7 @@ class Forget extends Command
 
         if ($memories->isEmpty()) {
             $output->error(Format::escape('Couldn\'t find that memory or it\'s not yours to forget.'));
-            return 3;
+            return ErrorCode::MODEL_NOT_FOUND;
         }
 
         $output->title('Are you sure you want to forget these memories?' . Format::nl());
@@ -85,6 +82,6 @@ class Forget extends Command
         ]);
         $output->useQuestionInput();
 
-        return 0;
+        return ErrorCode::SUCCESS;
     }
 }

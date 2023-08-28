@@ -4,7 +4,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use App\Mrchimp\Chimpcom\Id;
 use Auth;
-use Mrchimp\Chimpcom\Facades\Chimpcom;
+use Mrchimp\Chimpcom\ErrorCode;
 use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Make memories public/private
  */
-class Setpublic extends Command
+class NotePublic extends Command
 {
     /**
      * Configure the command
@@ -23,13 +23,13 @@ class Setpublic extends Command
      */
     protected function configure()
     {
-        $this->setName('setpublic');
+        $this->setName('note:public');
         $this->setDescription('Sets a memory to be visible (or invisible) to other users.');
         $this->addUsage('12');
-        $this->addRelated('save');
-        $this->addRelated('show');
-        $this->addRelated('find');
-        $this->addRelated('forget');
+        $this->addRelated('note:new');
+        $this->addRelated('note:show');
+        $this->addRelated('note:find');
+        $this->addRelated('note:forget');
 
         $this->addArgument(
             'id',
@@ -55,7 +55,7 @@ class Setpublic extends Command
         if (!Auth::check()) {
             $output->error(__('chimpcom.must_log_in'));
 
-            return 1;
+            return ErrorCode::NOT_AUTHORISED;
         }
 
         $id = Id::decode($input->getArgument('id'));
@@ -64,13 +64,13 @@ class Setpublic extends Command
         if (!$memory) {
             $output->error(e('That memory doesn\'t exist.'));
 
-            return 2;
+            return ErrorCode::MODEL_NOT_FOUND;
         }
 
         if (!$memory->isMine()) {
             $output->error(Format::escape('That isn\'t your memory to change.'));
 
-            return 3;
+            return ErrorCode::NOT_AUTHORISED;
         }
 
         $memory->public = ($input->getOption('private') ? 0 : 1);
@@ -78,6 +78,6 @@ class Setpublic extends Command
 
         $output->alert('Ok.');
 
-        return 0;
+        return ErrorCode::SUCCESS;
     }
 }

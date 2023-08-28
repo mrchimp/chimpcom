@@ -6,7 +6,7 @@ use App\User;
 use Mrchimp\Chimpcom\Models\Memory;
 use Tests\TestCase;
 
-class FindTest extends TestCase
+class NoteFindTest extends TestCase
 {
     /** @test */
     public function find_command_finds_memory_by_name()
@@ -20,7 +20,7 @@ class FindTest extends TestCase
         ]);
 
         $this
-            ->getGuestResponse('find memory_name')
+            ->getGuestResponse('note:find memory_name')
             ->assertStatus(200)
             ->assertSee('Memory Content');
     }
@@ -37,7 +37,7 @@ class FindTest extends TestCase
         ]);
 
         $this
-            ->getGuestResponse('find memory_name')
+            ->getGuestResponse('note:find memory_name')
             ->assertStatus(200)
             ->assertDontSee('Memory Content');
     }
@@ -54,7 +54,7 @@ class FindTest extends TestCase
         ]);
 
         $this
-            ->getUserResponse('find memory_name', $user)
+            ->getUserResponse('note:find memory_name', $user)
             ->assertStatus(200)
             ->assertSee('Memory Content');
     }
@@ -77,7 +77,7 @@ class FindTest extends TestCase
         ]);
 
         $this
-            ->getUserResponse('find memory_name --public', $user)
+            ->getUserResponse('note:find memory_name --public', $user)
             ->assertStatus(200)
             ->assertSee('Public Memory')
             ->assertDontSee('Private Memory');
@@ -101,7 +101,7 @@ class FindTest extends TestCase
         ]);
 
         $this
-            ->getUserResponse('find memory_name --private', $user)
+            ->getUserResponse('note:find memory_name --private', $user)
             ->assertStatus(200)
             ->assertSee('Private Memory')
             ->assertDontSee('Public Memory');
@@ -126,7 +126,7 @@ class FindTest extends TestCase
         ]);
 
         $this
-            ->getUserResponse('find memory_name --mine',  $user)
+            ->getUserResponse('note:find memory_name --mine',  $user)
             ->assertStatus(200)
             ->assertSee('My Memory')
             ->assertDontSee('Other Persons Memory');

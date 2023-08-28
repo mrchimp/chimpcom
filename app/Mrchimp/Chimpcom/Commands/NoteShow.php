@@ -5,6 +5,7 @@ namespace Mrchimp\Chimpcom\Commands;
 use Auth;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Mrchimp\Chimpcom\ErrorCode;
 use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
@@ -12,7 +13,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Show extends Command
+class NoteShow extends Command
 {
     /**
      * Configure the command
@@ -21,7 +22,7 @@ class Show extends Command
      */
     protected function configure()
     {
-        $this->setName('show');
+        $this->setName('note:show');
         $this->setDescription('Find a memory by its name.');
         $this->addUsage('chimpcom');
         $this->addRelated('save');
@@ -121,7 +122,7 @@ class Show extends Command
 
             $output->write(Format::listToTable($words, 6, false));
 
-            return 0;
+            return ErrorCode::SUCCESS;
         }
 
         if ($show_public) {
@@ -172,11 +173,11 @@ class Show extends Command
         if ($memories->count() === 0) {
             $output->error('I have no recollection of that.');
 
-            return 1;
+            return ErrorCode::MODEL_NOT_FOUND;
         }
 
         $output->write(Format::memories($memories));
 
-        return 0;
+        return ErrorCode::SUCCESS;
     }
 }
