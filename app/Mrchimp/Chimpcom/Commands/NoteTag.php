@@ -2,19 +2,16 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
+use Auth;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Support\Facades\Auth;
-use Mrchimp\Chimpcom\ErrorCode;
 use Mrchimp\Chimpcom\Commands\Command;
+use Mrchimp\Chimpcom\ErrorCode;
 use Mrchimp\Chimpcom\Traits\ManagesTags;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Manage tasks
- */
-class TaskTag extends Command
+class NoteTag extends Command
 {
     use ManagesTags;
 
@@ -25,15 +22,16 @@ class TaskTag extends Command
      */
     protected function configure()
     {
-        $this->setName('task:tag');
-        $this->setDescription('Add or remove one or more tags from one or more tasks.');
-        $this->addRelated('task');
-        $this->addRelated('task:new');
-        $this->addRelated('task:done');
-        $this->addRelated('task:edit');
+        $this->setName('note:tag');
+        $this->setDescription('Add or remove one or more tags from one or more notes.');
+        $this->addRelated('note');
+        $this->addRelated('note:save');
+        $this->addRelated('note:find');
+        $this->addRelated('note:forget');
+        $this->addRelated('note:public');
         $this->addRelated('project');
-        $this->addUsage('task:tag 1 2 @bug @urgent');
-        $this->addUsage('task:tag --remove 6f @bug @bananas');
+        $this->addUsage('note:tag 1 2 @foo @bar');
+        $this->addUsage('note:tag --remove 6f @foo @bar');
         $this->addArgument(
             'content',
             InputArgument::IS_ARRAY,
@@ -43,16 +41,11 @@ class TaskTag extends Command
             'remove',
             'r',
             null,
-            'If set tags will be removed from tasks, otherwise tags will be added to tasks.'
+            'If set tags will be removed from notes, otherwise tags will be added to notes.'
         );
     }
 
-    /**
-     * Run the command
-     *
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!Auth::check()) {
             $output->error(__('chimpcom.must_log_in'));
@@ -66,6 +59,6 @@ class TaskTag extends Command
 
     protected function findItems($ids = [], InputInterface $input): EloquentCollection
     {
-        return Auth::user()->tasks()->whereIn('id', $ids)->get();
+        return Auth::user()->memories()->whereIn('id', $ids)->get();
     }
 }

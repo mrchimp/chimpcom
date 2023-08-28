@@ -5,7 +5,7 @@ diary list [--date=today] [--num=10]
 diary edit [--date=today]
 ```
 
-See also [Shared Features](Shared Features).
+See also [[Shared Features]]
 
 # Todo
 - [ ] Allow editing diary entries

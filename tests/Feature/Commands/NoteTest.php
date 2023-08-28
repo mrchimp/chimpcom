@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Mrchimp\Chimpcom\Models\Memory;
 use Tests\TestCase;
 
-class NoteShowTest extends TestCase
+class NoteTest extends TestCase
 {
     /** @test */
     public function show_returns_memories_that_match()
@@ -25,7 +25,7 @@ class NoteShowTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->getUserResponse('note:show match', $user)
+        $this->getUserResponse('note match', $user)
             ->assertStatus(200)
             ->assertSee('This is a match')
             ->assertDontSee('This is not a match');
@@ -54,7 +54,7 @@ class NoteShowTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $this->getUserResponse('note:show one two', $user)
+        $this->getUserResponse('note one two', $user)
             ->assertStatus(200)
             ->assertSee('Memory one')
             ->assertSee('Memory two')
@@ -84,7 +84,7 @@ class NoteShowTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $this->getUserResponse('note:show --words', $user)
+        $this->getUserResponse('note --words', $user)
             ->assertSee('one')
             ->assertSee('two')
             ->assertSee('three')
@@ -108,7 +108,7 @@ class NoteShowTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $this->getUserResponse('note:show test --public', $user)
+        $this->getUserResponse('note test --public', $user)
             ->assertSee('Public memory')
             ->assertDontSee('Private memory')
             ->assertStatus(200);
@@ -131,7 +131,7 @@ class NoteShowTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $this->getUserResponse('note:show test --private', $user)
+        $this->getUserResponse('note test --private', $user)
             ->assertSee('Private memory')
             ->assertDontSee('Public memory')
             ->assertStatus(200);
@@ -154,7 +154,7 @@ class NoteShowTest extends TestCase
             'user_id' => 9999
         ]);
 
-        $this->getUserResponse('note:show test --mine', $user)
+        $this->getUserResponse('note test --mine', $user)
             ->assertSee('My memory')
             ->assertDontSee('Others memory')
             ->assertStatus(200);
@@ -183,7 +183,7 @@ class NoteShowTest extends TestCase
         $new->created_at = Carbon::now();
         $new->save(['timestamps' => false]);
 
-        $this->getUserResponse('note:show test --last')
+        $this->getUserResponse('note test --last')
             ->assertSeeInOrder([
                 'Recent memory',
                 'Older memory',

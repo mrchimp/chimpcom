@@ -4,4 +4,4 @@ cal update [id] [--desc=]
 cal list [--date=] [--time=]
 ```
 
-See also [Shared Features](Shared Features).
+See also [[Shared Features]]

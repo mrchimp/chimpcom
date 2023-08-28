@@ -183,7 +183,7 @@ class FormatHtml implements Format
             }
 
             if ($memory->tags->isNotEmpty()) {
-                $chunks[] = static::grey('[@' . implode(', @', $memory->tags->pluck('tag')->toArray()) . ']');
+                $chunks[] = static::grey('@' . implode(', @', $memory->tags->pluck('tag')->toArray()));
             } else {
                 $chunks[] = '';
             }

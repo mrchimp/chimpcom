@@ -177,8 +177,8 @@ class FormatCli implements Format
                 $chunks[] = static::style(static::autoLink(e($memory->content)), '', $attrs);
             }
 
-            if (!empty($memory->tags)) {
-                $chunks[] = static::grey('[@' . implode(', @', $memory->tags->pluck('tag')->toArray()) . ']');
+            if ($memory->tags->isNotEmpty()) {
+                $chunks[] = static::grey('@' . implode(', @', $memory->tags->pluck('tag')->toArray()));
             } else {
                 $chunks[] = '';
             }

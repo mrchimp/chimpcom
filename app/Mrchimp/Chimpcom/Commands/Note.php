@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class NoteShow extends Command
+class Note extends Command
 {
     /**
      * Configure the command
@@ -22,14 +22,15 @@ class NoteShow extends Command
      */
     protected function configure()
     {
-        $this->setName('note:show');
+        $this->setName('note');
         $this->setDescription('Find a memory by its name.');
-        $this->addUsage('chimpcom');
-        $this->addRelated('save');
-        $this->addRelated('find');
-        $this->addRelated('forget');
-        $this->addRelated('setpublic');
-
+        $this->addRelated('note');
+        $this->addRelated('note:save');
+        $this->addRelated('note:find');
+        $this->addRelated('note:forget');
+        $this->addRelated('note:public');
+        $this->addRelated('note:tag');
+        $this->addRelated('project');
         $this->addArgument(
             'names',
             InputArgument::OPTIONAL | InputArgument::IS_ARRAY,

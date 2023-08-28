@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "4f0de01a07001d6f",
+        "id": "a111f82a77be5215",
         "type": "tabs",
         "children": [
           {
-            "id": "a58decc62be4123c",
+            "id": "0de9bbac63947715",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Tasks.md",
+                "file": "Index.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,8 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "157dedcc6aa272b7",
@@ -86,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Tasks.md",
+                "file": "Index.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Tasks.md",
+                "file": "Index.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Tasks.md"
+                "file": "Index.md"
               }
             }
           }
@@ -147,13 +146,14 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "4a466621cc692fc2",
+  "active": "0de9bbac63947715",
   "lastOpenFiles": [
-    "Index.md",
     "Diary.md",
-    "Tasks.md",
+    "Shared Features.md",
     "Cal.md",
-    "Notes.md",
-    "Shared Features.md"
+    "Shared.md",
+    "Tasks.md",
+    "Index.md",
+    "Notes.md"
   ]
 }
