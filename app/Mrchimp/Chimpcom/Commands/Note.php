@@ -73,17 +73,24 @@ class Note extends Command
         );
 
         $this->addOption(
-            'count',
-            'c',
+            'number',
+            'n',
             InputOption::VALUE_REQUIRED,
             'Number of results to display. Default: 20'
         );
 
         $this->addOption(
-            'last',
-            'l',
+            'random',
+            'r',
             null,
-            'Show latest memories for any word.'
+            'Order the notes randomly.'
+        );
+
+        $this->addOption(
+            'date',
+            'd',
+            null,
+            'Order notes by date created. Newest first.',
         );
     }
 
@@ -99,8 +106,9 @@ class Note extends Command
         $show_private = $input->getOption('private');
         $show_mine = $input->getOption('mine');
         $show_words = $input->getOption('words');
-        $count = $input->getOption('count');
-        $last = $input->getOption('last');
+        $number = $input->getOption('number');
+        $random = $input->getOption('random');
+        $date = $input->getOption('date');
         $project_name = $input->getOption('project');
         $project = null;
 
@@ -109,8 +117,8 @@ class Note extends Command
         \Log::debug('tags', $tags);
         \Log::debug('names', $names);
 
-        if (!$count || !is_numeric($count) || $count < 0) {
-            $count = 20;
+        if (!$number || !is_numeric($number) || $number < 0) {
+            $number = 20;
         }
 
         if ($show_words) {
@@ -145,24 +153,21 @@ class Note extends Command
 
         $query = Memory::query()
             ->visibility($item_type)
-            ->when(!$last, function ($query) {
-                $query
-                    ->orderBy('name')
-                    ->orderBy('id');
-            })
             ->when($project, function ($query) use ($project) {
                 $query->where('project_id', $project->id);
             })
+            ->when(!empty($names), function ($query) use ($names) {
+                $query->whereIn('name', $names);
+            })
             ->with('user', 'tags')
-            ->limit($count);
+            ->limit($number);
 
-        if ($last) {
+        if ($date) {
             $query->orderBy('created_at', 'DESC');
-        } elseif (is_numeric(Arr::first($names))) { // @todo Does this use hexids?
-            $memory_id = $names;
-            $query->whereIn('id', $memory_id);
-        } elseif (!empty($names)) {
-            $query->whereIn('name', $names);
+        } else if ($random) {
+            $query->inRandomOrder();
+        } else {
+            $query->orderBy('name', 'ASC')->orderBy('name', 'ASC');
         }
 
         if (!empty($tags)) {

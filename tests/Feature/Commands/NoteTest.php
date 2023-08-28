@@ -4,8 +4,9 @@ namespace Tests\Feature\Commands;
 
 use App\User;
 use Carbon\Carbon;
-use Mrchimp\Chimpcom\Models\Memory;
 use Tests\TestCase;
+use Illuminate\Support\Str;
+use Mrchimp\Chimpcom\Models\Memory as Note;
 
 class NoteTest extends TestCase
 {
@@ -14,12 +15,12 @@ class NoteTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Memory::factory()->create([
+        Note::factory()->create([
             'name' => 'match',
             'content' => 'This is a match',
             'user_id' => $user->id,
         ]);
-        Memory::factory()->create([
+        Note::factory()->create([
             'name' => 'non_match',
             'content' => 'This is not a match',
             'user_id' => $user->id,
@@ -36,29 +37,29 @@ class NoteTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Memory::factory()->create([
+        Note::factory()->create([
             'name' => 'one',
-            'content' => 'Memory one',
+            'content' => 'Note one',
             'user_id' => $user->id
         ]);
 
-        Memory::factory()->create([
+        Note::factory()->create([
             'name' => 'two',
-            'content' => 'Memory two',
+            'content' => 'Note two',
             'user_id' => $user->id
         ]);
 
-        Memory::factory()->create([
+        Note::factory()->create([
             'name' => 'three',
-            'content' => 'Memory three',
+            'content' => 'Note three',
             'user_id' => $user->id
         ]);
 
         $this->getUserResponse('note one two', $user)
             ->assertStatus(200)
-            ->assertSee('Memory one')
-            ->assertSee('Memory two')
-            ->assertDontSee('Memory three');
+            ->assertSee('Note one')
+            ->assertSee('Note two')
+            ->assertDontSee('Note three');
     }
 
     /** @test */
@@ -66,21 +67,21 @@ class NoteTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Memory::factory()->create([
+        Note::factory()->create([
             'name' => 'one',
-            'content' => 'Memory one',
+            'content' => 'Note one',
             'user_id' => $user->id
         ]);
 
-        Memory::factory()->create([
+        Note::factory()->create([
             'name' => 'two',
-            'content' => 'Memory two',
+            'content' => 'Note two',
             'user_id' => $user->id
         ]);
 
-        Memory::factory()->create([
+        Note::factory()->create([
             'name' => 'three',
-            'content' => 'Memory three',
+            'content' => 'Note three',
             'user_id' => $user->id
         ]);
 
@@ -96,21 +97,21 @@ class NoteTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Memory::factory()->public()->create([
+        Note::factory()->public()->create([
             'name' => 'test',
-            'content' => 'Public memory',
+            'content' => 'Public note',
             'user_id' => $user->id,
         ]);
 
-        Memory::factory()->create([
+        Note::factory()->create([
             'name' => 'test',
-            'content' => 'Private memory',
+            'content' => 'Private note',
             'user_id' => $user->id
         ]);
 
         $this->getUserResponse('note test --public', $user)
-            ->assertSee('Public memory')
-            ->assertDontSee('Private memory')
+            ->assertSee('Public note')
+            ->assertDontSee('Private note')
             ->assertStatus(200);
     }
 
@@ -119,21 +120,21 @@ class NoteTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Memory::factory()->public()->create([
+        Note::factory()->public()->create([
             'name' => 'test',
-            'content' => 'Public memory',
+            'content' => 'Public note',
             'user_id' => $user->id,
         ]);
 
-        Memory::factory()->create([
+        Note::factory()->create([
             'name' => 'test',
-            'content' => 'Private memory',
+            'content' => 'Private note',
             'user_id' => $user->id
         ]);
 
         $this->getUserResponse('note test --private', $user)
-            ->assertSee('Private memory')
-            ->assertDontSee('Public memory')
+            ->assertSee('Private note')
+            ->assertDontSee('Public note')
             ->assertStatus(200);
     }
 
@@ -142,37 +143,37 @@ class NoteTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Memory::factory()->public()->create([
+        Note::factory()->public()->create([
             'name' => 'test',
-            'content' => 'My memory',
+            'content' => 'My note',
             'user_id' => $user->id,
         ]);
 
-        Memory::factory()->public()->create([
+        Note::factory()->public()->create([
             'name' => 'test',
-            'content' => 'Others memory',
+            'content' => 'Others note',
             'user_id' => 9999
         ]);
 
         $this->getUserResponse('note test --mine', $user)
-            ->assertSee('My memory')
-            ->assertDontSee('Others memory')
+            ->assertSee('My note')
+            ->assertDontSee('Others note')
             ->assertStatus(200);
     }
 
     /** @test */
     public function memories_can_be_ordered_by_date()
     {
-        $old = Memory::factory()->create([
+        $old = Note::factory()->create([
             'created_at' => Carbon::now()->subYear(),
             'name' => 'test',
-            'content' => 'Older memory',
+            'content' => 'Older note',
         ]);
 
-        $new = Memory::factory()->create([
+        $new = Note::factory()->create([
             'created_at' => Carbon::now(),
             'name' => 'test',
-            'content' => 'Recent memory',
+            'content' => 'Recent note',
         ]);
 
         $old->updated_at = Carbon::now()->subYear();
@@ -183,12 +184,50 @@ class NoteTest extends TestCase
         $new->created_at = Carbon::now();
         $new->save(['timestamps' => false]);
 
-        $this->getUserResponse('note test --last')
+        $this->getUserResponse('note test --date')
             ->assertSeeInOrder([
-                'Recent memory',
-                'Older memory',
+                'Recent note',
+                'Older note',
             ])
-            ->assertDontSee('Others memory')
+            ->assertDontSee('Others note')
             ->assertStatus(200);
+    }
+
+    /** @test */
+    public function can_fetch_a_random_note()
+    {
+        $this->markAsRisky('This relies on randomness so could flake but the odds are pretty good...');
+
+        $user = User::factory()->create();
+
+        Note::factory()->create([
+            'name' => 'test',
+            'content' => 'blerpblerpblerp',
+            'public' => 1,
+            'user_id' => $user->id,
+        ]);
+
+        Note::factory()->create([
+            'name' => 'test',
+            'content' => 'flumflumflum',
+            'public' => 1,
+            'user_id' => $user->id,
+        ]);
+
+        $one_count = 0;
+        $two_count = 0;
+
+        for ($i = 0; $i < 50; $i++) {
+            $json = $this->getGuestResponse('note -r -n 1 test')->json();
+
+            if (Str::contains($json['cmd_out'], 'blerpblerpblerp')) {
+                $one_count++;
+            } elseif (Str::contains($json['cmd_out'], 'flumflumflum')) {
+                $two_count++;
+            }
+        }
+
+        $this->assertGreaterThan(1, $one_count);
+        $this->assertGreaterThan(1, $two_count);
     }
 }
