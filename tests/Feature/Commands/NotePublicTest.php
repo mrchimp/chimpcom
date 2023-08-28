@@ -5,7 +5,7 @@ namespace Tests\Feature\Commands;
 use App\Mrchimp\Chimpcom\Id;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Mrchimp\Chimpcom\Models\Memory;
+use Mrchimp\Chimpcom\Models\Memory as Note;
 use Tests\TestCase;
 
 class NotePublicTest extends TestCase
@@ -24,7 +24,7 @@ class NotePublicTest extends TestCase
     public function setpublic_doesnt_work_on_memories_that_dont_exist()
     {
         $this->getUserResponse('note:public asd')
-            ->assertSee('That memory doesn\'t exist.')
+            ->assertSee('That note doesn\'t exist.')
             ->assertStatus(200);
     }
 
@@ -32,37 +32,31 @@ class NotePublicTest extends TestCase
     public function setpublic_doesnt_work_on_other_peoples_memories()
     {
         $user = User::factory()->create();
-        $memory = Memory::factory()->create([
+        $note = Note::factory()->create([
             'user_id' => 9999,
         ]);
 
-        $encoded_id = Id::encode($memory->id);
-
-        $this->getUserResponse('note:public ' . $encoded_id, $user)
-            ->assertSee('That isn\'t your memory to change.')
+        $this->getUserResponse('note:public 1', $user)
+            ->assertDontSee('Ok.')
             ->assertStatus(200);
 
-        $memory->refresh();
+        $note->refresh();
 
-        $this->assertEquals(0, $memory->public);
+        $this->assertEquals(0, $note->public);
     }
 
     /** @test */
     public function setpublic_marks_memories_as_public()
     {
         $user = User::factory()->create();
-        $memory = Memory::factory()->create([
+        Note::factory()->count(2)->create([
             'user_id' => $user->id,
         ]);
 
-        $encoded_id = Id::encode($memory->id);
-
-        $this->getUserResponse('note:public ' . $encoded_id, $user)
+        $this->getUserResponse('note:public 1 2', $user)
             ->assertSee('Ok.')
             ->assertStatus(200);
 
-        $memory->refresh();
-
-        $this->assertEquals(1, $memory->public);
+        $this->assertEquals(2, Note::where('public', 1)->count());
     }
 }

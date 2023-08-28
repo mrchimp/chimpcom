@@ -5,8 +5,6 @@ namespace Mrchimp\Chimpcom\Commands;
 use App\Mrchimp\Chimpcom\Id;
 use Auth;
 use Mrchimp\Chimpcom\ErrorCode;
-use Mrchimp\Chimpcom\Facades\Format;
-use Mrchimp\Chimpcom\Models\Memory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,7 +22,7 @@ class NotePublic extends Command
     protected function configure()
     {
         $this->setName('note:public');
-        $this->setDescription('Sets a memory to be visible (or invisible) to other users.');
+        $this->setDescription('Sets a note to be visible (or invisible) to other users.');
         $this->addUsage('12');
         $this->addRelated('note:new');
         $this->addRelated('note:show');
@@ -32,16 +30,16 @@ class NotePublic extends Command
         $this->addRelated('note:forget');
 
         $this->addArgument(
-            'id',
-            InputArgument::REQUIRED,
-            'ID of the memory to update.'
+            'ids',
+            InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+            'One or more IDs for the notes to update.'
         );
 
         $this->addOption(
             'private',
             'p',
             null,
-            'Set the memory to private.'
+            'Set the note to private. If this is not set, notes will be set to public.'
         );
     }
 
@@ -58,23 +56,18 @@ class NotePublic extends Command
             return ErrorCode::NOT_AUTHORISED;
         }
 
-        $id = Id::decode($input->getArgument('id'));
-        $memory = Memory::find($id);
+        $ids = array_map(fn ($id) => Id::decode($id), $input->getArgument('ids'));
+        $count = Auth::user()->memories()->whereIn('id', $ids)->count();
 
-        if (!$memory) {
-            $output->error(e('That memory doesn\'t exist.'));
+        if ($count === 0) {
+            $output->error(e('That note doesn\'t exist.'));
 
             return ErrorCode::MODEL_NOT_FOUND;
         }
 
-        if (!$memory->isMine()) {
-            $output->error(Format::escape('That isn\'t your memory to change.'));
-
-            return ErrorCode::NOT_AUTHORISED;
-        }
-
-        $memory->public = ($input->getOption('private') ? 0 : 1);
-        $memory->save();
+        Auth::user()->memories()->whereIn('id', $ids)->update([
+            'public' => ($input->getOption('private') ? 0 : 1),
+        ]);
 
         $output->alert('Ok.');
 
