@@ -60,6 +60,22 @@ class FormatCli implements Format
     }
 
     /**
+     * Format text that should look like code.
+     */
+    public static function code($str, array $attr = []): string
+    {
+        return "\033[0;33m" . $str . "\033[0;0m";
+    }
+
+    /**
+     * Format text that should look like bold.
+     */
+    public static function bold($str, array $attr = []): string
+    {
+        return "\033[1;30m" . $str . "\033[0;0m";
+    }
+
+    /**
      * Converts an dimensional array into an html table
      */
     public static function listToTable(array $list, int $cols = 1, bool $sort_list = false, $titles = []): string

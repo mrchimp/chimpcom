@@ -47,7 +47,7 @@ class Hi extends Command
                 $output->write(Format::nl());
                 $output->write('You have ' . count($messages) . ' new message' .
                     (count($messages) > 1 ? 's' : '') .
-                    '. Type <code>mail</code> to read. ');
+                    '. Type ' . Format::code('mail') . ' to read. ');
 
                 if (count($messages) > 10) {
                     $output->write('Aren\'t you popular! ');
@@ -55,7 +55,7 @@ class Hi extends Command
             }
         } else {
             $output->write(Format::title('Chimpcom ' . Chimpcom::getVersion()), true);
-            $output->write('Type <code>man</code> for help.');
+            $output->write('Type ' . Format::code('man') . ' for help.');
         }
 
         return 0;

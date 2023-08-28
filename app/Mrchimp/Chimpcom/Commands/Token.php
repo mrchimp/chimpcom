@@ -85,7 +85,7 @@ class Token extends Command
         $token = Auth::user()->createToken($input->getArgument('name'));
 
         $output->write('Here is your new token. Keep it safe. It won\'t be shown again.' . Format::nl(2));
-        $output->write('<code>' . $token->plainTextToken . '</code>');
+        $output->write(Format::code($token->plainTextToken));
 
         return 0;
     }

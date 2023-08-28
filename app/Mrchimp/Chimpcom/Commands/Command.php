@@ -84,7 +84,7 @@ class Command extends SymfonyCommand
             $out .= Format::title('USAGE') . Format::nl(2);
 
             foreach ($this->getUsages() as $usage) {
-                $out .= Format::nbsp(2) . '<code>' . $usage . '</code>' . Format::nl();
+                $out .= Format::nbsp(2) . Format::code($usage) . Format::nl();
             }
 
             $out .= Format::nl();
@@ -106,7 +106,7 @@ class Command extends SymfonyCommand
             $out .= Format::title('ARGUMENTS') . Format::nl(2);
 
             foreach ($definition->getArguments() as $argument) {
-                $out .= Format::nbsp(2) . '<strong>' . $argument->getName() . '</strong>' . Format::nl();
+                $out .= Format::nbsp(2) . Format::bold($argument->getName()) . Format::nl();
                 $out .= Format::nbsp(2) . $argument->getDescription() . Format::nl(2);
             }
         }
@@ -115,12 +115,12 @@ class Command extends SymfonyCommand
             $out .= Format::title('OPTIONS') . Format::nl(2);
 
             foreach ($definition->getOptions() as $option) {
-                $out .= Format::nbsp(2) . '<strong>';
-                $out .= '--' . $option->getName();
+                $out .= Format::nbsp(2);
+                $option_str = '--' . $option->getName();
                 if ($option->getShortcut()) {
-                    $out .= ' / -' . $option->getShortcut();
+                    $option_str .= ' / -' . $option->getShortcut();
                 }
-                $out .= '</strong>' . Format::nl();
+                $out .= Format::bold($option_str) . Format::nl();
                 $out .= Format::nbsp(2) . $option->getDescription() . Format::nl();
             }
         }

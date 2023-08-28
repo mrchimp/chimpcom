@@ -31,7 +31,7 @@ class Styles extends Command
         $output->write(Format::escape('Here\'s some regular text (say)'), true);
         $output->write(Format::alert('This is an alert!'), true);
         $output->write(Format::error('Oh no! This is an error!'), true);
-        $output->write('<code>$this === some($code)</code>', true);
+        $output->write(Format::code('$this === some($code)'), true);
         $output->write(
             Format::style(
                 'Auto fill (click me)',

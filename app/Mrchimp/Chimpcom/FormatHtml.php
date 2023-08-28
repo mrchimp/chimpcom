@@ -63,6 +63,22 @@ class FormatHtml implements Format
     }
 
     /**
+     * Format text that should look like code.
+     */
+    public static function code($str, array $attr = []): string
+    {
+        return '<code ' . static::attrsToString($attr) . '>' . $str . '</code>';
+    }
+
+    /**
+     * Format text that should look like bold.
+     */
+    public static function bold($str, array $attr = []): string
+    {
+        return '<strong>' . $str . '</strong>';
+    }
+
+    /**
      * Converts an dimensional array into an html table
      */
     public static function listToTable(array $list, int $cols = 1, bool $sort_list = false, $titles = []): string

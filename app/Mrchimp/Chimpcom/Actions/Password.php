@@ -87,7 +87,7 @@ class Password extends Action
         if ($unread_count > 0) {
             $output->write(
                 Format::nl() . 'You have ' . $unread_count . ' unread message' . ($unread_count > 1 ? 's' : '') . '. ' .
-                    'Use the command <code>mail</code> to read ' . ($unread_count > 1 ? 'them' : 'it') .  '.'
+                    'Use the command ' . Format::code('mail') . ' to read ' . ($unread_count > 1 ? 'them' : 'it') .  '.'
             );
         }
 

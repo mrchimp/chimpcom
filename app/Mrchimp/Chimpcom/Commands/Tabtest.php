@@ -19,7 +19,7 @@ class Tabtest extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $output->write('This is for testing the tabcompletion feature.' . Format::nl());
-        $output->write('To try it out yourself, type <code>tabtest c</code> and press tab a few times.');
+        $output->write('To try it out yourself, type ' . Format::code('tabtest c') . ' and press tab a few times.');
 
         return 0;
     }

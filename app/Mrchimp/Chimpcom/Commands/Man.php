@@ -56,7 +56,7 @@ class Man extends Command
         }
 
         if (!$input->getArgument('command_name')) {
-            $output->write('This is how you get help about a command. Type <code>man man</code> for more help on the help.');
+            $output->write('This is how you get help about a command. Type ' . Format::code('man man') . ' for more help on the help.');
 
             return 0;
         }
