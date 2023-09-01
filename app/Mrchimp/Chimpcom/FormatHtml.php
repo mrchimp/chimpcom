@@ -193,9 +193,9 @@ class FormatHtml implements Format
             }
 
             if ($minor) {
-                $chunks[] = static::grey(static::autoLink(e($memory->content)), $attrs);
+                $chunks[] = static::grey(static::autoLink($memory->content), $attrs);
             } else {
-                $chunks[] = static::style(static::autoLink(e($memory->content)), '', $attrs);
+                $chunks[] = static::style(static::autoLink($memory->content), '', $attrs);
             }
 
             if ($memory->tags->isNotEmpty()) {
@@ -219,8 +219,9 @@ class FormatHtml implements Format
     /**
      * Replace URLs in text with html links.
      */
-    public static function autoLink(string $text): string
+    public static function autoLink(string $input): string
     {
+        $input = e($input);
         $pattern  = '#\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#';
 
         $callback = function ($matches) {
@@ -229,10 +230,10 @@ class FormatHtml implements Format
 
             $text = preg_replace("/^www./", "", $url_parts["host"]) . (isset($url_parts["path"]) ? "/..." : "");
 
-            return sprintf('<a rel="nofollow" href="%s">%s</a>', $url, $text);
+            return sprintf('<a target="_blank" rel="nofollow noreferrer" href="%s">%s</a>', $url, $text);
         };
 
-        return preg_replace_callback($pattern, $callback, $text);
+        return preg_replace_callback($pattern, $callback, $input);
     }
 
     /**
@@ -273,7 +274,7 @@ class FormatHtml implements Format
 
             $list[] = '<span class="' . $class . '">' . $task->priority . '</span> ';
 
-            $list[] = e($task->description);
+            $list[] = static::autoLink($task->description);
 
             $list[] = static::grey($task->tags->map(function ($tag) {
                 return '@' . e($tag->tag);

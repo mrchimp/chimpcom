@@ -188,9 +188,9 @@ class FormatCli implements Format
             }
 
             if ($minor) {
-                $chunks[] = static::grey(static::autoLink(e($memory->content)), $attrs);
+                $chunks[] = static::grey(static::autoLink($memory->content), $attrs);
             } else {
-                $chunks[] = static::style(static::autoLink(e($memory->content)), '', $attrs);
+                $chunks[] = static::style(static::autoLink($memory->content), '', $attrs);
             }
 
             if ($memory->tags->isNotEmpty()) {

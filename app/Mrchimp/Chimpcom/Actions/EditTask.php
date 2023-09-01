@@ -29,8 +29,7 @@ class EditTask extends Action
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $id = $input->getActionData('task_to_edit');
-        $task_id = Id::decode($id);
+        $task_id = $input->getActionData('task_to_edit');
         $user = Auth::user();
         $project = $user->activeProject;
 

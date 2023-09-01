@@ -2,10 +2,11 @@
 
 namespace Tests\Unit\Console;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Validator;
-use Mrchimp\Chimpcom\Console\Output;
 use Tests\TestCase;
+use Mrchimp\Chimpcom\FormatHtml;
+use Illuminate\Http\JsonResponse;
+use Mrchimp\Chimpcom\Console\Output;
+use Illuminate\Support\Facades\Validator;
 
 class OutputTest extends TestCase
 {
@@ -266,5 +267,31 @@ class OutputTest extends TestCase
         $output = new Output();
 
         $this->assertIsArray($output->toArray());
+    }
+
+    /** @test */
+    public function urls_can_be_autolinked()
+    {
+        $input = 'before https://example.com/ after';
+
+        $output = FormatHtml::autolink($input);
+
+        $this->assertEquals(
+            'before <a target="_blank" rel="nofollow noreferrer" href="https://example.com/">example.com/...</a> after',
+            $output
+        );
+    }
+
+    /** @test */
+    public function autolink_escapes_non_link_text()
+    {
+        $input = 'before https://example.com/ <script>alert(\'haxlol\')</script> after';
+
+        $output = FormatHtml::autolink($input);
+
+        $this->assertEquals(
+            'before <a target="_blank" rel="nofollow noreferrer" href="https://example.com/">example.com/...</a> &lt;script&gt;alert(&#039;haxlol&#039;)&lt;/script&gt; after',
+            $output
+        );
     }
 }
