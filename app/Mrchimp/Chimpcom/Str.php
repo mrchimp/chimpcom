@@ -2,6 +2,8 @@
 
 namespace Mrchimp\Chimpcom;
 
+use Carbon\Carbon;
+
 class Str
 {
     public static function splitWordsAndTags($input): array

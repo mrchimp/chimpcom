@@ -3,8 +3,9 @@
 namespace Mrchimp\Chimpcom\Console;
 
 use Chimpcom;
-use Illuminate\Support\Arr;
+use Carbon\Carbon;
 use Mrchimp\Chimpcom\Str;
+use Illuminate\Support\Arr;
 use Symfony\Component\Console\Input\StringInput;
 
 class Input extends StringInput
@@ -60,5 +61,16 @@ class Input extends StringInput
     public function splitWordsAndTags($input = []): array
     {
         return Str::splitWordsAndTags($input);
+    }
+
+    public function dateOption($option, $default = 'now'): Carbon
+    {
+        $date_str = $this->getOption($option);
+
+        if ($date_str) {
+            return Carbon::parse($date_str, 'UTC');
+        } else {
+            return new Carbon();
+        }
     }
 }

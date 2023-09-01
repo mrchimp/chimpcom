@@ -2,18 +2,15 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Carbon\Carbon;
-use Mrchimp\Chimpcom\Str;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Traits\ManagesProjects;
-use Carbon\Exceptions\InvalidFormatException;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Diary extends Command
+class DiaryRead extends Command
 {
     use ManagesProjects;
 
@@ -25,12 +22,11 @@ class Diary extends Command
     protected function configure()
     {
         $this->setName('diary');
-        $this->setDescription('List diary entries.');
-        $this->addUsage('diary --project=myproject --date=yesterday');
-        $this->addUsage('diary:read');
-        $this->addUsage('diary:list');
-        $this->addUsage('diary:edit');
-        $this->addUsage('diary:graph');
+        $this->setDescription('Create, read and manage diary entries.');
+        $this->addUsage('diary new Here is an entry with a @tag in it --project=myproject --date=yesterday');
+        $this->addUsage('diary read');
+        $this->addUsage('diary list');
+        $this->addUsage('diary edit');
         $this->addRelated('project');
         $this->addOption(
             'project',
@@ -43,13 +39,6 @@ class Diary extends Command
             'd',
             InputOption::VALUE_REQUIRED,
             'The date that the entry is for.'
-        );
-        $this->addOption(
-            'num',
-            'n',
-            InputOption::VALUE_REQUIRED,
-            'For the READ and LIST subcommands, the number of entries to show.',
-            10
         );
     }
 
@@ -64,24 +53,20 @@ class Diary extends Command
             return 1;
         }
 
-        return $this->listEntries($input, $output);
+        return $this->readEntries($input, $output);
     }
 
     /**
-     * List entries
+     * Read entries
      */
-    protected function listEntries(InputInterface $input, OutputInterface $output): int
+    protected function readEntries(InputInterface $input, OutputInterface $output): int
     {
-        $date_str = $input->getOption('date');
-        $num = $input->getOption('num');
-
         try {
             $date = $input->dateOption('date');
         } catch (InvalidFormatException $e) {
             $output->error('Invalid date.');
             return 3;
         }
-
         $project_name = $input->getOption('project');
         $project = $this->projectFromName($project_name);
 
@@ -90,28 +75,23 @@ class Diary extends Command
             return 3;
         }
 
-        $query = Auth::user()->diaryEntries();
-
-        if ($date_str) {
-            $entries = $query
-                ->whereDay('date', $date)
-                ->orderBy('date', 'asc')
-                ->take($num)
-                ->get()
-                ->reverse();
-        } else {
-            $entries = $query
-                ->orderBy('date', 'desc')
-                ->take($num)
-                ->get();
-        }
+        $entries = Auth::user()->diaryEntries()
+            ->whereDay('date', $date)
+            ->get();
 
         if ($entries->isEmpty()) {
             $output->error('No entry found for that date.');
             return 6;
         }
 
-        $output->write(Format::diaryEntryList($entries));
+        $entries->each(function ($entry, $key) use ($output, $entries) {
+            $output->write(Format::diaryEntry($entry));
+
+
+            if ($key !== $entries->count() - 1) {
+                $output->write(Format::nl());
+            }
+        });
 
         return 0;
     }

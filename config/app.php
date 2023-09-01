@@ -40,7 +40,7 @@ return [
     |
     */
 
-    'url' => 'http://cmd.deviouschimp.co.uk',
+    'url' => 'http://deviouschimp.co.uk',
 
     /*
     |--------------------------------------------------------------------------

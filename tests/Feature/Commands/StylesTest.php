@@ -18,7 +18,7 @@ class StylesTest extends TestCase
             ->assertSee(e('Here\'s some regular text (say)') . '<br>', false)
             ->assertSee('<span class=\"green_highlight\">This is an alert!<\/span><br>', false)
             ->assertSee('<span class=\"red_highlight\">Oh no! This is an error!<\/span><br>', false)
-            ->assertSee('<code>$this === some($code)<\/code><br>', false)
+            ->assertSee('<code >$this === some($code)<\/code><br>', false)
             ->assertSee('<span class=\"autofill\" data-type=\"autofill\" data-autofill=\"you clicked an autofill\">Auto fill (click me)<\/span><br>', false)
             ->assertSee('<a href=\"https:\/\/example.com\"  data-foo=\"bar\">This is a link<\/a><br>', false)
             ->assertSee('<table><tr><td>Title 1<\/td><td>Title 2<\/td><td>Title 3<\/td><\/tr><tr><td>Thing 1<\/td><td>Thing 2<\/td><td>Thing 3<\/td><\/tr><tr><td>Blah 1<\/td><td>Blah 2<\/td><td>Blah 3<\/td><\/tr><\/table>', false)
