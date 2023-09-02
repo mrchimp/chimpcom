@@ -25,10 +25,13 @@ html,
   --text-hover-color: #bbb;
   --font-size: 1.125rem; // 18px
   --font-default: Menlo, Consolas, Monaco, monospace;
+  --font-code: 'courier new', monospace;
   --task-urgent: #900;
   --task-high: #da0;
   --task-low: #9e9e9e;
   --task-normal: #ccc;
+  --line-height: 1.33;
+  --letter-spacing: 1;
 
   @media screen and (prefers-color-scheme: light) {
     --bg-color: #fff;
@@ -78,7 +81,7 @@ html,
       --code-color: #002b36;
       --text-hover-color: #586e75;
       --task-normal: #002b36;
-  }
+    }
   }
 
   &.theme-ubuntu {
@@ -99,13 +102,35 @@ html,
     --task-normal: #d3d7cf;
   }
 
+  &.theme-quake {
+    --font-default: 'quake', monospace;
+    --font-code: 'quake', monospace;
+    --bg-color: #231307;
+    --text-color: #8b8b8b;
+    --prompt-color: #8f4333;
+    --prompt-weight: bold;
+    --error-color: #7f0000;
+    --title-color: #cf8f2b;
+    --success-color: #7fbfff;
+    --grey-color: #4b4b4b;
+    --link-color: #bbbbbb;
+    --code-color: #bbbbbb;
+    --text-hover-color: #bbbbbb;
+    --task-urgent: #d70000;
+    --task-high: #cf8f2b;
+    --task-low: #7b7b7b;
+    --task-normal: #8b8b8b;
+    --letter-spacing: -0.025em;
+}
+
   background-color: var(--bg-color);
   color: var(--text-color);
   cursor: text;
   font-size: var(--font-size);
   font-family: var(--font-default);
   font-weight: 300;
-  line-height: 133%;
+  line-height: var(--line-height);
+  letter-spacing: var(--letter-spacing);
   overflow: auto;
   padding: 2px;
 

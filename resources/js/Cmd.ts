@@ -120,7 +120,7 @@ export default class Cmd {
       'theme',
       'volume',
     ];
-    this.themes = ['default', 'solarized', 'darkside', 'ubuntu'];
+    this.themes = ['default', 'darkside', 'quake', 'solarized', 'ubuntu'];
     this.theme = 'default';
     this.autocomplete_attempted = false;
     this.tab_mode = false;
