@@ -85,6 +85,9 @@ html,
   }
 
   &.theme-ubuntu {
+    --font-default: 'Ubuntu Mono', Menlo, Consolas, Monaco, monospace;
+    --font-size: 1.25rem; // 20px
+    --line-height: 1.1;
     --bg-color: #300a24;
     --text-color: #d3d7cf;
     --prompt-color: #8ae234;
@@ -121,7 +124,7 @@ html,
     --task-low: #7b7b7b;
     --task-normal: #8b8b8b;
     --letter-spacing: -0.025em;
-}
+  }
 
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -153,7 +156,7 @@ html,
   background-color: transparent;
   transform: translateZ(0);
   width: 100%;
-  line-height: 1.3;
+  line-height: var(--line-height);
 }
 
 .cmd-input-container {
