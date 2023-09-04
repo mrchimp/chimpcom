@@ -2,12 +2,9 @@
 
 namespace Tests\Feature\Commands;
 
-use App\User;
 use Tests\TestCase;
-use Mrchimp\Chimpcom\Models\Project;
-use Mrchimp\Chimpcom\Models\DiaryEntry;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Support\Arr;
+use Mrchimp\Chimpcom\Models\DiaryEntry;
 
 class DiaryTest extends TestCase
 {
@@ -29,5 +26,18 @@ class DiaryTest extends TestCase
             ->assertSee('Here is the content')
             ->assertDontSee('this bit shouldnt be visible')
             ->assertOk();
+    }
+
+    /** @test */
+    public function users_cant_see_each_others_diary_entries()
+    {
+        DiaryEntry::factory()->create([
+            'content' => 'You shouldnt see this.',
+            'user_id' => 999
+        ]);
+
+        $this->getUserResponse('diary')
+            ->assertOk()
+            ->assertDontSee('You shouldnt see this.');
     }
 }

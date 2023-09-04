@@ -4,6 +4,7 @@ namespace Tests\Feature\Commands;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Mrchimp\Chimpcom\Models\DiaryEntry;
 
 class DiaryReadTest extends TestCase
 {
@@ -27,6 +28,19 @@ class DiaryReadTest extends TestCase
 
         $this->getUserResponse('diary:read --date today')
             ->assertSee('No entry found for that date');
+    }
+
+    /** @test */
+    public function users_cant_read_each_others_diary_entries()
+    {
+        DiaryEntry::factory()->create([
+            'content' => 'You shouldnt see this.',
+            'user_id' => 999
+        ]);
+
+        $this->getUserResponse('diary:read')
+            ->assertOk()
+            ->assertDontSee('You shouldnt see this.');
     }
 
     /** @test */
