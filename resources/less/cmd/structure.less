@@ -173,15 +173,19 @@ html,
   --caret-width: 1ch;
   --caret-offset: 0ch;
 
-  font-size: var(--font-size);
-  position: absolute;
-  left: var(--caret-offset);
-  top: 0;
-  background-color: var(--text-color);
-  color: var(--bg-color);
-  width: var(--caret-width);
-  height: 1.3em;
   animation: blink 0.4s ease-in-out alternate infinite;
+  border: 1px solid var(--text-color);
+  color: var(--bg-color);
+  font-size: var(--font-size);
+  height: 1.3em;
+  left: var(--caret-offset);
+  position: absolute;
+  top: 0;
+  width: var(--caret-width);
+
+  .focused & {
+    background-color: var(--text-color);
+  }
 }
 
 .main-prompt {

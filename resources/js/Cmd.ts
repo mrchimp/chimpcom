@@ -146,6 +146,7 @@ export default class Cmd {
     this.history.reset();
     this.setupDOM();
     this.setTheme(localStorage.getItem('theme'));
+    this.addEventHandlers();
     this.input_el.focus();
   }
 
@@ -193,6 +194,16 @@ export default class Cmd {
     this.container.addEventListener('click', this.updateCaret.bind(this));
 
     this.initTextEditor();
+  }
+
+  addEventHandlers() {
+    window.addEventListener('blur', () => {
+      document.body.classList.remove('focused');
+    });
+
+    window.addEventListener('focus', () => {
+      document.body.classList.add('focused');
+    });
   }
 
   initTextEditor() {
