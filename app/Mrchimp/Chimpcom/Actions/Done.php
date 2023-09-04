@@ -50,7 +50,7 @@ class Done extends Action
         $confirmation = $input->getArgument('confirmation');
         $confirmed = Booleanate::isAffirmative($confirmation);
         $project = $user->activeProject;
-        $task_id = $input->getActionData('task_to_complete');
+        $task_ids = $input->getActionData('tasks_to_complete');
 
         Chimpcom::delAction($input->getActionId());
 
@@ -66,21 +66,14 @@ class Done extends Action
             return 0;
         }
 
-        $task = Task::where('id', $task_id)
+        $tasks = Task::whereIn('id', $task_ids)
             ->where('project_id', $project->id)
-            ->first();
+            ->get();
 
-        if (!$task) {
-            $output->error('Couldn\'t find that task.');
 
-            return 3;
-        }
+        $tasks->each(fn ($task) => $task->markAsDone());
 
-        $task->completed = true;
-        $task->time_completed = DB::raw('now()');
-        $task->save();
-
-        $output->alert('Ok.');
+        $output->alert($tasks->count() . ' tasks compeleted.');
 
         return 0;
     }

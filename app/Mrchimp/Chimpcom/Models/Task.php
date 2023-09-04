@@ -67,6 +67,16 @@ class Task extends Model
         }
     }
 
+    /**
+     * Mark the task as done
+     */
+    public function markAsDone(): void
+    {
+        $this->completed = true;
+        $this->time_completed = now();
+        $this->save();
+    }
+
     protected static function newFactory()
     {
         return TaskFactory::new();

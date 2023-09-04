@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands;
 
+use App\Mrchimp\Chimpcom\Id;
 use App\User;
 use Tests\TestCase;
 use Mrchimp\Chimpcom\Models\Task;
@@ -13,6 +14,11 @@ class TaskDoneTest extends TestCase
     protected $active_project;
     protected $other_project;
     protected $other_users_project;
+    protected $low_priority_task;
+    protected $high_priority_task;
+    protected $completed_task;
+    protected $other_project_task;
+    protected $other_users_task;
 
     protected function makeTestTasks()
     {
@@ -37,33 +43,33 @@ class TaskDoneTest extends TestCase
         $this->other_user->active_project_id = $this->other_users_project->id;
         $this->other_user->save();
 
-        Task::factory()->create([
+        $this->low_priority_task = Task::factory()->create([
             'description' => 'Low priority task',
             'user_id' => $this->user->id,
             'project_id' => $this->active_project->id,
             'priority' => 1,
         ]);
 
-        Task::factory()->highpriority()->create([
+        $this->high_priority_task = Task::factory()->highpriority()->create([
             'description' => 'High priority task',
             'user_id' => $this->user->id,
             'project_id' => $this->active_project->id,
             'priority' => 10,
         ]);
 
-        Task::factory()->completed()->create([
+        $this->completed_task = Task::factory()->completed()->create([
             'description' => 'Completed task',
             'user_id' => $this->user->id,
             'project_id' => $this->active_project->id,
         ]);
 
-        Task::factory()->create([
+        $this->other_project_task = Task::factory()->create([
             'description' => 'Task on other project',
             'user_id' => $this->user->id,
             'project_id' => $this->other_project->id,
         ]);
 
-        Task::factory()->create([
+        $this->other_users_task = Task::factory()->create([
             'description' => 'Other users task',
             'user_id' => $this->other_user->id,
             'project_id' => $this->other_users_project->id,
@@ -79,7 +85,7 @@ class TaskDoneTest extends TestCase
     }
 
     /** @test */
-    public function done_command_fails_if_user_has_no_active_project()
+    public function task_done_command_fails_if_user_has_no_active_project()
     {
         $this->getUserResponse('task:done 1')
             ->assertStatus(200)
@@ -87,7 +93,7 @@ class TaskDoneTest extends TestCase
     }
 
     /** @test */
-    public function done_command_fails_if_task_cannot_be_found()
+    public function task_done_command_fails_if_task_cannot_be_found()
     {
         $user = User::factory()->create();
         $project = Project::factory()->create([
@@ -102,7 +108,7 @@ class TaskDoneTest extends TestCase
     }
 
     /** @test */
-    public function done_command_cues_up_the_done_action_if_all_is_well()
+    public function task_done_command_cues_up_the_done_action_if_all_is_well()
     {
         $user = User::factory()->create();
         $project = Project::factory()->create([
@@ -122,7 +128,7 @@ class TaskDoneTest extends TestCase
     }
 
     /** @test */
-    public function done_command_force_option_skips_confirmation()
+    public function task_done_command_force_option_skips_confirmation()
     {
         $user = User::factory()->create();
         $project = Project::factory()->create([
@@ -145,5 +151,46 @@ class TaskDoneTest extends TestCase
         $this->assertNoAction();
 
         $this->assertEquals(0, Task::where('completed', 0)->count());
+    }
+
+    /** @test */
+    public function task_done_command_can_mark_multiple_tasks_as_done_at_once_with_force()
+    {
+        $this->makeTestTasks();
+
+        $this->getUserResponse('task:done -f ' . Id::encode($this->high_priority_task->id) . ' ' . Id::encode($this->low_priority_task->id))
+            ->assertOk();
+
+        $task_high = Task::find($this->high_priority_task->id);
+        $task_low = Task::find($this->low_priority_task->id);
+
+        $this->assertEquals('1', $task_high->completed);
+        $this->assertEquals('1', $task_low->completed);
+
+        $this->getUserResponse('task')
+            ->assertOk()
+            ->assertDontSee($this->high_priority_task->description)
+            ->assertDontSee($this->low_priority_task->description);
+    }
+
+    /** @test */
+    public function task_done_command_can_mark_multiple_tasks_as_done_at_once_without_force()
+    {
+        $this->makeTestTasks();
+
+        $this->getUserResponse('task:done -f ' . Id::encode($this->high_priority_task->id) . ' ' . Id::encode($this->low_priority_task->id))
+            ->assertOk();
+
+        $this->getUserResponse('ok', $this->user, $this->last_action_id);
+
+        $task_high = Task::find($this->high_priority_task->id);
+        $task_low = Task::find($this->low_priority_task->id);
+        $this->assertEquals('1', $task_high->completed);
+        $this->assertEquals('1', $task_low->completed);
+
+        $this->getUserResponse('task')
+            ->assertOk()
+            ->assertDontSee($this->high_priority_task->description)
+            ->assertDontSee($this->low_priority_task->description);
     }
 }

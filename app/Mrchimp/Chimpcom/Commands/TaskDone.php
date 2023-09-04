@@ -24,7 +24,7 @@ class TaskDone extends Command
      */
     protected function configure()
     {
-        $this->setName('task');
+        $this->setName('task:done');
         $this->setDescription('Marks one or more tasks as complete.');
         $this->addUsage('task:done a3 77 2e');
         $this->addRelated('task');
@@ -34,11 +34,8 @@ class TaskDone extends Command
         $this->addRelated('project');
         $this->addArgument(
             'content',
-            InputArgument::IS_ARRAY,
-            'For NEW, this should be a description of the task. ' . Format::nl() . Format::nbsp(2) .
-                'For LIST, only show tasks that contain this. ' . Format::nl() . Format::nbsp(2) .
-                'For DONE, this is the ID of the task to mark as completed.' . Format::nl() . Format::nbsp(2) .
-                'For ADDTAG/REMOVETAG the first word is the ID of the task and subsequent words are tags to add/remove.'
+            InputArgument::IS_ARRAY | InputArgument::REQUIRED,
+            'One or more IDs of tasks to mark as completed.'
         );
         $this->addOption(
             'force',
@@ -53,7 +50,7 @@ class TaskDone extends Command
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!Auth::check()) {
             $output->error(__('chimpcom.must_log_in'));
@@ -65,7 +62,7 @@ class TaskDone extends Command
         return $this->doneTask($input, $output);
     }
 
-    protected function doneTask(InputInterface $input, OutputInterface $output)
+    protected function doneTask(InputInterface $input, OutputInterface $output): int
     {
         $user = Auth::user();
         $project = $user->activeProject;
@@ -75,32 +72,30 @@ class TaskDone extends Command
             return ErrorCode::NO_ACTIVE_PROJECT;
         }
 
-        $task_id = Id::decode(implode(' ', $input->getArgument('content')));
+        $task_ids = array_map(fn ($id) => Id::decode($id), $input->getArgument('content'));
 
-        $task = TaskModel::where('id', $task_id)
+        $tasks = TaskModel::whereIn('id', $task_ids)
             ->where('project_id', $project->id)
-            ->first();
+            ->get();
 
-        if (!$task) {
+        if ($tasks->isEmpty()) {
             $output->error(Format::escape('Couldn\'t find that task.'));
             return ErrorCode::MODEL_NOT_FOUND;
         }
 
         if ($input->getOption('force')) {
-            $task->completed = true;
-            $task->time_completed = now();
-            $task->save();
-            $output->alert('Ok.');
+            $tasks->each(fn ($task) => $task->markAsDone());
+            $output->alert($tasks->count() . ' tasks completed.');
 
             return ErrorCode::SUCCESS;
         } else {
             $output->setAction('done', [
-                'task_to_complete' => $task->id,
+                'tasks_to_complete' => $tasks->pluck('id'),
             ]);
             $output->useQuestionInput();
-            $output->alert('Are you sure you want to mark this as complete?' . Format::nl());
-            $output->write($task->description . Format::nl(2));
-            $output->write('yes/no?');
+            $output->alert('Are you sure you want to mark as complete?' . Format::nl());
+            $tasks->each(fn ($task) => $output->write($task->description . Format::nl()));
+            $output->write(Format::nl() . 'yes/no?');
         }
 
         return ErrorCode::SUCCESS;
