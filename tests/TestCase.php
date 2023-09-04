@@ -18,6 +18,7 @@ abstract class TestCase extends BaseTestCase
     protected $user;
     protected $admin;
     protected $last_action_id;
+    protected $faker;
 
     public function __construct()
     {

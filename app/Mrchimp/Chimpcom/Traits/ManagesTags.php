@@ -40,7 +40,7 @@ trait ManagesTags
 
         $ids = array_map(fn ($word) => Id::decode($word), $words);
 
-        $items = $this->findItems($words, $input, $output);
+        $items = $this->findItems($ids, $input, $output);
 
         if (empty($items)) {
             $output->error('No items found with the given IDs.');
