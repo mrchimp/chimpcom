@@ -20,6 +20,7 @@ class Booleanate
         'sure',
         'y',
         'ya',
+        'ye',
         'yea',
         'yeah',
         'yes',
