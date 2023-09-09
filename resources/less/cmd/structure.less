@@ -173,6 +173,7 @@ html,
   --caret-width: 1ch;
   --caret-offset: 0ch;
 
+  background-color: var(--text-color);
   animation: blink 0.4s ease-in-out alternate infinite;
   border: 1px solid var(--text-color);
   color: var(--bg-color);
@@ -183,8 +184,8 @@ html,
   top: 0;
   width: var(--caret-width);
 
-  .focused & {
-    background-color: var(--text-color);
+  .blurred & {
+    background: transparent;
   }
 }
 

@@ -198,11 +198,11 @@ export default class Cmd {
 
   addEventHandlers() {
     window.addEventListener('blur', () => {
-      document.body.classList.remove('focused');
+      document.body.classList.add('blurred');
     });
 
     window.addEventListener('focus', () => {
-      document.body.classList.add('focused');
+      document.body.classList.remove('blurred');
     });
   }
 
