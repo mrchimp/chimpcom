@@ -402,6 +402,14 @@ class FormatCli implements Format
             }
         }
 
+        if ($entry->tags->isNotEmpty()) {
+            $output .= static::nl(2) . 'Tags:' . static::nl();
+
+            foreach ($entry->tags as $tag) {
+                $output .= static::grey('@' . e($tag->tag) . static::nl());
+            }
+        }
+
         return $output;
     }
 
