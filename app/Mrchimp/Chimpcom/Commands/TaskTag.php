@@ -32,6 +32,7 @@ class TaskTag extends Command
         $this->addRelated('task:done');
         $this->addRelated('task:edit');
         $this->addRelated('project');
+        $this->addRelated('tag');
         $this->addUsage('task:tag 1 2 @bug @urgent');
         $this->addUsage('task:tag --remove 6f @bug @bananas');
         $this->addArgument(

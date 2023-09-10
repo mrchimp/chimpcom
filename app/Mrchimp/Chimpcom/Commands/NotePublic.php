@@ -28,6 +28,8 @@ class NotePublic extends Command
         $this->addRelated('note:show');
         $this->addRelated('note:find');
         $this->addRelated('note:forget');
+        $this->addRelated('project');
+        $this->addRelated('tag');
 
         $this->addArgument(
             'ids',

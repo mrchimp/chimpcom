@@ -38,6 +38,8 @@ class NoteNew extends Command
         $this->addRelated('note:show');
         $this->addRelated('note:find');
         $this->addRelated('note:setpublic');
+        $this->addRelated('project');
+        $this->addRelated('tag');
 
         $this->addArgument(
             'name',

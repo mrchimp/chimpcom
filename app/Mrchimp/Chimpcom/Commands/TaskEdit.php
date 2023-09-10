@@ -31,6 +31,7 @@ class TaskEdit extends Command
         $this->addRelated('task:done');
         $this->addRelated('task:tag');
         $this->addRelated('project');
+        $this->addRelated('tag');
         $this->addArgument(
             'task_id',
             null,

@@ -25,6 +25,7 @@ class DiaryGraph extends Command
         $this->addRelated('diary:edit');
         $this->addRelated('diary:read');
         $this->addRelated('project');
+        $this->addRelated('tag');
         $this->addOption(
             'meta',
             'm',

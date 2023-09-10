@@ -28,6 +28,7 @@ class DiaryRead extends Command
         $this->addUsage('diary list');
         $this->addUsage('diary edit');
         $this->addRelated('project');
+        $this->addRelated('tag');
         $this->addOption(
             'project',
             'p',

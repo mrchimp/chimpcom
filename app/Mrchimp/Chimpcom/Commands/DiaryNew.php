@@ -30,6 +30,7 @@ class DiaryNew extends Command
         $this->addRelated('diary:read');
         $this->addRelated('diary:edit');
         $this->addRelated('project');
+        $this->addRelated('tag');
         $this->addArgument(
             'content',
             InputArgument::OPTIONAL | InputArgument::IS_ARRAY,

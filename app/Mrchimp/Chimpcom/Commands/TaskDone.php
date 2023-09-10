@@ -32,6 +32,7 @@ class TaskDone extends Command
         $this->addRelated('task:edit');
         $this->addRelated('task:tag');
         $this->addRelated('project');
+        $this->addRelated('tag');
         $this->addArgument(
             'content',
             InputArgument::IS_ARRAY | InputArgument::REQUIRED,

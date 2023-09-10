@@ -28,6 +28,8 @@ class NoteFind extends Command
         $this->addRelated('note:show');
         $this->addRelated('note:forget');
         $this->addRelated('note:setpublic');
+        $this->addRelated('project');
+        $this->addRelated('tag');
 
         $this->addArgument(
             'search_string',

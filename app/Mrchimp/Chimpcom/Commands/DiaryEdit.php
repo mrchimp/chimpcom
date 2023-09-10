@@ -26,6 +26,7 @@ class DiaryEdit extends Command
         $this->addUsage('diary:read');
         $this->addUsage('diary:graph');
         $this->addRelated('project');
+        $this->addRelated('tag');
         $this->addArgument(
             'content',
             InputArgument::OPTIONAL | InputArgument::IS_ARRAY,

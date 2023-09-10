@@ -3,7 +3,6 @@
 namespace Mrchimp\Chimpcom\Commands;
 
 use Auth;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Mrchimp\Chimpcom\ErrorCode;
 use Mrchimp\Chimpcom\Facades\Format;
@@ -31,6 +30,7 @@ class Note extends Command
         $this->addRelated('note:public');
         $this->addRelated('note:tag');
         $this->addRelated('project');
+        $this->addRelated('tag');
         $this->addArgument(
             'names',
             InputArgument::OPTIONAL | InputArgument::IS_ARRAY,

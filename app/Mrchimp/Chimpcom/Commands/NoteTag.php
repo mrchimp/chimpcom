@@ -30,6 +30,7 @@ class NoteTag extends Command
         $this->addRelated('note:forget');
         $this->addRelated('note:public');
         $this->addRelated('project');
+        $this->addRelated('tag');
         $this->addUsage('note:tag 1 2 @foo @bar');
         $this->addUsage('note:tag --remove 6f @foo @bar');
         $this->addArgument(

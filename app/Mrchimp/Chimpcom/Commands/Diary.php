@@ -32,6 +32,7 @@ class Diary extends Command
         $this->addUsage('diary:edit');
         $this->addUsage('diary:graph');
         $this->addRelated('project');
+        $this->addRelated('tag');
         $this->addOption(
             'project',
             'p',

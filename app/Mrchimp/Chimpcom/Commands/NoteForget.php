@@ -31,6 +31,8 @@ class NoteForget extends Command
         $this->addRelated('note:show');
         $this->addRelated('note:find');
         $this->addRelated('note:setpublic');
+        $this->addRelated('tag');
+        $this->addRelated('project');
 
         $this->addArgument(
             'id',
