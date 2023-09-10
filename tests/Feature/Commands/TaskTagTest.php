@@ -3,16 +3,12 @@
 namespace Tests\Feature\Commands;
 
 use App\Mrchimp\Chimpcom\Id;
-use App\User;
 use Tests\TestCase;
 use Mrchimp\Chimpcom\Models\Task;
-use Mrchimp\Chimpcom\Models\Project;
 
 class TaskTagTest extends TestCase
 {
     protected $other_user;
-
-    protected $active_project;
 
     protected $first_task;
 
@@ -20,21 +16,14 @@ class TaskTagTest extends TestCase
 
     protected function makeTestTasks()
     {
-        $this->user = User::factory()->create();
-
-        // Create a bunch of extra tasks to force the tasks we're interest in
+        // Create a bunch of extra tasks to force the tasks we're interested in
         // to be numbered in hex, not decimal.
         Task::factory()->count(32)->create([
             'user_id' => 999,
             'project_id' => 999,
         ]);
 
-        $this->active_project = Project::factory()->create([
-            'user_id' => $this->user->id,
-        ]);
-
-        $this->user->active_project_id = $this->active_project->id;
-        $this->user->save();
+        $this->active_project = $this->createProject();
 
         $this->first_task = Task::factory()->create([
             'description' => 'First task',
@@ -63,7 +52,10 @@ class TaskTagTest extends TestCase
     public function can_add_or_remove_tag_to_a_task()
     {
         $this->makeTestTasks();
-        $this->getUserResponse('task:tag ' . Id::encode($this->first_task->id) . ' ' . Id::encode($this->second_task->id) . ' @foo @bar')
+        $this->getUserResponse(
+            'task:tag ' . Id::encode($this->first_task->id) . ' ' .
+                Id::encode($this->second_task->id) . ' @foo @bar'
+        )
             ->assertOk();
 
         $this->getUserResponse("task first")
@@ -79,7 +71,10 @@ class TaskTagTest extends TestCase
             ->assertSee("@foo")
             ->assertSee("@bar");
 
-        $this->getUserResponse('task:tag --remove ' . Id::encode($this->first_task->id) . ' ' . Id::encode($this->second_task->id) . ' @foo @bar')
+        $this->getUserResponse(
+            'task:tag --remove ' . Id::encode($this->first_task->id) . ' ' .
+                Id::encode($this->second_task->id) . ' @foo @bar'
+        )
             ->assertOk();
 
         $this->getUserResponse("task first")

@@ -9,6 +9,7 @@ use Mrchimp\Chimpcom\Facades\Chimpcom;
 use Mrchimp\Chimpcom\Models\Directory;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Mrchimp\Chimpcom\Models\Project;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -19,6 +20,7 @@ abstract class TestCase extends BaseTestCase
     protected $admin;
     protected $last_action_id;
     protected $faker;
+    protected $active_project;
 
     public function __construct()
     {
@@ -45,10 +47,17 @@ abstract class TestCase extends BaseTestCase
         return $response;
     }
 
+    protected function makeTestUser()
+    {
+        $this->user = User::factory()->create();
+
+        return $this->user;
+    }
+
     protected function getUserResponse($cmd_in, $user = null, $action_id = null)
     {
         if (!$this->user && is_null($user)) {
-            $this->user = User::factory()->create();
+            $this->makeTestUser();
         }
 
         $response = $this
@@ -201,5 +210,25 @@ abstract class TestCase extends BaseTestCase
     protected function assertActionDoesntExist(string $action_id): void
     {
         $this->assertFalse(Chimpcom::actionExists($action_id), 'Action should not exist but action_id "' . $action_id . '" was found');
+    }
+
+    protected function createProject(User $user = null): Project
+    {
+        if (!$this->user && !$user) {
+            $this->makeTestUser();
+        }
+
+        if ($user === null) {
+            $user = $this->user;
+        }
+
+        $project = Project::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        $user->active_project_id = $project->id;
+        $user->save();
+
+        return $project;
     }
 }
