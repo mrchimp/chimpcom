@@ -79,8 +79,8 @@ class TaskDoneTest extends TestCase
     /** @test */
     public function task_fails_for_guests()
     {
-        $this->getGuestResponse('task:done')
-            ->assertStatus(404)
+        $this->getGuestResponse('task:done foo')
+            ->assertOk()
             ->assertSee(__('chimpcom.must_log_in'));
     }
 
@@ -88,7 +88,7 @@ class TaskDoneTest extends TestCase
     public function task_done_command_fails_if_user_has_no_active_project()
     {
         $this->getUserResponse('task:done 1')
-            ->assertStatus(200)
+            ->assertOk()
             ->assertSee('No active project');
     }
 
@@ -103,7 +103,7 @@ class TaskDoneTest extends TestCase
         $user->save();
 
         $this->getUserResponse('task:done 1', $user)
-            ->assertStatus(200)
+            ->assertOk()
             ->assertSee('Couldn\'t find that task.');
     }
 
@@ -121,8 +121,8 @@ class TaskDoneTest extends TestCase
         ]);
 
         $this->getUserResponse('task:done 1', $user)
-            ->assertStatus(200)
-            ->assertSee('Are you sure you want to mark this as complete?');
+            ->assertOk()
+            ->assertSee('Are you sure you want to mark as complete?');
 
         $this->assertAction('done');
     }
@@ -141,13 +141,13 @@ class TaskDoneTest extends TestCase
         ]);
 
         $this->getUserResponse('task:done 1 --force', $user)
-            ->assertStatus(200)
-            ->assertSee('Ok');
+            ->assertOk()
+            ->assertSee('1 task completed.');
         $this->assertNoAction();
 
         $this->getUserResponse('task:done 2 -f', $user)
-            ->assertStatus(200)
-            ->assertSee('Ok');
+            ->assertOk()
+            ->assertSee('1 task completed.');
         $this->assertNoAction();
 
         $this->assertEquals(0, Task::where('completed', 0)->count());

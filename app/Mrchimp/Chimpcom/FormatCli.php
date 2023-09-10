@@ -93,7 +93,7 @@ class FormatCli implements Format
 
         if (!empty($titles)) {
             foreach ($titles as $title) {
-                $s .= e($title) . "\t";
+                $s .= $title . "\t";
             }
         }
 
@@ -130,7 +130,7 @@ class FormatCli implements Format
         foreach ($memories as $memory) {
             if ($memory->name != $previous_name) {
                 $output .= static::listToTable($chunks, 5) . "\n";
-                $output .= static::alert(e(ucwords($memory->name))) . "\n";
+                $output .= static::alert(ucwords($memory->name)) . "\n";
                 $chunks = [];
             }
 
@@ -139,13 +139,13 @@ class FormatCli implements Format
             // Memory ID
             $chunks[] = static::grey($hexid, [
                 'data-type' => 'autofill',
-                'data-autofill' => e("forget $hexid")
+                'data-autofill' => "forget $hexid"
             ]);
 
             if ($memory->isMine()) {
-                $chunks[] = static::title(e($memory->user->name));
+                $chunks[] = static::title($memory->user->name);
             } else {
-                $chunks[] = static::grey(e($memory->user->name));
+                $chunks[] = static::grey($memory->user->name);
             }
 
             // Public
@@ -153,13 +153,13 @@ class FormatCli implements Format
                 $chunks[] = static::alert('P', [
                     'title' => 'Public: anyone can see this.',
                     'data-type' => 'autofill',
-                    'data-autofill' => e("setpublic $hexid --private")
+                    'data-autofill' => "setpublic $hexid --private"
                 ]);
             } else {
                 $chunks[] = static::grey('p', [
                     'title' => 'Private: only you can see this',
                     'data-type' => 'autofill',
-                    'data-autofill' => e("setpublic $hexid")
+                    'data-autofill' => "setpublic $hexid"
                 ]);
             }
 
@@ -181,7 +181,7 @@ class FormatCli implements Format
             if (Auth::check() && $current_user->id == $memory->user_id) {
                 $attrs = [
                     'data-type' => 'autofill',
-                    'data-autofill' => e("update $hexid {$memory['content']}")
+                    'data-autofill' => "update $hexid {$memory['content']}"
                 ];
             } else {
                 $attrs = [];
@@ -268,14 +268,14 @@ class FormatCli implements Format
             ]);
 
             if ($task->completed) {
-                $output .= static::grey(' ' . e($task->description));
+                $output .= static::grey(' ' . $task->description);
                 $output .= static::grey(' (' . $task->time_completed . ')');
             } else {
-                $output .= ' ' . e($task->description);
+                $output .= ' ' . $task->description;
             }
 
             $list[] = static::grey($task->tags->map(function ($tag) {
-                return e($tag->tag);
+                return $tag->tag;
             })->implode(", "));
 
             if ($show_dates) {
@@ -333,15 +333,15 @@ class FormatCli implements Format
      */
     public static function feedItem($item): string
     {
-        $output = self::title(e($item->get_title())) . "\t";
+        $output = self::title($item->get_title()) . "\t";
         $author = $item->get_author();
 
         if ($author) {
             $output .= 'Author: ' . $author->get_name();
         }
 
-        $output .= self::grey(e($item->get_date('Y-m-d H:i:s'))) . "\t";
-        $output .= e($item->get_description());
+        $output .= self::grey($item->get_date('Y-m-d H:i:s')) . "\t";
+        $output .= $item->get_description();
 
         $url = $item->get_permalink();
 
@@ -392,7 +392,7 @@ class FormatCli implements Format
     public static function diaryEntry(DiaryEntry $entry): string
     {
         $output = self::title($entry->date->format('l jS \\of F Y h:i A')) . static::nl();
-        $output .= e($entry->content);
+        $output .= $entry->content;
 
         if (!empty($entry->meta)) {
             $output .= static::nl(2) . 'Metadata:' . static::nl();
@@ -406,7 +406,7 @@ class FormatCli implements Format
             $output .= static::nl(2) . 'Tags:' . static::nl();
 
             foreach ($entry->tags as $tag) {
-                $output .= static::grey('@' . e($tag->tag) . static::nl());
+                $output .= static::grey('@' . $tag->tag . static::nl());
             }
         }
 
@@ -419,7 +419,7 @@ class FormatCli implements Format
 
         $entries->each(function ($entry) use (&$chunks) {
             $chunks[] = self::title($entry->date->toDateTimeString());
-            $chunks[] = e(Str::substr($entry->content, 0, 100));
+            $chunks[] = Str::substr($entry->content, 0, 100);
         });
 
         return static::listToTable(

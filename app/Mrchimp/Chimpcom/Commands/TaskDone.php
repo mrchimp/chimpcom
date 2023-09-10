@@ -55,7 +55,6 @@ class TaskDone extends Command
     {
         if (!Auth::check()) {
             $output->error(__('chimpcom.must_log_in'));
-            $output->setStatusCode(404);
 
             return ErrorCode::NOT_AUTHORISED;
         }
@@ -86,7 +85,7 @@ class TaskDone extends Command
 
         if ($input->getOption('force')) {
             $tasks->each(fn ($task) => $task->markAsDone());
-            $output->alert($tasks->count() . ' tasks completed.');
+            $output->alert($tasks->count() . ' task' . ($tasks->count() > 1 ? 's' : '') . ' completed.');
 
             return ErrorCode::OK;
         } else {

@@ -17,7 +17,7 @@ class TagTest extends TestCase
     public function tags_arent_for_guests()
     {
         $this->getGuestResponse('tag')
-            ->assertStatus(404)
+            ->assertOk()
             ->assertSee(__('chimpcom.must_log_in'));
     }
 
