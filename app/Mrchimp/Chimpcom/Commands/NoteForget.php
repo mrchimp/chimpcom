@@ -54,7 +54,7 @@ class NoteForget extends Command
 
         if ($mem_ids[0] == 'everything' || $mem_ids[0] == 'all') {
             $output->write(Format::escape('Where am I? Who are you? WHAT THE HELL\'S GOING ON?!'));
-            return ErrorCode::SUCCESS;
+            return ErrorCode::OK;
         }
 
         $ids = Id::decodeMany($mem_ids);
@@ -82,6 +82,6 @@ class NoteForget extends Command
         ]);
         $output->useQuestionInput();
 
-        return ErrorCode::SUCCESS;
+        return ErrorCode::OK;
     }
 }

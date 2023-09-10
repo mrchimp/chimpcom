@@ -177,7 +177,7 @@ class Task extends Command
                 $output->alert('Nothing to do! Use TASK NEW to create a task.');
             }
 
-            return ErrorCode::SUCCESS;
+            return ErrorCode::OK;
         }
 
         $output->write(Format::tasks($tasks, $input->getOption('dates'), $show_all_projects));
@@ -188,6 +188,6 @@ class Task extends Command
             );
         }
 
-        return ErrorCode::SUCCESS;
+        return ErrorCode::OK;
     }
 }

@@ -46,6 +46,6 @@ class Tag extends Command
 
         $output->write(Format::listToTable($tag_names, 4, true));
 
-        return 0;
+        return ErrorCode::OK;
     }
 }

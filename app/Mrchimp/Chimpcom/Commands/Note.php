@@ -134,7 +134,7 @@ class Note extends Command
 
             $output->write(Format::listToTable($words, 6, false));
 
-            return ErrorCode::SUCCESS;
+            return ErrorCode::OK;
         }
 
         if ($show_public) {
@@ -187,6 +187,6 @@ class Note extends Command
 
         $output->write(Format::memories($memories));
 
-        return ErrorCode::SUCCESS;
+        return ErrorCode::OK;
     }
 }

@@ -93,6 +93,6 @@ class NoteFind extends Command
 
         $output->write(Format::memories($memories));
 
-        return ErrorCode::SUCCESS;
+        return ErrorCode::OK;
     }
 }

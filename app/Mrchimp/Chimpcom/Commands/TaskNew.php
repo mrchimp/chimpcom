@@ -109,6 +109,6 @@ class TaskNew extends Command
 
         $output->alert('Task created. Id: ' . Id::encode($task->id));
 
-        return ErrorCode::SUCCESS;
+        return ErrorCode::OK;
     }
 }

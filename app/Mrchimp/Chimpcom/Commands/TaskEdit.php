@@ -125,7 +125,7 @@ class TaskEdit extends Command
 
             $output->alert('Priority set to ' . $new_priority . ' for task:', true);
             $output->grey($task->description);
-            return ErrorCode::SUCCESS;
+            return ErrorCode::OK;
         }
 
         $output->setAction('edit_task', [
@@ -133,6 +133,6 @@ class TaskEdit extends Command
         ]);
         $output->editContent($task->description);
 
-        return ErrorCode::SUCCESS;
+        return ErrorCode::OK;
     }
 }

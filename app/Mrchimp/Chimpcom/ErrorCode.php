@@ -4,7 +4,7 @@ namespace Mrchimp\Chimpcom;
 
 class ErrorCode
 {
-    public const SUCCESS = 0;
+    public const OK = 0;
     public const NOT_AUTHORISED = 1;
     public const INVALID_INPUT = 2;
     public const NO_ACTIVE_PROJECT = 3;

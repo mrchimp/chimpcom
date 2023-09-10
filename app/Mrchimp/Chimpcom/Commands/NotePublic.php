@@ -71,6 +71,6 @@ class NotePublic extends Command
 
         $output->alert('Ok.');
 
-        return ErrorCode::SUCCESS;
+        return ErrorCode::OK;
     }
 }

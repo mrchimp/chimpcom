@@ -56,7 +56,7 @@ class ProjectList extends Command
         if (count($user->projects) === 0) {
             $output->error('No projects.');
 
-            return ErrorCode::SUCCESS;
+            return ErrorCode::OK;
         }
 
         $output_chunks = [];
@@ -67,6 +67,6 @@ class ProjectList extends Command
 
         $output->write(implode(Format::nl(), $output_chunks));
 
-        return ErrorCode::SUCCESS;
+        return ErrorCode::OK;
     }
 }

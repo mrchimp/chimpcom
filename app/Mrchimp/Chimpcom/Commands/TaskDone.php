@@ -87,7 +87,7 @@ class TaskDone extends Command
             $tasks->each(fn ($task) => $task->markAsDone());
             $output->alert($tasks->count() . ' tasks completed.');
 
-            return ErrorCode::SUCCESS;
+            return ErrorCode::OK;
         } else {
             $output->setAction('done', [
                 'tasks_to_complete' => $tasks->pluck('id'),
@@ -98,6 +98,6 @@ class TaskDone extends Command
             $output->write(Format::nl() . 'yes/no?');
         }
 
-        return ErrorCode::SUCCESS;
+        return ErrorCode::OK;
     }
 }

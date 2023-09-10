@@ -67,7 +67,7 @@ trait ManagesTags
 
         $output->alert('Ok.');
 
-        return ErrorCode::SUCCESS;
+        return ErrorCode::OK;
     }
 
     abstract protected function findItems($ids = [], InputInterface $input): EloquentCollection;

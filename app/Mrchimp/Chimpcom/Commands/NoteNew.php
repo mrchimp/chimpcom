@@ -132,6 +132,6 @@ class NoteNew extends Command
 
         $output->alert('Memory saved. Id: ' . $memory->id);
 
-        return ErrorCode::SUCCESS;
+        return ErrorCode::OK;
     }
 }
