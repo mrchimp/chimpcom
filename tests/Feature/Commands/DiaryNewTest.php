@@ -45,6 +45,10 @@ class DiaryNewTest extends TestCase
         $this->assertEquals('some', $entry->tags[0]->tag);
         $this->assertEquals('hashtag', $entry->tags[1]->tag);
         $this->assertEquals('Here is content', $entry->content);
+        $this->getUserResponse('diary:read')
+            ->assertOk()
+            ->assertSee('@some')
+            ->assertSee('@hashtag');
     }
 
     /** @test */
