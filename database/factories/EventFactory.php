@@ -14,7 +14,7 @@ class EventFactory extends Factory
     public function definition()
     {
         return [
-            'message' => $this->faker->sentence,
+            'description' => $this->faker->sentence,
             'user_id' => 1,
             'date' => $this->faker->dateTimeBetween('now', '+90 days'),
             'project_id' => null,

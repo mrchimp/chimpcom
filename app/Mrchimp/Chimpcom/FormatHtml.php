@@ -305,6 +305,24 @@ class FormatHtml implements Format
         return $output;
     }
 
+    public static function events(Collection $events): string
+    {
+        $output = '';
+
+        foreach ($events as $event) {
+            $output .= static::title($event->date->toDayDateTimeString()) . static::nl();
+            $output .= e($event->description);
+
+            if ($event->tags->isNotEmpty()) {
+                $output .= static::grey(static::nl() . 'Tags: ' . $event->tags->map(function ($tag) {
+                    return e($tag->tag);
+                })->join(', '));
+            }
+        }
+
+        return $output;
+    }
+
     /**
      * Format PMs
      */

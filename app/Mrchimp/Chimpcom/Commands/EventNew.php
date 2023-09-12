@@ -20,6 +20,7 @@ class EventNew extends Command
     {
         $this->setName('event:new');
         $this->setDescription('Create a new calendar event.');
+        $this->addRelated('event');
         $this->setHelp('Tasks can be optionally be attached to a project.');
         $this->addOption(
             'date',
@@ -53,11 +54,11 @@ class EventNew extends Command
 
     protected function newEvent(InputInterface $input, OutputInterface $output): int
     {
-        $user = Auth::user();
         [$words, $tags] = $input->splitWordsAndTags($input->getArgument('description'));
         $project_name = $input->getOption('project');
         $project = $this->projectFromName($project_name);
         $description = implode(' ', $words);
+
         try {
             $date = $input->dateOption('date');
         } catch (InvalidFormatException $e) {
