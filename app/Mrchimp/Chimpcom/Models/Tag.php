@@ -43,6 +43,14 @@ class Tag extends Model
     }
 
     /**
+     * Related events
+     */
+    public function events()
+    {
+        return $this->morphedByMany(Event::class, 'taggable');
+    }
+
+    /**
      * Filter tags to those related to a given project
      */
     public function scopeForProject(Builder $query, Project $project): void
@@ -56,6 +64,10 @@ class Tag extends Model
                 $query->where('id', $project->id);
             });
         })->orWhereHas('tasks', function ($query) use ($project) {
+            $query->whereHas('project', function ($query) use ($project) {
+                $query->where('id', $project->id);
+            });
+        })->orWhereHas('events', function ($query) use ($project) {
             $query->whereHas('project', function ($query) use ($project) {
                 $query->where('id', $project->id);
             });

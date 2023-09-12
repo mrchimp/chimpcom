@@ -48,6 +48,11 @@ class User extends Authenticatable
         return $this->hasMany('Mrchimp\Chimpcom\Models\Project');
     }
 
+    public function events()
+    {
+        return $this->hasMany('Mrchimp\Chimpcom\Models\Event');
+    }
+
     public function activeProject()
     {
         return $this->belongsTo('Mrchimp\Chimpcom\Models\Project', 'active_project_id');

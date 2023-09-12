@@ -37,10 +37,7 @@ class TaskNew extends Command
         $this->addArgument(
             'content',
             InputArgument::IS_ARRAY,
-            'For NEW, this should be a description of the task. ' . Format::nl() . Format::nbsp(2) .
-                'For LIST, only show tasks that contain this. ' . Format::nl() . Format::nbsp(2) .
-                'For DONE, this is the ID of the task to mark as completed.' . Format::nl() . Format::nbsp(2) .
-                'For ADDTAG/REMOVETAG the first word is the ID of the task and subsequent words are tags to add/remove.'
+            'For NEW, this should be a description of the task.'
         );
         $this->addOption(
             'priority',

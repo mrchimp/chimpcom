@@ -25,6 +25,7 @@ return [
         'does' => \Mrchimp\Chimpcom\Commands\Does::class,
         'doecho' => \Mrchimp\Chimpcom\Commands\Doecho::class,
         'edit' => \Mrchimp\Chimpcom\Commands\Edit::class,
+        'event:new' => \Mrchimp\Chimpcom\Commands\EventNew::class,
         'go' => \Mrchimp\Chimpcom\Commands\Go::class,
         'hexdec' => \Mrchimp\Chimpcom\Commands\Hexdec::class,
         'hi' => \Mrchimp\Chimpcom\Commands\Hi::class,
