@@ -2,7 +2,7 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Illuminate\Support\Facades\Auth;
+use Auth;
 use Mrchimp\Chimpcom\ErrorCode;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -71,8 +71,20 @@ class DiaryEdit extends Command
      */
     protected function editEntry(InputInterface $input, OutputInterface $output): int
     {
-        $output->error('Not implemented yet.');
+        $date = $input->dateOption('date');
+        $user = Auth::user();
+        $entry = $user->diaryEntries()->whereDate('date', '=', $date)->first();
 
-        return ErrorCode::NOT_IMPLEMENTED;
+        if (!$entry) {
+            $output->error('No entry found for that date.');
+            return ErrorCode::NO_ACTIVE_PROJECT;
+        }
+
+        $output->setAction('diary_edit', [
+            'entry_id' => $entry->id,
+        ]);
+        $output->editContent($entry->content);
+
+        return ErrorCode::OK;
     }
 }

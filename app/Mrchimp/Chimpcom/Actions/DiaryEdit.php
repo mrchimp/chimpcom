@@ -8,7 +8,7 @@ use Mrchimp\Chimpcom\ErrorCode;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EditTask extends Action
+class DiaryEdit extends Action
 {
     /**
      * Configure the command
@@ -17,10 +17,11 @@ class EditTask extends Action
      */
     protected function configure()
     {
-        $this->setName('edit_Task');
+        $this->setName('diary_edit');
         $this->setDescription('Handle task edited content and save it');
-        $this->addOption('continue', 'c', null, 'Continue editing');
     }
+
+
 
     /**
      * Run the command
@@ -29,26 +30,25 @@ class EditTask extends Action
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $task_id = $input->getActionData('task_to_edit');
-        $user = Auth::user();
-        $project = $user->activeProject;
+        $entry_id = $input->getActionData('entry_id');
 
         Chimpcom::delAction($input->getActionId());
 
-        if (!$project) {
-            $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
-            return ErrorCode::NO_ACTIVE_PROJECT;
+        if (!Auth::check()) {
+            $output->error(__('chimpcom.must_log_in'));
+            return 1;
         }
 
-        $task = $user->tasks()->where('id', $task_id)->first();
+        $user = Auth::user();
+        $entry = $user->diaryEntries()->where('id', $entry_id)->first();
 
-        if (!$task) {
-            $output->error('Task not found.');
+        if (!$entry) {
+            $output->error('Entry not found.');
             return ErrorCode::MODEL_NOT_FOUND;
         }
 
-        $task->description = $input->getContent();
-        $task->save();
+        $entry->content = $input->getContent();
+        $entry->save();
 
         $output->alert('Ok.');
 
