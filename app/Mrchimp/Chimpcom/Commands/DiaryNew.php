@@ -4,6 +4,7 @@ namespace Mrchimp\Chimpcom\Commands;
 
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Facades\Auth;
+use Mrchimp\Chimpcom\ErrorCode;
 use Mrchimp\Chimpcom\Traits\ManagesProjects;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -79,28 +80,38 @@ class DiaryNew extends Command
             $date = $input->dateOption('date');
         } catch (InvalidFormatException $e) {
             $output->error('Invalid date.');
-            return 3;
+            return ErrorCode::INVALID_ARGUMENT;
         }
 
-        $words = $input->getArgument('content');
         $project_name = $input->getOption('project');
         $project = $this->projectFromName($project_name);
         $meta = $this->parseMeta($input->getOption('meta'));
 
         if ($project_name && !$project) {
             $output->error('Project not found.');
-            return 3;
+            return ErrorCode::MODEL_NOT_FOUND;
         }
 
-        [$words, $tags] = $input->splitWordsAndTags($words);
+        [$words, $tags] = $input->splitWordsAndTags($input->getArgument('content'));
+        $content = implode(' ', $words);
 
         if (empty($words)) {
             $output->error("You didn't enter any content.");
-            return 4;
+            return ErrorCode::INVALID_ARGUMENT;
+        }
+
+        $existing_entry = Auth::user()->diaryEntries()->whereDate('date', '=', $date)->first();
+
+        if ($existing_entry) {
+            $output->setAction('diary_edit', [
+                'entry_id' => $existing_entry->id,
+            ]);
+            $output->editContent($existing_entry->content . "\n\n" . $content);
+            return ErrorCode::OK;
         }
 
         $entry = Auth::user()->diaryEntries()->create([
-            'content' => implode(' ', $words),
+            'content' => $content,
             'project_id' => $project ? $project->id : null,
             'date' => $date,
             'meta' => $meta,
@@ -110,7 +121,7 @@ class DiaryNew extends Command
 
         $output->alert('Diary entry saved.');
 
-        return 0;
+        return ErrorCode::OK;
     }
 
     protected function parseMeta($meta = [])

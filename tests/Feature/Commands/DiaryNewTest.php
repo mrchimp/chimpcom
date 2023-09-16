@@ -93,4 +93,16 @@ class DiaryNewTest extends TestCase
         $this->assertEquals('bar', Arr::get($entry->meta, 'foo'));
         $this->assertEquals('bloopy', Arr::get($entry->meta, 'floopy'));
     }
+
+    /** @test */
+    public function if_a_diary_entry_exists_the_new_content_will_be_appended_and_made_editable()
+    {
+        $this->getUserResponse('diary:new Here is a new entry.')->assertOk();
+        $json = $this->getUserResponse('diary:new Here is some more content.')
+            ->assertOk()
+            ->json();
+
+        $this->getUserEditSaveResponse('I gave up and replaced both with this.', $this->user, '', $this->last_action_id)
+            ->assertOk();
+    }
 }
