@@ -245,13 +245,13 @@ export default class Cmd {
   startEdit(content: string) {
     this.edit_mode = true;
     this.editor_wrapper_el.classList.add('is-active');
-    this.editor_el.innerHTML = content;
+    this.editor_el.value = content;
   }
 
   cancelEdit() {
     this.clearAction();
     this.edit_mode = false;
-    this.editor_el.innerHTML = '';
+    this.editor_el.value = '';
     this.editor_wrapper_el.classList.remove('is-active');
     this.focusOnInput();
   }
