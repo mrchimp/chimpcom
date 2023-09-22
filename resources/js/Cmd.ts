@@ -899,7 +899,7 @@ export default class Cmd {
     return fetch(request)
       .then((response) => {
         if (![200, 404].includes(response.status)) {
-          throw 'Invalid response';
+          throw response.status;
         }
         return response;
       })
@@ -907,10 +907,17 @@ export default class Cmd {
       .then((data) => {
         this.handleExternalResponse(data);
       })
-      .catch((e) => {
-        console.error(e);
+      .catch((statusCode: number) => {
+        let message;
+        if (statusCode === 419) {
+          message = 'Session expired. Refresh the page to continue.';
+        } else if (statusCode >= 500) {
+          message = 'Server error. Try again.';
+        } else {
+          message = 'Request error. Try something different.';
+        }
         this.handleExternalResponse({
-          cmd_out: 'Server error. Try again.',
+          cmd_out: message,
         });
       });
   }
