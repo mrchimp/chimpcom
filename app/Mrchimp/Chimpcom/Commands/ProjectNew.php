@@ -6,6 +6,7 @@ use Auth;
 use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Models\Project;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,8 +31,8 @@ class ProjectNew extends Command
         $this->addRelated('project:set');
         $this->addRelated('project:rm');
         $this->addArgument(
-            'project',
-            null,
+            'project_name',
+            InputArgument::REQUIRED,
             "The project name."
         );
     }
@@ -55,12 +56,12 @@ class ProjectNew extends Command
      */
     protected function newProject(InputInterface $input, OutputInterface $output): int
     {
-        $project_name = $input->getArgument('project');
+        $project_name = $input->getArgument('project_name');
 
         $validator = Validator::make([
             'project' => $project_name,
         ], [
-            'project' => 'required|alpha_dash'
+            'project' => 'alpha_dash'
         ]);
 
         if ($validator->fails()) {
