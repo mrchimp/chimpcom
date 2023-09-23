@@ -451,20 +451,22 @@ export default class Cmd {
           this.bash_el.setAttribute('id', 'bash');
           this.bash_el.setAttribute(
             'style',
-            'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);'
+            'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1;'
           );
 
           document.getElementsByTagName('body')[0].prepend(this.bash_el);
         }
-        return "Ow! I hope you're going to fix that!";
+        this.output("I hope you're going to fix that!");
+        break;
       case 'fix':
         if (this.bash_el) {
           this.bash_el.remove();
           this.bash_el = null;
-          return 'Good as new.';
+          this.output('Good as new.');
         } else {
-          return 'Nothing to fix.';
+          this.output('Nothing to fix.');
         }
+        break;
       default:
         if (typeof this.options.external_processor !== 'function') {
           this.output(this.options.unknown_cmd);
