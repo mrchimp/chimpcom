@@ -260,7 +260,14 @@ class FormatHtml implements Format
         foreach ($tasks as $task) {
             $hex_id = Id::encode($task->id);
 
-            $list[] = $task->completed ? '&#10004;' : $hex_id;
+            $list[] = static::style(
+                $hex_id,
+                'autofill',
+                [
+                    'data-type' => 'autofill',
+                    'data-autofill' => 'task:done ' . $hex_id
+                ]
+            );
 
             if ($task->priority > 10) {
                 $class = 'task-urgent';
@@ -272,7 +279,14 @@ class FormatHtml implements Format
                 $class = 'task-normal';
             }
 
-            $list[] = '<span class="' . $class . '">' . $task->priority . '</span> ';
+            $list[] = static::style(
+                $task->priority,
+                $class . ' autofill',
+                [
+                    'data-type' => 'autofill',
+                    'data-autofill' => 'task:edit ' . $hex_id . ' --priority ' . $task->priority
+                ]
+            );
 
             $list[] = static::autoLink($task->description);
 
@@ -429,7 +443,7 @@ class FormatHtml implements Format
 
     public static function diaryEntry(DiaryEntry $entry): string
     {
-        $output = self::title($entry->date->format('l jS \\of F Y')) . static::nl();
+        $output = static::title($entry->date->format('l jS \\of F Y')) . static::nl();
         $output .= e($entry->content);
 
         if (!empty($entry->meta)) {
@@ -455,7 +469,10 @@ class FormatHtml implements Format
         $chunks = [];
 
         $entries->each(function ($entry) use (&$chunks) {
-            $chunks[] = self::title($entry->date->toDateString());
+            $chunks[] = static::title($entry->date->toDateString(), [
+                'data-type' => 'autofill',
+                'data-autofill' => 'diary:edit -d ' . $entry->date->toDateString()
+            ]);
             $chunks[] = e(Str::substr($entry->content, 0, 100));
         });
 
