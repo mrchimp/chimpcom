@@ -57,7 +57,18 @@ class Project extends Command
             return 4;
         }
 
-        $output->say('Current project: ' . $project->name);
+        $complete_task_count = $project->tasks()->where('completed', true)->count();
+        $task_count = $project->tasks()->count();
+        $diary_count = $project->diaryEntries()->count();
+        $event_count = $project->events()->count();
+        $note_count = $project->notes()->count();
+
+        $output->title('Current project: ' . $project->name, true);
+        $output->write($complete_task_count . ' of ' . $task_count . ' tasks complete', true);
+        $output->write($diary_count . ' diary entries', true);
+        $output->write($event_count . ' events', true);
+        $output->write($note_count . ' notes', true);
+
         return 0;
     }
 }

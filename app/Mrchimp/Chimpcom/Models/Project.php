@@ -42,6 +42,21 @@ class Project extends Model
         return $this->hasMany('Mrchimp\Chimpcom\Models\Task');
     }
 
+    public function diaryEntries(): HasMany
+    {
+        return $this->hasMany('Mrchimp\Chimpcom\Models\DiaryEntry');
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany('Mrchimp\Chimpcom\Models\Event');
+    }
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany('Mrchimp\Chimpcom\Models\Memory');
+    }
+
     public function delete(): ?bool
     {
         Task::where('project_id', $this->id)->delete();
