@@ -62,7 +62,10 @@ class ProjectList extends Command
         $output_chunks = [];
 
         foreach ($user->projects as $project) {
-            $output_chunks[] = '#' . $project->id . ' <span data-type="autofill" data-autofill="project ' . $project->id . '"> ' . Format::escape($project->name) . ' - ' . count($project->tasks) . ' tasks</span>';
+            $output_chunks[] = Format::title(Format::escape($project->name), [
+                'data-type' => 'autofill',
+                'data-autofill' => 'project ' . $project->id,
+            ]) . Format::nl() . $project->description;
         }
 
         $output->write(implode(Format::nl(), $output_chunks));
