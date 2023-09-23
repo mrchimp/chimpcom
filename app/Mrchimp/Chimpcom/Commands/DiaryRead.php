@@ -24,9 +24,9 @@ class DiaryRead extends Command
         $this->setName('diary');
         $this->setDescription('Create, read and manage diary entries.');
         $this->addUsage('diary new Here is an entry with a @tag in it --project=myproject --date=yesterday');
-        $this->addUsage('diary read');
-        $this->addUsage('diary list');
-        $this->addUsage('diary edit');
+        $this->addRelated('diary:read');
+        $this->addRelated('diary:list');
+        $this->addRelated('diary:edit');
         $this->addRelated('project');
         $this->addRelated('tag');
         $this->addOption(

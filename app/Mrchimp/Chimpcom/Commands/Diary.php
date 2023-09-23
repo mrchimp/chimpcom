@@ -2,14 +2,11 @@
 
 namespace Mrchimp\Chimpcom\Commands;
 
-use Carbon\Carbon;
-use Mrchimp\Chimpcom\Str;
 use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\Facades\Format;
 use Mrchimp\Chimpcom\Traits\ManagesProjects;
 use Carbon\Exceptions\InvalidFormatException;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -27,10 +24,10 @@ class Diary extends Command
         $this->setName('diary');
         $this->setDescription('List diary entries.');
         $this->addUsage('diary --project=myproject --date=yesterday');
-        $this->addUsage('diary:read');
-        $this->addUsage('diary:list');
-        $this->addUsage('diary:edit');
-        $this->addUsage('diary:graph');
+        $this->addRelated('diary:read');
+        $this->addRelated('diary:edit');
+        $this->addRelated('diary:rm');
+        $this->addRelated('diary:graph');
         $this->addRelated('project');
         $this->addRelated('tag');
         $this->addOption(

@@ -21,10 +21,10 @@ class DiaryEdit extends Command
         $this->setName('diary:edit');
         $this->setDescription('Edit diary entries.');
         $this->addUsage('diary edit --date=yesterday');
-        $this->addUsage('diary');
-        $this->addUsage('diary:new');
-        $this->addUsage('diary:read');
-        $this->addUsage('diary:graph');
+        $this->addRelated('diary');
+        $this->addRelated('diary:new');
+        $this->addRelated('diary:read');
+        $this->addRelated('diary:graph');
         $this->addRelated('project');
         $this->addRelated('tag');
         $this->addArgument(
