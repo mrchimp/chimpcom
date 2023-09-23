@@ -85,6 +85,7 @@ return [
     'actions' => [
         'candyman' => \Mrchimp\Chimpcom\Actions\Candyman::class,
         'diary_edit' => \Mrchimp\Chimpcom\Actions\DiaryEdit::class,
+        'diary_new' => \Mrchimp\Chimpcom\Actions\DiaryNew::class,
         'done' => \Mrchimp\Chimpcom\Actions\Done::class,
         'edit' => \Mrchimp\Chimpcom\Actions\Edit::class,
         'forget' => \Mrchimp\Chimpcom\Actions\Forget::class,

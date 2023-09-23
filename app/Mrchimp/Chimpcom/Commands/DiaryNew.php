@@ -5,6 +5,7 @@ namespace Mrchimp\Chimpcom\Commands;
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Facades\Auth;
 use Mrchimp\Chimpcom\ErrorCode;
+use Mrchimp\Chimpcom\Traits\HandlesMetadata;
 use Mrchimp\Chimpcom\Traits\ManagesProjects;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -13,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DiaryNew extends Command
 {
-    use ManagesProjects;
+    use ManagesProjects, HandlesMetadata;
 
     const DEFAULT_NUM = 10;
 
@@ -95,11 +96,6 @@ class DiaryNew extends Command
         [$words, $tags] = $input->splitWordsAndTags($input->getArgument('content'));
         $content = implode(' ', $words);
 
-        if (empty($words)) {
-            $output->error("You didn't enter any content.");
-            return ErrorCode::INVALID_ARGUMENT;
-        }
-
         $existing_entry = Auth::user()->diaryEntries()->whereDate('date', '=', $date)->first();
 
         if ($existing_entry) {
@@ -107,6 +103,17 @@ class DiaryNew extends Command
                 'entry_id' => $existing_entry->id,
             ]);
             $output->editContent($existing_entry->content . "\n\n" . $content);
+            return ErrorCode::OK;
+        }
+
+        if (empty($words)) {
+            $output->setAction('diary_new', [
+                'date' => $date,
+                'meta' => $meta,
+                'project_name' => $project_name,
+            ]);
+            $output->editContent('');
+
             return ErrorCode::OK;
         }
 
@@ -122,20 +129,5 @@ class DiaryNew extends Command
         $output->alert('Diary entry saved.');
 
         return ErrorCode::OK;
-    }
-
-    protected function parseMeta($meta = [])
-    {
-        return array_reduce($meta, function ($carry, $item) {
-            $parts = explode(':', $item, 2);
-
-            if (count($parts) < 2) {
-                return $carry;
-            }
-
-            $carry[$parts[0]] = $parts[1];
-
-            return $carry;
-        }, []);
     }
 }

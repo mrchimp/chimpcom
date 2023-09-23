@@ -98,11 +98,33 @@ class DiaryNewTest extends TestCase
     public function if_a_diary_entry_exists_the_new_content_will_be_appended_and_made_editable()
     {
         $this->getUserResponse('diary:new Here is a new entry.')->assertOk();
-        $json = $this->getUserResponse('diary:new Here is some more content.')
+        $this->getUserResponse('diary:new Here is some more content.')
             ->assertOk()
             ->json();
 
         $this->getUserEditSaveResponse('I gave up and replaced both with this.', $this->user, '', $this->last_action_id)
             ->assertOk();
+    }
+
+    /** @test */
+    public function if_no_content_is_provided_to_diarynew_then_an_editor_is_opened()
+    {
+        $this->user = User::factory()->create();
+        Project::factory()->create([
+            'name' => 'myproject',
+            'user_id' => $this->user->id,
+        ]);
+
+        $json = $this->getUserResponse('diary:new --meta=foo:bar --project=myproject')->assertOk();
+        $this->assertEquals('', $json['edit_content']);
+
+        $this->getUserEditSaveResponse('Here is some content. @foo @bar', $this->user, '', $this->last_action_id)
+            ->assertOk();
+
+        $entry = DiaryEntry::first();
+        $this->assertEquals('Here is some content.', $entry->content);
+        $tags = $entry->tags->pluck('tag');
+        $this->assertContains('foo', $tags);
+        $this->assertContains('bar', $tags);
     }
 }
