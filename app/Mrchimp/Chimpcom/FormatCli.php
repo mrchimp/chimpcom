@@ -409,7 +409,7 @@ class FormatCli implements Format
 
     public static function diaryEntry(DiaryEntry $entry): string
     {
-        $output = self::title($entry->date->format('l jS \\of F Y h:i A')) . static::nl();
+        $output = self::title($entry->date->format('l jS \\of F Y')) . static::nl();
         $output .= $entry->content;
 
         if (!empty($entry->meta)) {
@@ -436,7 +436,7 @@ class FormatCli implements Format
         $chunks = [];
 
         $entries->each(function ($entry) use (&$chunks) {
-            $chunks[] = self::title($entry->date->toDateTimeString());
+            $chunks[] = self::title($entry->date->toDateString());
             $chunks[] = Str::substr($entry->content, 0, 100);
         });
 
