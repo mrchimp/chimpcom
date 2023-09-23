@@ -79,7 +79,7 @@ class TaskNew extends Command
         $project = $user->activeProject;
 
         if (!$project) {
-            $output->error('No active project. Use `PROJECT LIST` and `PROJECT SET x`.');
+            $output->error('No active project. Use `project` and `project:set yourprojectname`.');
 
             return ErrorCode::NO_ACTIVE_PROJECT;
         }
