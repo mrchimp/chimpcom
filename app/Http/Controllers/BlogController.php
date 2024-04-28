@@ -17,7 +17,7 @@ class BlogController extends Controller
         try {
             $path = Path::make('/home/' . $username . '/blog');
         } catch (InvalidPathException $e) {
-            abort(404);
+            abort(404, "Invalid path exception" . $e->getMessage());
         }
 
         if (!$path->exists()) {

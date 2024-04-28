@@ -38,6 +38,7 @@ return [
         'magiceightball' => \Mrchimp\Chimpcom\Commands\Magiceightball::class,
         'mail' => \Mrchimp\Chimpcom\Commands\Mail::class,
         'man' => \Mrchimp\Chimpcom\Commands\Man::class,
+        'me' => \Mrchimp\Chimpcom\Commands\Me::class,
         'message' => \Mrchimp\Chimpcom\Commands\Message::class,
         'mkdir' => \Mrchimp\Chimpcom\Commands\Mkdir::class,
         'mkfile' => \Mrchimp\Chimpcom\Commands\Mkfile::class,
