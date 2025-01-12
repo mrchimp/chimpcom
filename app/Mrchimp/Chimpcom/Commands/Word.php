@@ -67,7 +67,7 @@ class Word extends Command
         }
 
         $words->each(function ($word) use ($output) {
-            $output->write(e($word->word) . Format::nl());
+            $output->write(Format::nl() . e($word->word));
         });
 
         return 0;
