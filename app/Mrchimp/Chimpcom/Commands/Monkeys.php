@@ -18,8 +18,10 @@ class Monkeys extends Command
      */
     protected function configure()
     {
-        $this->setName('parser');
-        $this->setDescription('Test command for the new parser.');
+        $this->setName('monkeys');
+        $this->setDescription(
+            'Attempt to find a small subset of Shakespeare in a small set of random text.'
+        );
     }
 
     /**
@@ -40,13 +42,13 @@ class Monkeys extends Command
 
         // Count the letters of the alphabet so that we don't
         // have to do it in a loop below.
-        $size     = strlen($alphabet);
-        $target   = 'to be or not to be';
-        $apechat  = '';
+        $size = strlen($alphabet);
+        $target = 'to be or not to be';
+        $apechat = '';
 
         for ($x = 1; $x < 1000; $x++) {
             $rand = mt_rand(0, $size - 1);
-            $apechat  = $apechat  . $alphabet[$rand];
+            $apechat = $apechat . $alphabet[$rand];
         }
 
         // First, check if we've got the whole thing.
@@ -58,12 +60,7 @@ class Monkeys extends Command
             return 0;
         }
 
-        $search  = [
-            'to',
-            'be',
-            'or',
-            'not'
-        ];
+        $search = ['to', 'be', 'or', 'not'];
 
         $replace = [
             Format::title('to'),
@@ -72,7 +69,7 @@ class Monkeys extends Command
             Format::title('not'),
         ];
 
-        $apechat  = str_replace($search, $replace, $apechat);
+        $apechat = str_replace($search, $replace, $apechat);
 
         $output->write($apechat);
 
