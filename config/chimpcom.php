@@ -82,6 +82,7 @@ return [
         'version' => \Mrchimp\Chimpcom\Commands\Version::class,
         'whoami' => \Mrchimp\Chimpcom\Commands\Whoami::class,
         'who' => \Mrchimp\Chimpcom\Commands\Who::class,
+        'word' => \Mrchimp\Chimpcom\Commands\Word::class,
     ],
     'actions' => [
         'candyman' => \Mrchimp\Chimpcom\Actions\Candyman::class,
@@ -100,5 +101,5 @@ return [
         'chpass_1' => \Mrchimp\Chimpcom\Actions\Chpass_1::class,
         'chpass_2' => \Mrchimp\Chimpcom\Actions\Chpass_2::class,
         'edit_task' => \Mrchimp\Chimpcom\Actions\EditTask::class,
-    ]
+    ],
 ];
