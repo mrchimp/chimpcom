@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | PDO Fetch Style
@@ -45,52 +44,50 @@ return [
     */
 
     'connections' => [
-
         'sqlite' => [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => storage_path('database.sqlite'),
-            'prefix'   => '',
+            'prefix' => '',
         ],
 
         'testing' => [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
             'prefix' => '',
         ],
 
         'mysql' => [
-            'driver'    => 'mysql',
-            'host'      => env('DB_HOST', 'localhost'),
-            'database'  => env('DB_DATABASE', 'forge'),
-            'username'  => env('DB_USERNAME', 'forge'),
-            'password'  => env('DB_PASSWORD', ''),
-            'charset'   => 'utf8',
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', 'localhost'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
-            'strict'    => false,
+            'prefix' => '',
+            'strict' => false,
         ],
 
         'pgsql' => [
-            'driver'   => 'pgsql',
-            'host'     => env('DB_HOST', 'localhost'),
+            'driver' => 'pgsql',
+            'host' => env('DB_HOST', 'localhost'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
-            'charset'  => 'utf8',
-            'prefix'   => '',
-            'schema'   => 'public',
+            'charset' => 'utf8',
+            'prefix' => '',
+            'schema' => 'public',
         ],
 
         'sqlsrv' => [
-            'driver'   => 'sqlsrv',
-            'host'     => env('DB_HOST', 'localhost'),
+            'driver' => 'sqlsrv',
+            'host' => env('DB_HOST', 'localhost'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
-            'charset'  => 'utf8',
-            'prefix'   => '',
+            'charset' => 'utf8',
+            'prefix' => '',
         ],
-
     ],
 
     /*
@@ -118,16 +115,13 @@ return [
     */
 
     'redis' => [
-
-        'client' => env('REDIS_CLIENT', 'phpredis'),
+        'client' => env('REDIS_CLIENT', 'predis'),
 
         'default' => [
-            'host'     => env('REDIS_HOST', '127.0.0.1'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
             'password' => env('REDIS_PASSWORD'),
-            'port'     => env('REDIS_PORT', 6379),
+            'port' => env('REDIS_PORT', 6379),
             'database' => env('REDIS_DB', 0),
         ],
-
     ],
-
 ];
